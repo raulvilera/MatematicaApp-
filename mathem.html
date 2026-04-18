@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>MathEM·SP | Currículo Paulista Completo</title>
+<title>Matemática@App | Currículo Paulista</title>
 
 <!-- ═══ PWA ═══ -->
 <link rel="manifest" href="/manifest.json">
@@ -11,7 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MathEM·SP">
+<meta name="apple-mobile-web-app-title" content="Matemática@App">
 <link rel="apple-touch-icon" href="/icon-192.png">
 <link rel="apple-touch-startup-image" href="/icon-512.png">
 <meta name="msapplication-TileColor" content="#080B12">
@@ -216,9 +216,9 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 
 /* ── IMAGEM DA QUESTÃO — CANVAS GERADO ── */
 .questao-img{width:100%;position:relative;overflow:hidden;
-  background:#04060D;
-  margin:0 0 0.4rem;}
-.questao-img canvas{width:100%;display:block;}
+  background:#04060D;margin:0 0 0.4rem;
+  min-height:130px;}  /* ★ garante altura mesmo antes do canvas renderizar */
+.questao-img canvas{width:100%;height:130px;display:block;}
 .qi-badge{position:absolute;top:0.45rem;left:0.45rem;background:rgba(8,11,18,0.82);
   backdrop-filter:blur(6px);border:1px solid rgba(155,111,247,0.35);border-radius:2rem;
   padding:0.18rem 0.55rem;font-size:0.58rem;font-weight:700;color:var(--secondary);}
@@ -370,7 +370,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 <body>
 
 <nav class="navbar">
-  <div class="logo">MathEM·SP</div>
+  <div class="logo">Matemática@App</div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="changePage('home')">Início</button>
     <button class="nav-tab" onclick="changePage('simuladores')">Simuladores</button>
@@ -700,8 +700,14 @@ const simColors = {
 };
 
 function gerarCanvasQuestao(canvasEl, temaSlug, qi) {
-  // Usa offsetWidth do canvas ou do container pai, com fallback de 360
-  const W = canvasEl.width  = (canvasEl.offsetWidth || canvasEl.parentElement?.offsetWidth || 360);
+  // Força dimensões explícitas antes de desenhar — evita canvas vazio
+  canvasEl.style.height = '130px';
+  const W = canvasEl.width  = Math.round(
+    canvasEl.getBoundingClientRect().width ||
+    canvasEl.offsetWidth ||
+    canvasEl.parentElement?.getBoundingClientRect().width ||
+    canvasEl.parentElement?.offsetWidth || 360
+  );
   const H = canvasEl.height = 130;
   const ctx = canvasEl.getContext('2d');
   const col = simColors[temaSlug] || simColors.geometria3d;
@@ -1801,12 +1807,34 @@ function gerarCodigoAtv(t, s, ti){
 }
 
 /**
- * Gera URL compartilhável usando getAppBaseUrl().
- * Funciona corretamente tanto em GitHub Pages quanto localmente.
+ * ★ FIX DEEP LINK: codifica os dados da atividade em Base64 na URL.
+ * Ao abrir o link, as questões são restauradas sem nova chamada à API.
  */
 function gerarLinkAtv(codigo){
   const base = getAppBaseUrl();
-  return `${base}?atv=${encodeURIComponent(codigo)}`;
+  // Serializa questões + metadados em base64 para deep link funcional
+  try {
+    const payload = {
+      v: 1,
+      cod: codigo,
+      serie: atvState.serie,
+      tema: atvState.tema,
+      titulo: atvState.tituloAE,
+      tipoIdx: atvState.tipoIdx,
+      qs: atvState.questoes.map(q => ({
+        e: q.enunciado,
+        o: q.opcoes,
+        c: q.correta,
+        x: q.explicacao,
+        ic: q._imgCaption || ''
+      }))
+    };
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    return `${base}?atv=${encodeURIComponent(encoded)}`;
+  } catch(err) {
+    // Fallback: link simples
+    return `${base}?atv=${encodeURIComponent(codigo)}`;
+  }
 }
 
 /**
@@ -1822,43 +1850,86 @@ function verLinkAtv(){
 }
 
 /**
- * Lê o parâmetro ?atv= da URL ao carregar a página.
+ * ★ FIX DEEP LINK: lê o payload Base64 da URL e restaura a atividade exata.
+ * Compatível com o formato antigo (código simples) e o novo (base64).
  */
 function lerParamAtv(){
   let search = window.location.search;
-  // Em ambientes sandbox (about:srcdoc) não há search real
   if (!search && window.location.href.includes('?')) {
     search = '?' + window.location.href.split('?')[1];
   }
   const params = new URLSearchParams(search);
-  const cod = params.get('atv');
-  if (!cod) return;
+  const raw = params.get('atv');
+  if (!raw) return;
 
-  const parts = cod.split('-');
+  // Tenta decodificar como Base64 (novo formato)
+  let payload = null;
+  try {
+    const decoded = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
+    payload = JSON.parse(decoded);
+  } catch(e) { payload = null; }
+
+  if (payload && payload.v === 1 && payload.qs) {
+    // ★ Novo formato: restaura atividade completa sem chamar a API
+    const { serie, tema, titulo, tipoIdx, qs, cod } = payload;
+    const serieMap = {ef6:'ef6',ef7:'ef7',ef8:'ef8',ef9:'ef9',em1:'em1',em2:'em2',em3:'em3'};
+    const serieKey = serieMap[serie] || 'ef6';
+    const questoes = qs.map(q => ({
+      enunciado: q.e, opcoes: q.o, correta: q.c,
+      explicacao: q.x, _imgCaption: q.ic
+    }));
+    const tipo = tiposAtv[tipoIdx] || tiposAtv[0];
+
+    const banner = document.createElement('div');
+    banner.className = 'atv-link-banner';
+    banner.innerHTML = `✅ <strong>Atividade carregada:</strong> ${titulo} — ${(seriesData[serieKey]||{}).name||serieKey}
+      <button class="btn-sm" style="margin-left:auto;" onclick="this.parentElement.remove()">✕</button>`;
+    document.getElementById('page-home').prepend(banner);
+
+    selectSerie(serieKey);
+    changePage('home');
+
+    setTimeout(() => {
+      // Pré-popula o cache para não chamar a API
+      const cacheKey = `${tema}_${serieKey}_${tipoIdx}`;
+      atvState = { ...atvState, tema, tituloAE: titulo, serie: serieKey,
+        tipoIdx, questoes: [], respostas: [], respondidas: 0, pontos: 0,
+        cache: { [cacheKey]: questoes }, codigo: cod || '' };
+
+      document.getElementById('atvTitle').textContent = `Atividades — ${titulo}`;
+      document.getElementById('atvSub').textContent = 'Atividade compartilhada';
+      document.getElementById('atvScore').textContent = '0 pts';
+      document.getElementById('atvRespondidas').textContent = `0/${questoes.length}`;
+      document.getElementById('atvShareBox').style.display = 'none';
+      document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+      const tipoBtn = document.querySelector(`.tipo-btn[data-tipo="${tipoIdx}"]`);
+      if (tipoBtn) tipoBtn.classList.add('active');
+      document.getElementById('atvOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      renderAtv(questoes, tipo);
+    }, 500);
+    return;
+  }
+
+  // Formato antigo: código simples (fallback)
+  const parts = raw.split('-');
   if (parts.length < 4) return;
-
   const serieRaw = parts[0].toLowerCase();
   const temaRaw  = parts[1].toLowerCase();
   const tipoRaw  = parseInt(parts[2].replace('T','')) || 0;
-
-  const serieMap = {ef6:'ef6',ef7:'ef7',ef8:'ef8',ef9:'ef9',em1:'em1',em2:'em2',em3:'em3'};
-  const serieKey = serieMap[serieRaw] || 'ef6';
-
-  const data = seriesData[serieKey];
-  const ae = data ? data.aes.find(a => a.sim === temaRaw || a.code.toLowerCase().includes(temaRaw)) : null;
-  const titulo = ae ? ae.title : (nomesSim[temaRaw] || temaRaw);
-
-  const banner = document.createElement('div');
-  banner.className = 'atv-link-banner';
-  banner.innerHTML = `✅ <strong>Atividade compartilhada carregada:</strong> ${titulo} — ${(seriesData[serieKey]||{}).name||serieKey}
+  const serieMap2 = {ef6:'ef6',ef7:'ef7',ef8:'ef8',ef9:'ef9',em1:'em1',em2:'em2',em3:'em3'};
+  const serieKey2 = serieMap2[serieRaw] || 'ef6';
+  const data2 = seriesData[serieKey2];
+  const ae2 = data2 ? data2.aes.find(a => a.sim === temaRaw || a.code.toLowerCase().includes(temaRaw)) : null;
+  const titulo2 = ae2 ? ae2.title : (nomesSim[temaRaw] || temaRaw);
+  const banner2 = document.createElement('div');
+  banner2.className = 'atv-link-banner';
+  banner2.innerHTML = `✅ <strong>Atividade compartilhada:</strong> ${titulo2}
     <button class="btn-sm" style="margin-left:auto;" onclick="this.parentElement.remove()">✕</button>`;
-  document.getElementById('page-home').prepend(banner);
-
-  selectSerie(serieKey);
-
+  document.getElementById('page-home').prepend(banner2);
+  selectSerie(serieKey2);
   setTimeout(() => {
-    atvState.tipoIdx = tipoRaw;
-    openAtvModal(temaRaw, titulo, serieKey).then(() => {
+    openAtvModal(temaRaw, titulo2, serieKey2).then(() => {
       const tipoBtn = document.querySelector(`.tipo-btn[data-tipo="${tipoRaw}"]`);
       if (tipoBtn && tipoRaw !== 0) selecionarTipo(tipoRaw, tipoBtn);
     });
@@ -1868,10 +1939,10 @@ function lerParamAtv(){
 function renderAtv(qs, tipo){
   atvState.questoes = qs;
   atvState.respostas = new Array(qs.length).fill(null);
+  atvState.timers = {};  // ★ cronômetros por questão
   const cod = gerarCodigoAtv(atvState.tema, atvState.serie, atvState.tipoIdx);
   atvState.codigo = cod;
 
-  // ★ FIX LINK: usa getAppBaseUrl() via gerarLinkAtv()
   const link = gerarLinkAtv(cod);
   document.getElementById('atvShareInput').value = link;
   document.getElementById('atvShareBox').style.display = 'block';
@@ -1893,10 +1964,14 @@ function renderAtv(qs, tipo){
           <span>${opt.replace(/^[A-Da-d][.)]\s*/, '')}</span>
         </div>`).join('');
       return `<div class="questao-item" id="qi_${qi}">
-        <div class="questao-num"><span class="q-badge">${String(qi+1).padStart(2,'0')}</span><span style="color:var(--text-tertiary);">${tipo.emoji} ${tipo.nome}</span></div>
+        <div class="questao-num">
+          <span class="q-badge">${String(qi+1).padStart(2,'0')}</span>
+          <span style="color:var(--text-tertiary);">${tipo.emoji} ${tipo.nome}</span>
+          <span class="q-timer" id="qtimer_${qi}" style="margin-left:auto;font-size:0.68rem;font-weight:700;font-family:'JetBrains Mono';color:var(--warning);background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.25);border-radius:2rem;padding:0.1rem 0.5rem;">⏱ 60s</span>
+        </div>
         <div class="questao-enunciado">${q.enunciado}</div>
-        <div class="questao-img" id="qiw_${qi}" style="position:relative;">
-          <canvas id="qic_${qi}" style="width:100%;display:block;border-radius:0;"></canvas>
+        <div class="questao-img" id="qiw_${qi}" style="position:relative;min-height:130px;">
+          <canvas id="qic_${qi}" style="width:100%;height:130px;display:block;border-radius:0;"></canvas>
           <div class="qi-badge">📐 Visual</div>
           <div class="qi-caption">${q._imgCaption||''}</div>
         </div>
@@ -1905,22 +1980,80 @@ function renderAtv(qs, tipo){
       </div>`;
     }).join('')}`;
 
-  // ★ FIX CANVAS: aguarda dois frames de repaint para garantir offsetWidth > 0
+  // ★ Inicia cronômetros por questão via IntersectionObserver
+  // Cada timer só começa quando a questão entra na viewport
+  qs.forEach((_, qi) => {
+    let sec = 60;
+    const timerEl = () => document.getElementById(`qtimer_${qi}`);
+    const startTimer = () => {
+      if (atvState.timers[qi]) return; // já iniciado
+      atvState.timers[qi] = setInterval(() => {
+        if (atvState.respostas[qi] !== null) {
+          clearInterval(atvState.timers[qi]);
+          return;
+        }
+        sec--;
+        const el = timerEl();
+        if (!el) { clearInterval(atvState.timers[qi]); return; }
+        el.textContent = `⏱ ${sec}s`;
+        if (sec <= 10) {
+          el.style.color = 'var(--danger)';
+          el.style.background = 'rgba(242,92,92,0.12)';
+          el.style.borderColor = 'rgba(242,92,92,0.35)';
+        }
+        if (sec <= 0) {
+          clearInterval(atvState.timers[qi]);
+          el.textContent = '⏱ 0s';
+          // Marca como esgotado (não penaliza, apenas registra)
+          if (atvState.respostas[qi] === null) {
+            document.querySelectorAll(`#qi_${qi} .questao-opcao`).forEach(o => o.classList.add('disabled'));
+            const fb = document.getElementById(`qf_${qi}`);
+            if (fb) {
+              fb.innerHTML = `⏰ <strong>Tempo esgotado!</strong> Resposta correta: <strong>${['A','B','C','D'][atvState.questoes[qi].correta]}</strong>. ${atvState.questoes[qi].explicacao}`;
+              fb.classList.add('visible');
+            }
+            atvState.respostas[qi] = -1; // -1 = timeout
+            atvState.respondidas++;
+            const total = atvState.questoes.length;
+            document.getElementById('atvRespondidas').textContent = `${atvState.respondidas}/${total}`;
+            const fill = document.getElementById('atvProgFill');
+            if (fill) fill.style.width = ((atvState.respondidas / total) * 100) + '%';
+            if (atvState.respondidas === total) setTimeout(() => mostrarResultadoAtv(), 800);
+          }
+        }
+      }, 1000);
+    };
+
+    // Usa IntersectionObserver para iniciar o timer apenas quando a questão aparece na tela
+    const itemEl = document.getElementById(`qi_${qi}`);
+    if (itemEl && 'IntersectionObserver' in window) {
+      const obs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) { obs.disconnect(); startTimer(); }
+      }, { threshold: 0.2 });
+      obs.observe(itemEl);
+    } else {
+      setTimeout(startTimer, qi * 200);
+    }
+  });
+
+  // ★ Canvas das questões com garantia de largura
   requestAnimationFrame(() => requestAnimationFrame(() => {
     qs.forEach((_, qi) => {
       const cv = document.getElementById(`qic_${qi}`);
       if (!cv) return;
-      if (cv.offsetWidth > 0) {
-        gerarCanvasQuestao(cv, atvState.tema, qi);
-      } else {
-        const ro = new ResizeObserver(() => {
-          if (cv.offsetWidth > 0) {
-            ro.disconnect();
-            gerarCanvasQuestao(cv, atvState.tema, qi);
-          }
-        });
-        ro.observe(cv);
-      }
+      const tryRender = () => {
+        const w = Math.round(cv.getBoundingClientRect().width || cv.offsetWidth || cv.parentElement?.offsetWidth || 0);
+        if (w > 0) {
+          gerarCanvasQuestao(cv, atvState.tema, qi);
+        } else {
+          const ro = new ResizeObserver(() => {
+            const w2 = Math.round(cv.getBoundingClientRect().width || cv.offsetWidth || 0);
+            if (w2 > 0) { ro.disconnect(); gerarCanvasQuestao(cv, atvState.tema, qi); }
+          });
+          ro.observe(cv);
+        }
+      };
+      tryRender();
     });
   }));
 }
@@ -1981,6 +2114,11 @@ function mostrarResultadoAtv(){
 function closeAtvModal(){
   document.getElementById('atvOverlay').classList.remove('active');
   document.body.style.overflow = '';
+  // ★ Limpa todos os cronômetros das questões
+  if (atvState.timers) {
+    Object.values(atvState.timers).forEach(t => clearInterval(t));
+    atvState.timers = {};
+  }
 }
 document.getElementById('atvOverlay').addEventListener('click', function(e){
   if (e.target === this) closeAtvModal();
@@ -2391,7 +2529,7 @@ function openPlano(code, title){
     <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">
       <strong>Objetivos:</strong> Compreender e aplicar os conceitos de ${title}.<br>
       <strong>Metodologia:</strong> Resolução de problemas, simuladores interativos, atividades contextualizadas.<br>
-      <strong>Recursos:</strong> Plataforma MathEM·SP com simuladores 3D, 5 tipos de atividades geradas por IA.<br>
+      <strong>Recursos:</strong> Plataforma Matemática@App com simuladores 3D, 5 tipos de atividades geradas por IA.<br>
       <strong>Avaliação:</strong> Formativa contínua com rubricas e feedback imediato.<br>
       <strong>Habilidade BNCC:</strong> ${code}
     </p>`;
@@ -2479,7 +2617,7 @@ initSelectors();
 <div id="pwaBanner" style="display:none;" class="pwa-banner">
   <div class="pwa-banner-icon">📲</div>
   <div class="pwa-banner-text">
-    <strong>Instalar MathEM·SP</strong>
+    <strong>Instalar Matemática@App</strong>
     <span>Acesso offline • Funciona como app nativo</span>
   </div>
   <div class="pwa-banner-btns">
@@ -2560,3 +2698,4 @@ if (location.hash === '#arena') changePage('arena');
 </script>
 </body>
 </html>
+

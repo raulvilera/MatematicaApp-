@@ -1,6 +1,6 @@
 {
-  "name": "MathEM·SP — Currículo Paulista",
-  "short_name": "MathEM·SP",
+  "name": "Matemática@App — Currículo Paulista",
+  "short_name": "Matemática@App",
   "description": "Simuladores interativos de matemática para o Currículo Paulista — EF e EM",
   "start_url": "/mathem.html",
   "scope": "/",
@@ -14,12 +14,6 @@
   ],
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%23080B12'/%3E%3Crect x='32' y='32' width='448' height='448' rx='72' fill='%230F1420'/%3E%3Ctext x='256' y='200' font-family='Arial' font-size='160' font-weight='bold' text-anchor='middle' fill='%234F8EF7'%3EM%3C/text%3E%3Ctext x='256' y='340' font-family='Arial' font-size='80' font-weight='bold' text-anchor='middle' fill='%239B6FF7'%3ESP%3C/text%3E%3C/svg%3E",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    },
-    {
       "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
@@ -29,7 +23,7 @@
       "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "screenshots": [

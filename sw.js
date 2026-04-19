@@ -1,11 +1,11 @@
 /* ============================================================
-   MathEM·SP — Service Worker
+   Matemática@App — Service Worker
    Estratégia: Cache-First para assets estáticos,
    Network-First para a API da Anthropic.
    ============================================================ */
 
-const CACHE_NAME = 'mathem-sp-v1';
-const CACHE_VERSION = 1;
+const CACHE_NAME = 'matematica-app-v2';
+const CACHE_VERSION = 2;
 
 // Assets que serão cacheados no install
 const PRECACHE_ASSETS = [
@@ -130,7 +130,7 @@ function offlinePage() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>MathEM·SP — Offline</title>
+  <title>Matemática@App — Offline</title>
   <style>
     body{margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;
       background:#080B12;color:#E8EEF8;font-family:system-ui,sans-serif;text-align:center;padding:2rem;}
@@ -145,7 +145,7 @@ function offlinePage() {
   <div>
     <div class="icon">📡</div>
     <h1>Você está offline</h1>
-    <p>O MathEM·SP precisa de conexão para gerar atividades com IA.<br>
+    <p>O Matemática@App precisa de conexão para gerar atividades com IA.<br>
        Os simuladores e o quiz local funcionam normalmente.</p>
     <button onclick="location.reload()">Tentar novamente</button>
   </div>

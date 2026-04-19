@@ -2483,10 +2483,55 @@ function finishArena(){
   document.getElementById('arenaResult').innerHTML = `<div style="font-size:1.3rem;margin-bottom:0.625rem;">🏆 ${arenaState.score} pts</div><div style="color:var(--text-secondary);font-size:0.875rem;">Acertos: ${arenaState.corrects}/${arenaState.questions.length}</div><button class="btn-primary" style="margin-top:0.875rem;" onclick="renderArena()">Jogar Novamente</button>`;
 }
 
+// ★ Cronômetro do Quiz
+let _quizTimerInterval = null;
+const QUIZ_TIME_LIMIT = 30; // segundos por questão
+
+function _startQuizTimer() {
+  _stopQuizTimer();
+  quizState.timeLeft = QUIZ_TIME_LIMIT;
+  const el = document.getElementById('quizTimer');
+  if (el) el.textContent = `⏱ 0:${String(QUIZ_TIME_LIMIT).padStart(2,'0')}`;
+  _quizTimerInterval = setInterval(() => {
+    quizState.timeLeft--;
+    const el2 = document.getElementById('quizTimer');
+    const t = quizState.timeLeft;
+    if (el2) {
+      const mins = Math.floor(t / 60);
+      const secs = t % 60;
+      el2.textContent = `⏱ ${mins}:${String(secs).padStart(2,'0')}`;
+      el2.style.color = t <= 10 ? 'var(--danger)' : 'var(--text-secondary)';
+    }
+    if (t <= 0) {
+      _stopQuizTimer();
+      if (!quizState.answered) {
+        // Tempo esgotado — marca como errado e avança
+        quizState.answered = true;
+        const q = quizState.questions[quizState.idx];
+        document.getElementById('quizBody').innerHTML +=
+          `<div class="explicacao-box">⏰ Tempo esgotado! ${q.expl||''}</div>`;
+        document.querySelectorAll('.quiz-option').forEach((op, i) => {
+          op.classList.add('disabled');
+          if (i === q.correct) op.classList.add('correct');
+        });
+        quizState.idx++;
+        document.getElementById('quizNextBtn').style.display = 'block';
+        document.getElementById('quizScore').innerText = quizState.score;
+      }
+    }
+  }, 1000);
+}
+
+function _stopQuizTimer() {
+  if (_quizTimerInterval) { clearInterval(_quizTimerInterval); _quizTimerInterval = null; }
+  const el = document.getElementById('quizTimer');
+  if (el) el.style.color = 'var(--text-secondary)';
+}
+
 function renderQuiz(){
   if (!currentSerie) return;
   const data = seriesData[currentSerie];
-  quizState = {questions:[...data.quizBank], idx:0, score:0, answered:false};
+  quizState = {questions:[...data.quizBank], idx:0, score:0, answered:false, timeLeft:QUIZ_TIME_LIMIT};
   displayQuizQ();
 }
 
@@ -2497,10 +2542,12 @@ function displayQuizQ(){
   document.getElementById('quizBody').innerHTML = `<div style="font-weight:600;margin-bottom:0.875rem;line-height:1.5;font-size:0.875rem;">${q.q}</div><div>${q.opts.map((opt, i) => `<div class="quiz-option" onclick="answerQuiz(${i})">${opt}</div>`).join('')}</div>`;
   document.getElementById('quizNextBtn').style.display = 'none';
   quizState.answered = false;
+  _startQuizTimer();
 }
 
 function answerQuiz(sel){
   if (quizState.answered) return;
+  _stopQuizTimer();
   const q = quizState.questions[quizState.idx];
   const ok = sel === q.correct;
   if (ok){ quizState.score += 100; addXP(100); }
@@ -2517,6 +2564,9 @@ function answerQuiz(sel){
 
 function nextQuizQ(){ displayQuizQ(); }
 function finishQuiz(){
+  _stopQuizTimer();
+  const el = document.getElementById('quizTimer');
+  if (el) el.textContent = '⏱ 0:00';
   document.getElementById('quizBody').innerHTML = `<div class="empty-state">🏆 Quiz finalizado! ${quizState.score} pts</div>`;
   document.getElementById('quizNextBtn').style.display = 'none';
 }

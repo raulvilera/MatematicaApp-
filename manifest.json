@@ -1,6 +1,6 @@
 {
-  "name": "GeoMath·SP — Currículo Paulista",
-  "short_name": "GeoMath·SP",
+  "name": "Matemática·SP — Currículo Paulista",
+  "short_name": "Matemática·SP",
   "description": "Simuladores interativos de matemática para o Currículo Paulista — EF e EM",
   "start_url": "/mathem.html",
   "scope": "/",
@@ -9,55 +9,14 @@
   "background_color": "#080B12",
   "theme_color": "#1E3A8A",
   "lang": "pt-BR",
-  "categories": [
-    "education"
-  ],
+  "categories": ["education"],
   "icons": [
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "label": "Tela principal — Habilidades do 6º Ano",
-      "sizes": "390x844",
-      "type": "image/png"
-    }
+    {"src": "/icon-192.png","sizes": "192x192","type": "image/png","purpose": "any"},
+    {"src": "/icon-512.png","sizes": "512x512","type": "image/png","purpose": "maskable"}
   ],
   "shortcuts": [
-    {
-      "name": "Quiz",
-      "short_name": "Quiz",
-      "description": "Abrir quiz de matemática",
-      "url": "/mathem.html#quiz",
-      "icons": [
-        {
-          "src": "icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Arena",
-      "short_name": "Arena",
-      "description": "Modo arena competitivo",
-      "url": "/mathem.html#arena",
-      "icons": [
-        {
-          "src": "icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    }
+    {"name": "Quiz","short_name": "Quiz","url": "/mathem.html#quiz","icons": [{"src": "icon-192.png","sizes": "192x192"}]},
+    {"name": "Arena","short_name": "Arena","url": "/mathem.html#arena","icons": [{"src": "icon-192.png","sizes": "192x192"}]}
   ],
   "prefer_related_applications": false
 }

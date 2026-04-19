@@ -366,12 +366,66 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
   .nav-tab{padding:0.3rem 0.45rem;font-size:0.6rem;}
   .tipo-btn{min-width:60px;padding:0.35rem 0.45rem;}
 }
+
+/* ── PLANO MODAL ── */
+.plano-overlay{display:none;position:fixed;inset:0;z-index:1200;
+  background:rgba(4,6,12,0.92);backdrop-filter:blur(10px);
+  padding:1rem;overflow-y:auto;align-items:flex-start;justify-content:center;}
+.plano-overlay.active{display:flex;}
+.plano-modal{background:var(--surface);border:1px solid var(--border-2);
+  border-radius:1.375rem;width:min(780px,100%);
+  box-shadow:0 40px 80px -10px rgba(0,0,0,0.9);overflow:hidden;margin:auto;
+  animation:modalIn 0.28s cubic-bezier(0.34,1.4,0.64,1);}
+.plano-modal-header{background:linear-gradient(135deg,#0D1528,#1E3A8A);
+  padding:1rem 1.25rem;border-bottom:1px solid var(--border);}
+.plano-escola{font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.6);
+  text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.2rem;}
+.plano-titulo-h{font-size:clamp(0.85rem,2.5vw,1.05rem);font-weight:700;color:#fff;margin-bottom:0.15rem;}
+.plano-periodo{font-size:0.72rem;color:rgba(255,255,255,0.55);}
+.plano-modal-body{padding:0;max-height:62vh;overflow-y:auto;}
+.plano-modal-body::-webkit-scrollbar{width:4px;}
+.plano-modal-body::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:2px;}
+.plano-table{width:100%;border-collapse:collapse;}
+.plano-table td{padding:0.65rem 1rem;border-bottom:1px solid var(--border);
+  vertical-align:top;font-size:0.82rem;line-height:1.55;}
+.plano-table td:first-child{background:rgba(30,58,138,0.12);font-weight:700;
+  color:var(--primary);font-size:0.7rem;text-transform:uppercase;
+  letter-spacing:0.04em;white-space:nowrap;width:170px;min-width:140px;}
+.plano-table tr:last-child td{border-bottom:none;}
+.plano-table tr:hover td{background:rgba(79,142,247,0.03);}
+.plano-field-edit{background:transparent;border:none;outline:none;
+  color:var(--text);font-family:'Space Grotesk',sans-serif;font-size:0.82rem;
+  line-height:1.55;width:100%;resize:vertical;min-height:36px;cursor:default;}
+.plano-field-edit:focus{background:rgba(79,142,247,0.06);border-radius:0.375rem;padding:2px 4px;margin:-2px -4px;}
+.plano-edit-mode .plano-field-edit{background:rgba(79,142,247,0.05);border-radius:0.375rem;padding:2px 4px;cursor:text;border:1px dashed rgba(79,142,247,0.2);}
+.plano-modal-footer{display:flex;align-items:center;justify-content:space-between;
+  padding:0.875rem 1.25rem;background:var(--surface-2);
+  border-top:1px solid var(--border);flex-wrap:wrap;gap:0.5rem;position:sticky;bottom:0;}
+.plano-footer-info{font-size:0.7rem;color:var(--text-tertiary);display:flex;align-items:center;gap:0.4rem;}
+.plano-footer-actions{display:flex;gap:0.5rem;}
+.plano-btn{display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.875rem;
+  border-radius:var(--radius-sm);font-weight:700;font-family:'Space Grotesk',sans-serif;
+  font-size:0.78rem;cursor:pointer;border:none;transition:0.2s;}
+.plano-btn-download{background:linear-gradient(135deg,#1E3A8A,#4F8EF7);color:#fff;}
+.plano-btn-download:hover{opacity:0.85;transform:translateY(-1px);}
+.plano-btn-edit{background:rgba(155,111,247,0.12);border:1px solid rgba(155,111,247,0.4)!important;color:var(--secondary);}
+.plano-btn-edit:hover{background:rgba(155,111,247,0.22);}
+.plano-btn-close{background:var(--surface-3);border:1px solid var(--border-2)!important;color:var(--text-secondary);}
+.plano-btn-close:hover{color:var(--text);}
+.plano-edit-badge{display:none;background:rgba(155,111,247,0.18);border:1px solid rgba(155,111,247,0.4);
+  border-radius:2rem;padding:0.18rem 0.6rem;font-size:0.65rem;font-weight:700;color:var(--secondary);}
+.plano-edit-mode .plano-edit-badge{display:inline-flex;align-items:center;gap:0.3rem;}
+@media(max-width:520px){
+  .plano-table td:first-child{width:100px;min-width:85px;font-size:0.62rem;}
+  .plano-modal-footer{flex-direction:column;align-items:stretch;}
+  .plano-footer-actions{justify-content:stretch;}
+  .plano-btn{flex:1;justify-content:center;}}
 </style>
 </head>
 <body>
 
 <nav class="navbar">
-  <div class="logo">Matemática@App</div>
+  <div class="logo">Matemática·SP</div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="changePage('home')">Início</button>
     <button class="nav-tab" onclick="changePage('simuladores')">Simuladores</button>
@@ -534,6 +588,52 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
   <div class="serie-nav" id="serieNavProf"></div>
   <div class="section-title">Estratégias Metodológicas</div>
   <div class="ae-grid" id="profGrid"></div>
+</div>
+
+<!-- PLANO MODAL -->
+<div class="plano-overlay" id="planoOverlay">
+  <div class="plano-modal" id="planoModalEl">
+    <div class="plano-modal-header">
+      <div class="plano-escola">EE Wanda Mascagni de Sá</div>
+      <div class="plano-titulo-h" id="planoModalTitulo">Plano de Aula</div>
+      <div class="plano-periodo" id="planoModalPeriodo"></div>
+    </div>
+    <div class="plano-modal-body">
+      <table class="plano-table">
+        <tr><td>Professor(a)</td>
+          <td><textarea class="plano-field-edit" id="pf_professor" rows="1">Prof. Raul Pereira Vilera Junior</textarea></td></tr>
+        <tr><td>Turma</td>
+          <td><textarea class="plano-field-edit" id="pf_turma" rows="1"></textarea></td></tr>
+        <tr><td>Objetivos de Aprendizagem</td>
+          <td><textarea class="plano-field-edit" id="pf_objetivos" rows="3"></textarea></td></tr>
+        <tr><td>Habilidades (BNCC)</td>
+          <td><textarea class="plano-field-edit" id="pf_habilidades" rows="2"></textarea></td></tr>
+        <tr><td>Conteúdos</td>
+          <td><textarea class="plano-field-edit" id="pf_conteudos" rows="2"></textarea></td></tr>
+        <tr><td>Aula / Material Digital</td>
+          <td><textarea class="plano-field-edit" id="pf_material" rows="2">Plataforma Matemática·SP — simuladores interativos, atividades geradas por IA e Arena</textarea></td></tr>
+        <tr><td>Atividades Propostas / Metodologias</td>
+          <td><textarea class="plano-field-edit" id="pf_atividades" rows="4"></textarea></td></tr>
+        <tr><td>Recursos</td>
+          <td><textarea class="plano-field-edit" id="pf_recursos" rows="2">Celular/tablet, plataforma Matemática·SP, lousa, materiais manipuláveis</textarea></td></tr>
+        <tr><td>Cronograma</td>
+          <td><textarea class="plano-field-edit" id="pf_cronograma" rows="4"></textarea></td></tr>
+        <tr><td>Avaliação</td>
+          <td><textarea class="plano-field-edit" id="pf_avaliacao" rows="2">Observação da participação, resolução das atividades na plataforma e pontuação obtida</textarea></td></tr>
+      </table>
+    </div>
+    <div class="plano-modal-footer">
+      <div class="plano-footer-info">
+        <span class="plano-edit-badge" id="planoEditBadge">✏️ Modo edição</span>
+        <span id="planoFooterInfo" style="font-size:0.68rem;">Clique em ✏️ Editar para personalizar</span>
+      </div>
+      <div class="plano-footer-actions">
+        <button class="plano-btn plano-btn-close" onclick="fecharPlanoModal()">✕ Fechar</button>
+        <button class="plano-btn plano-btn-edit" id="planoBtnEditar" onclick="toggleEditarPlano()">✏️ Editar</button>
+        <button class="plano-btn plano-btn-download" onclick="baixarPlano()">⬇️ Download</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"><span id="toastText"></span></div>
@@ -2901,7 +3001,7 @@ function renderAEs(){
       <div class="ae-actions">
         <button class="btn-sm sim" onclick="openSimPopup('${ae.sim}','${ae.title}',this)">▶ Simular</button>
         <button class="btn-sm quiz" onclick="startSerieQuiz()">Quiz</button>
-        <button class="btn-sm plano" onclick="openPlano('${ae.code}','${ae.title}')">Plano</button>
+        <button class="btn-sm plano" onclick="abrirPlanoModal('${ae.code}','${ae.title}','${ae.sim}','${ae.desc}')">📋 Plano</button>
         <button class="btn-sm atv" onclick="openAtvModal('${ae.sim}','${ae.title}','${currentSerie}')">✏️ Atividade</button>
       </div>
     </div>`).join('');
@@ -3069,21 +3169,106 @@ function finishQuiz(){
   document.getElementById('quizNextBtn').style.display = 'none';
 }
 
-function openPlano(code, title){
+function abrirPlanoModal(code, title, sim, desc){
   const sd = seriesData[currentSerie];
-  document.getElementById('planoTitle').textContent = `Plano — ${code}`;
-  document.getElementById('planoContent').innerHTML = `
-    <p style="font-weight:700;margin-bottom:0.5rem;">${title} (${sd.name})</p>
-    <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">
-      <strong>Objetivos:</strong> Compreender e aplicar os conceitos de ${title}.<br>
-      <strong>Metodologia:</strong> Resolução de problemas, simuladores interativos, atividades contextualizadas.<br>
-      <strong>Recursos:</strong> Plataforma Matemática@App com simuladores 3D, 5 tipos de atividades geradas por IA.<br>
-      <strong>Avaliação:</strong> Formativa contínua com rubricas e feedback imediato.<br>
-      <strong>Habilidade BNCC:</strong> ${code}
-    </p>`;
-  document.getElementById('planoPanel').classList.add('active');
+  const hoje = new Date();
+  const mm = String(hoje.getMonth()+1).padStart(2,'0');
+  const ano = hoje.getFullYear();
+  const ultimoDia = new Date(ano, hoje.getMonth()+1, 0).getDate();
+  const quinzena = hoje.getDate() <= 15
+    ? `01/${mm} a 15/${mm}/${ano}`
+    : `16/${mm} a ${ultimoDia}/${mm}/${ano}`;
+
+  document.getElementById('planoModalTitulo').textContent = `Plano de Aula Quinzenal — ${title}`;
+  document.getElementById('planoModalPeriodo').textContent = `Período: ${quinzena} · ${sd.name}`;
+  document.getElementById('pf_turma').value = sd.name;
+  document.getElementById('pf_objetivos').value =
+    `Desenvolver a habilidade ${code}: ${desc}\nCompreender os conceitos de "${title}" por meio de situações-problema e simulações interativas.`;
+  document.getElementById('pf_habilidades').value = `${code} — ${title}`;
+  document.getElementById('pf_conteudos').value = `${title}\n${desc}`;
+  document.getElementById('pf_atividades').value =
+    `1ª aula: Apresentação do tema com simulador interativo (Matemática·SP). Exploração coletiva.\n2ª aula: Resolução de atividades geradas por IA (modalidades: Resolução e Contextual).\n3ª aula: Atividades investigativas e desafio. Correção coletiva e sistematização.\nAvaliação formativa contínua por meio da plataforma (pontuação XP).`;
+  document.getElementById('pf_cronograma').value =
+    `0–10 min: Retomada do conteúdo anterior e motivação\n10–25 min: Exploração do simulador / resolução de atividades\n25–40 min: Atividade prática (IA) — individual ou duplas\n40–50 min: Correção coletiva e sistematização no caderno`;
+
+  const modal = document.getElementById('planoModalEl');
+  modal.classList.remove('plano-edit-mode');
+  document.getElementById('planoBtnEditar').textContent = '✏️ Editar';
+  document.getElementById('planoEditBadge').style.display = 'none';
+  document.getElementById('planoFooterInfo').textContent = 'Clique em ✏️ Editar para personalizar';
+  document.querySelectorAll('.plano-field-edit').forEach(el => { el.readOnly = true; el.style.cursor = 'default'; });
+  document.getElementById('planoOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
-function closePlano(){ document.getElementById('planoPanel').classList.remove('active'); }
+
+function fecharPlanoModal(){
+  document.getElementById('planoOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function toggleEditarPlano(){
+  const modal = document.getElementById('planoModalEl');
+  const btn = document.getElementById('planoBtnEditar');
+  const badge = document.getElementById('planoEditBadge');
+  const info = document.getElementById('planoFooterInfo');
+  const editando = modal.classList.toggle('plano-edit-mode');
+  document.querySelectorAll('.plano-field-edit').forEach(el => { el.readOnly = !editando; el.style.cursor = editando ? 'text' : 'default'; });
+  if (editando) {
+    btn.textContent = '✅ Concluir';
+    badge.style.display = 'inline-flex';
+    info.textContent = 'Edite os campos diretamente na tabela';
+    document.getElementById('pf_objetivos').focus();
+  } else {
+    btn.textContent = '✏️ Editar';
+    badge.style.display = 'none';
+    info.textContent = 'Clique em ✏️ Editar para personalizar';
+  }
+}
+
+function baixarPlano(){
+  const titulo = document.getElementById('planoModalTitulo').textContent;
+  const periodo = document.getElementById('planoModalPeriodo').textContent;
+  const campos = {
+    'PROFESSOR(A)': document.getElementById('pf_professor').value,
+    'TURMA': document.getElementById('pf_turma').value,
+    'OBJETIVOS DE APRENDIZAGEM': document.getElementById('pf_objetivos').value,
+    'HABILIDADES': document.getElementById('pf_habilidades').value,
+    'CONTEÚDOS': document.getElementById('pf_conteudos').value,
+    'AULA / MATERIAL DIGITAL': document.getElementById('pf_material').value,
+    'ATIVIDADES PROPOSTAS / METODOLOGIAS': document.getElementById('pf_atividades').value,
+    'RECURSOS': document.getElementById('pf_recursos').value,
+    'CRONOGRAMA': document.getElementById('pf_cronograma').value,
+    'AVALIAÇÃO': document.getElementById('pf_avaliacao').value,
+  };
+  const html = `<!DOCTYPE html><html lang="pt-br"><head><meta charset="UTF-8"><title>${titulo}</title>
+<style>body{font-family:Arial,sans-serif;margin:20px;color:#111;font-size:11pt;}
+.cab{text-align:center;margin-bottom:18px;border-bottom:3px solid #1E3A8A;padding-bottom:10px;}
+.escola{font-size:14pt;font-weight:bold;color:#1E3A8A;text-transform:uppercase;}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+td{border:1px solid #C5D3E8;padding:8px 10px;vertical-align:top;font-size:10pt;line-height:1.5;}
+td:first-child{background:#E8F0FB;font-weight:bold;color:#1E3A8A;width:160px;font-size:9pt;text-transform:uppercase;}
+.rod{margin-top:20px;text-align:center;font-size:8pt;color:#888;border-top:1px solid #ddd;padding-top:8px;}
+@media print{body{margin:0;}}</style></head><body>
+<div class="cab"><div class="escola">EE Wanda Mascagni de Sá</div>
+<div style="font-size:12pt;font-weight:bold;margin:4px 0;">${titulo}</div>
+<div style="font-size:10pt;color:#555;">${periodo}</div></div>
+<table>${Object.entries(campos).map(([k,v])=>`<tr><td>${k}</td><td>${v.replace(/\n/g,'<br>')}</td></tr>`).join('')}</table>
+<div class="rod">Matemática·SP — Plataforma de Matemática · Currículo Paulista</div>
+<script>window.onload=()=>{window.print();}<\/script></body></html>`;
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const code = document.getElementById('pf_habilidades').value.split(' ')[0] || 'plano';
+  a.download = `Plano_${code}_${new Date().toISOString().slice(0,10)}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📄 Plano baixado! Abra e imprima como PDF.');
+}
+
+/* Fecha ao clicar fora */
+document.getElementById('planoOverlay').addEventListener('click', function(e){ if(e.target===this) fecharPlanoModal(); });
+
 function startSerieQuiz(){ renderQuiz(); changePage('quiz'); }
 
 function renderProfessor(){
@@ -3165,7 +3350,7 @@ initSelectors();
 <div id="pwaBanner" style="display:none;" class="pwa-banner">
   <div class="pwa-banner-icon">📲</div>
   <div class="pwa-banner-text">
-    <strong>Instalar Matemática@App</strong>
+    <strong>Instalar Matemática·SP</strong>
     <span>Acesso offline • Funciona como app nativo</span>
   </div>
   <div class="pwa-banner-btns">

@@ -1,13 +1,13 @@
 {
-  "name": "Matemática@App — Currículo Paulista",
-  "short_name": "Matemática@App",
+  "name": "GeoMath·SP — Currículo Paulista",
+  "short_name": "GeoMath·SP",
   "description": "Simuladores interativos de matemática para o Currículo Paulista — EF e EM",
   "start_url": "/mathem.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#080B12",
-  "theme_color": "#4F8EF7",
+  "theme_color": "#1E3A8A",
   "lang": "pt-BR",
   "categories": [
     "education"

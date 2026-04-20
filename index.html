@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matemática@App</title>
+
+<!-- PWA essencial -->
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#C0392B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mate@App">
+<link rel="apple-touch-icon" href="./icon-192.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 <style>
@@ -127,7 +137,26 @@
     100%{width:100%;}
   }
 
-  .loading-txt {
+  .install-btn {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding: 0.65rem 1.4rem;
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: 99px;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s;
+    animation: cardIn 0.5s 1s both;
+  }
+  .install-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.04); }
+  .install-btn span { font-size: 1.1rem; }
     font-size: 0.72rem;
     color: rgba(255,255,255,0.65);
     font-weight: 700;
@@ -185,7 +214,9 @@
     <div class="progress-bar"></div>
   </div>
   <div class="loading-txt">Carregando…</div>
-</div>
+  <button class="install-btn" id="installBtn">
+    <span>📲</span> Instalar App
+  </button>
 
 <script>
   // Partículas matemáticas flutuantes
@@ -210,6 +241,35 @@
     document.querySelector('.card').style.animation = 'cardIn 0.4s cubic-bezier(0.4,0,1,1) reverse forwards';
     setTimeout(() => { window.location.href = './mathem.html'; }, 350);
   }, 2800);
+
+  // ── Registro do Service Worker ──
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js', { scope: './' })
+      .then(reg => console.log('[SW] Registrado:', reg.scope))
+      .catch(err => console.warn('[SW] Erro:', err));
+  }
+
+  // ── Botão de instalação PWA ──
+  let deferredPrompt = null;
+  const installBtn = document.getElementById('installBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'flex';
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') installBtn.style.display = 'none';
+    deferredPrompt = null;
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+  });
 </script>
 </body>
 </html>

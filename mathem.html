@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>MathEM·SP | 3D + 10 Questões + Explicações Detalhadas</title>
+    <title>MathEM · SP | Plataforma por Série - Currículo Paulista</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* ===== ESTILOS COMPLETOS (preservados e otimizados) ===== */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --bg: #080B12;
@@ -25,248 +25,2256 @@
             --warning: #F5A623;
             --danger: #F25C5C;
             --info: #22D3EE;
+            --pink: #F472B6;
             --grad-primary: linear-gradient(135deg, #4F8EF7, #9B6FF7);
+            --grad-success: linear-gradient(135deg, #22C97A, #4ADE80);
+            --grad-warning: linear-gradient(135deg, #F5A623, #F97316);
+            --grad-info: linear-gradient(135deg, #22D3EE, #4F8EF7);
             --shadow: 0 24px 40px -12px rgba(0,0,0,0.6);
+            --glow-blue: 0 0 20px rgba(79,142,247,0.25);
+            --glow-purple: 0 0 20px rgba(155,111,247,0.25);
             --radius: 1rem;
             --radius-sm: 0.625rem;
         }
-        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-        .navbar { position: sticky; top:0; background: rgba(8,11,18,0.92); backdrop-filter: blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 1.5rem; height:62px; z-index:200; flex-wrap:wrap; }
-        .logo { font-weight:700; background: var(--grad-primary); -webkit-background-clip:text; background-clip:text; color:transparent; font-family:'JetBrains Mono'; }
-        .nav-tabs { display:flex; gap:0.2rem; background:var(--surface); padding:0.3rem; border-radius:0.875rem; }
-        .nav-tab { padding:0.45rem 0.9rem; border-radius:0.625rem; font-weight:600; background:transparent; color:var(--text-secondary); cursor:pointer; }
-        .nav-tab.active { background:var(--primary); color:white; }
-        .user-stats { display:flex; gap:0.5rem; }
-        .stat-badge { background:rgba(79,142,247,0.1); border-radius:40px; padding:0.3rem 0.75rem; font-size:0.75rem; font-weight:700; display:flex; gap:0.4rem; color:var(--primary); }
-        .page { display:none; padding:1.75rem; max-width:1440px; margin:0 auto; }
-        .page.active { display:block; animation:fadeUp 0.3s; }
-        @keyframes fadeUp { from{opacity:0; transform:translateY(14px);} to{opacity:1;} }
-        .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; }
-        .series-selector { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; background:var(--surface); padding:0.75rem; border-radius:var(--radius); }
-        .series-btn { padding:0.45rem 1.1rem; border-radius:2rem; font-weight:600; background:var(--surface-2); border:1px solid var(--border); color:var(--text-secondary); cursor:pointer; }
-        .series-btn.active { background:var(--grad-primary); color:white; box-shadow:0 0 12px rgba(79,142,247,0.3); }
-        .section-title { font-size:1rem; font-weight:700; margin:1.5rem 0 1rem; color:var(--text-secondary); display:flex; gap:0.75rem; }
-        .ae-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:1rem; }
-        .ae-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; transition:0.2s; cursor:pointer; }
-        .ae-card:hover { border-color:rgba(79,142,247,0.4); transform:translateY(-3px); }
-        .btn-sm { padding:0.35rem 0.8rem; border-radius:var(--radius-sm); font-weight:600; background:var(--surface-2); border:1px solid var(--border); cursor:pointer; }
-        .btn-sm.sim { color:var(--info); border-color:rgba(34,211,238,0.3); background:rgba(34,211,238,0.06); }
-        .btn-sm.quiz { color:var(--warning); }
-        .btn-sm.plano { color:var(--success); }
-        .btn-primary { background:var(--grad-primary); border:none; padding:0.55rem 1.2rem; border-radius:var(--radius-sm); font-weight:700; color:white; cursor:pointer; }
-        .sim-panel, .plano-panel { background:var(--surface); border-radius:var(--radius); margin-top:1.5rem; display:none; }
-        .sim-panel.active, .plano-panel.active { display:block; }
-        .panel-header { display:flex; justify-content:space-between; padding:0.875rem 1.25rem; background:var(--surface-2); border-bottom:1px solid var(--border); font-weight:600; }
-        .sim-canvas { background:#04060D; width:100%; min-height:380px; padding:1rem; }
-        .arena-card { background:var(--surface); border-radius:var(--radius); overflow:hidden; }
-        .arena-header-bg { position:relative; height:130px; background:linear-gradient(160deg,#060A14,#0D1528); }
-        .arena-hud { position:absolute; inset:0; display:flex; justify-content:space-between; padding:0.875rem 1.25rem; }
-        .arena-score-box { background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); border-radius:0.625rem; padding:0.4rem 0.75rem; text-align:center; }
-        .arena-timer-box { width:44px; height:44px; position:relative; }
-        .arena-progress-fill { height:100%; background:var(--grad-primary); transition:width 0.3s; }
-        .arena-body { padding:1.25rem 1.5rem; }
-        .arena-opts { display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; }
-        .arena-opt { padding:0.7rem 1rem; border-radius:var(--radius-sm); background:var(--surface-2); border:1.5px solid var(--border); cursor:pointer; display:flex; align-items:center; gap:0.6rem; }
-        .arena-opt.correct { background:rgba(34,201,122,0.12); border-color:var(--success); color:var(--success); }
-        .arena-opt.wrong { background:rgba(242,92,92,0.12); border-color:var(--danger); color:var(--danger); }
-        .arena-feedback { margin-top:0.75rem; font-size:0.85rem; font-weight:600; }
-        .quiz-option { padding:0.75rem 1rem; background:var(--surface-2); border-radius:var(--radius-sm); margin-bottom:0.5rem; cursor:pointer; }
-        .quiz-option.correct { background:rgba(34,201,122,0.12); border-color:var(--success); color:var(--success); }
-        .quiz-option.wrong { background:rgba(242,92,92,0.12); border-color:var(--danger); color:var(--danger); }
-        .explicacao-box { background:rgba(34,211,238,0.08); border-left:4px solid var(--info); padding:0.75rem; margin-top:0.75rem; border-radius:8px; font-size:0.8rem; color:var(--text-secondary); line-height:1.4; }
-        .toast { position:fixed; bottom:1.75rem; right:1.75rem; background:var(--surface-2); border-radius:var(--radius-sm); padding:0.65rem 1rem; transform:translateY(120px); transition:0.3s; z-index:1000; }
-        .toast.show { transform:translateY(0); opacity:1; }
-        @media(max-width:720px){ .arena-opts { grid-template-columns:1fr; } }
+
+        body {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: sticky; top: 0; z-index: 200;
+            background: rgba(8,11,18,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 62px; gap: 0.75rem; flex-wrap: wrap;
+        }
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700; font-size: 1.1rem;
+            background: var(--grad-primary);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            white-space: nowrap;
+        }
+        .nav-tabs {
+            display: flex; gap: 0.2rem;
+            background: var(--surface);
+            padding: 0.3rem; border-radius: 0.875rem;
+            border: 1px solid var(--border);
+        }
+        .nav-tab {
+            padding: 0.45rem 0.9rem; border-radius: 0.625rem;
+            font-size: 0.8rem; font-weight: 600;
+            background: transparent; border: none;
+            color: var(--text-secondary); cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .nav-tab.active { background: var(--primary); color: white; box-shadow: var(--glow-blue); }
+        .nav-tab:hover:not(.active) { background: var(--surface-2); color: var(--text); }
+
+        .user-stats { display: flex; gap: 0.5rem; }
+        .stat-badge {
+            background: rgba(79,142,247,0.1);
+            border: 1px solid rgba(79,142,247,0.2);
+            border-radius: 40px; padding: 0.3rem 0.75rem;
+            font-size: 0.75rem; font-weight: 700;
+            display: flex; align-items: center; gap: 0.4rem;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ── PAGES ── */
+        .page { display: none; padding: 1.75rem; max-width: 1440px; margin: 0 auto; }
+        .page.active { display: block; animation: fadeUp 0.35s cubic-bezier(.22,.68,0,1.2); }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── HERO GRID ── */
+        .hero-grid { display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 1.25rem; margin-bottom: 1.75rem; }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .card:hover { border-color: var(--border-2); transform: translateY(-2px); }
+        .card-glow { box-shadow: inset 0 0 40px rgba(79,142,247,0.04); }
+
+        .progress-bar-outer { height: 8px; background: var(--surface-2); border-radius: 4px; margin: 0.6rem 0; overflow: hidden; }
+        .progress-bar-inner { height: 100%; background: var(--grad-primary); border-radius: 4px; transition: width 0.7s cubic-bezier(.22,.68,0,1.2); }
+
+        /* ── SERIES SELECTOR ── */
+        .series-selector {
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            background: var(--surface); padding: 0.75rem;
+            border-radius: var(--radius); border: 1px solid var(--border);
+        }
+        .series-btn {
+            padding: 0.45rem 1.1rem; border-radius: 2rem;
+            font-size: 0.8rem; font-weight: 600;
+            cursor: pointer;
+            background: var(--surface-2); border: 1px solid var(--border);
+            color: var(--text-secondary); transition: all 0.2s;
+        }
+        .series-btn.active {
+            background: var(--grad-primary); color: white;
+            border-color: transparent; box-shadow: var(--glow-blue);
+        }
+        .series-btn:hover:not(.active) { background: var(--surface-3); color: var(--text); border-color: var(--border-2); }
+
+        /* ── SECTION TITLE ── */
+        .section-title {
+            font-size: 1rem; font-weight: 700; margin: 1.5rem 0 1rem;
+            display: flex; align-items: center; gap: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        /* ── AE CARDS ── */
+        .ae-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .ae-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 1.25rem;
+            transition: all 0.22s; cursor: pointer;
+            position: relative; overflow: hidden;
+        }
+        .ae-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--grad-primary);
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .ae-card:hover { border-color: rgba(79,142,247,0.25); background: rgba(79,142,247,0.04); transform: translateY(-3px); box-shadow: var(--shadow); }
+        .ae-card:hover::before { opacity: 1; }
+        .ae-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; }
+        .ae-code {
+            font-size: 0.65rem; font-weight: 700;
+            color: var(--primary);
+            background: rgba(79,142,247,0.12);
+            padding: 0.2rem 0.55rem; border-radius: 0.3rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .ae-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.45rem; color: var(--text); }
+        .ae-desc { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.45; }
+        .ae-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+        /* ── BUTTONS ── */
+        .btn-sm {
+            padding: 0.35rem 0.8rem; border-radius: var(--radius-sm);
+            font-size: 0.7rem; font-weight: 600; cursor: pointer;
+            border: 1px solid var(--border); background: var(--surface-2);
+            color: var(--text-secondary); transition: all 0.15s;
+            font-family: inherit;
+        }
+        .btn-sm.sim   { color: var(--info);    border-color: rgba(34,211,238,0.3);  background: rgba(34,211,238,0.06);  }
+        .btn-sm.quiz  { color: var(--warning); border-color: rgba(245,166,35,0.3); background: rgba(245,166,35,0.06); }
+        .btn-sm.plano { color: var(--success); border-color: rgba(34,201,122,0.3); background: rgba(34,201,122,0.06); }
+        .btn-sm:hover { filter: brightness(1.25); transform: translateY(-1px); }
+
+        .btn-primary {
+            background: var(--grad-primary); border: none;
+            padding: 0.55rem 1.2rem; border-radius: var(--radius-sm);
+            font-weight: 700; color: white; cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            font-family: inherit; font-size: 0.85rem;
+        }
+        .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn-secondary {
+            background: var(--surface-2); border: 1px solid var(--border);
+            padding: 0.55rem 1.2rem; border-radius: var(--radius-sm);
+            font-weight: 600; cursor: pointer; color: var(--text);
+            transition: all 0.15s; font-family: inherit; font-size: 0.85rem;
+        }
+        .btn-secondary:hover { border-color: var(--border-2); }
+
+        /* ── PANELS ── */
+        .sim-panel, .plano-panel {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); margin-top: 1.5rem;
+            overflow: hidden; display: none;
+            animation: fadeUp 0.3s ease;
+        }
+        .sim-panel.active, .plano-panel.active { display: block; }
+        .panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.875rem 1.25rem;
+            background: var(--surface-2); border-bottom: 1px solid var(--border);
+            font-weight: 600; font-size: 0.9rem;
+        }
+        .sim-canvas { background: #04060D; width: 100%; min-height: 360px; display: flex; align-items: center; justify-content: center; position: relative; }
+
+        /* ── ARENA ── */
+        .arena-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .arena-header-bg {
+            position: relative; height: 130px; overflow: hidden;
+            background: linear-gradient(160deg, #060A14, #0D1528);
+        }
+        .arena-canvas-bg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+        .arena-hud {
+            position: absolute; inset: 0;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.875rem 1.25rem; z-index: 2;
+        }
+        .arena-hud-left { display: flex; flex-direction: column; gap: 0.3rem; }
+        .arena-badge {
+            background: rgba(79,142,247,0.2); border: 1px solid rgba(79,142,247,0.4);
+            color: var(--primary); border-radius: 2rem; padding: 0.25rem 0.75rem;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: .05em;
+            display: inline-block; width: fit-content;
+        }
+        .arena-serie-label { font-size: 0.95rem; font-weight: 700; color: white; }
+        .arena-hud-right { display: flex; align-items: center; gap: 0.75rem; }
+        .arena-score-box {
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.625rem; padding: 0.4rem 0.75rem; text-align: center; min-width: 64px;
+        }
+        .arena-score-label { font-size: 0.55rem; font-weight: 700; color: var(--text-tertiary); letter-spacing: .07em; text-transform: uppercase; }
+        .arena-score-val   { font-size: 1.1rem; font-weight: 800; color: white; font-family: 'JetBrains Mono', monospace; line-height: 1.2; }
+        .arena-timer-box { position: relative; width: 44px; height: 44px; }
+        .arena-timer-text {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 800; color: white;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .arena-progress-bar {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 3px; background: rgba(255,255,255,0.08); z-index: 2;
+        }
+        .arena-progress-fill {
+            height: 100%; background: var(--grad-primary);
+            transition: width 0.5s cubic-bezier(.22,.68,0,1.2);
+        }
+        .arena-body { padding: 1.25rem 1.5rem; }
+        .arena-empty-state { text-align: center; padding: 2rem 1rem; color: var(--text-secondary); }
+        .arena-q-num {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+            color: var(--text-tertiary); margin-bottom: 0.6rem;
+        }
+        .arena-q-text {
+            font-size: 1.05rem; font-weight: 700; color: var(--text);
+            line-height: 1.45; margin-bottom: 1rem;
+        }
+        .arena-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+        @media(max-width:560px){ .arena-opts { grid-template-columns: 1fr; } }
+        .arena-opt {
+            padding: 0.7rem 1rem; border-radius: var(--radius-sm);
+            background: var(--surface-2); border: 1.5px solid var(--border);
+            cursor: pointer; font-size: 0.88rem; font-weight: 600;
+            transition: all 0.15s; text-align: left;
+            display: flex; align-items: center; gap: 0.6rem;
+        }
+        .arena-opt:hover { background: var(--surface-3); border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
+        .arena-opt.correct { background: rgba(34,201,122,0.12); border-color: var(--success); color: var(--success); }
+        .arena-opt.wrong   { background: rgba(242,92,92,0.12);  border-color: var(--danger);  color: var(--danger);  }
+        .arena-opt.disabled{ pointer-events: none; opacity: 0.7; }
+        .arena-opt-letter {
+            width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 700; color: var(--text-tertiary);
+        }
+        .arena-opt.correct .arena-opt-letter { background: rgba(34,201,122,0.2); border-color: var(--success); color: var(--success); }
+        .arena-opt.wrong   .arena-opt-letter { background: rgba(242,92,92,0.2);  border-color: var(--danger);  color: var(--danger);  }
+        .arena-feedback {
+            min-height: 1.4rem; margin-top: 0.75rem;
+            font-size: 0.85rem; font-weight: 600;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        /* Animação de entrada da questão */
+        @keyframes slideInArena {
+            from { opacity:0; transform: translateX(20px); }
+            to   { opacity:1; transform: translateX(0); }
+        }
+        .arena-q-enter { animation: slideInArena 0.3s cubic-bezier(.22,.68,0,1.2); }
+
+        /* ── QUIZ ── */
+        .quiz-question { font-size: 1.05rem; font-weight: 600; margin-bottom: 1.25rem; line-height: 1.5; }
+        .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+        .quiz-option {
+            padding: 0.75rem 1rem;
+            background: var(--surface-2); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); cursor: pointer;
+            transition: all 0.15s; font-size: 0.88rem;
+        }
+        .quiz-option:hover { background: var(--surface-3); border-color: var(--border-2); }
+        .quiz-option.correct { background: rgba(34,201,122,0.12); border-color: var(--success); color: var(--success); }
+        .quiz-option.wrong   { background: rgba(242,92,92,0.12);  border-color: var(--danger);  color: var(--danger);  }
+        .quiz-option.disabled { pointer-events: none; }
+
+        .empty-state { text-align: center; padding: 2.5rem; color: var(--text-tertiary); font-size: 0.9rem; }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: 1.75rem; right: 1.75rem;
+            background: var(--surface-2); border: 1px solid var(--border-2);
+            border-radius: var(--radius-sm); padding: 0.65rem 1rem;
+            display: flex; align-items: center; gap: 0.6rem;
+            transform: translateY(120px); opacity: 0;
+            transition: all 0.35s cubic-bezier(0.34,1.3,0.64,1);
+            z-index: 1000; font-size: 0.85rem; font-weight: 600;
+            box-shadow: var(--shadow);
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* ── SIM INNER STYLES ── */
+        .sim-inner { padding: 1.5rem; width: 100%; }
+        .sim-inner h3 { color: var(--primary); margin-bottom: 1rem; font-size: 0.95rem; font-weight: 700; }
+        .sim-inner label { color: var(--text-secondary); font-size: 0.78rem; display: block; margin-bottom: 0.3rem; }
+        .sim-inner label b { color: var(--text); font-family: 'JetBrains Mono', monospace; }
+        .sim-inner input[type=range] { width: 100%; accent-color: var(--primary); cursor: pointer; margin-bottom: 0.75rem; }
+        .sim-inner input[type=number] {
+            background: var(--surface-2); border: 1px solid var(--border-2);
+            color: var(--text); padding: 0.3rem 0.5rem;
+            border-radius: 6px; width: 80px; text-align: center;
+            font-size: 0.9rem; font-family: 'JetBrains Mono', monospace;
+        }
+        .sim-result {
+            font-size: 2rem; font-weight: 800; color: var(--warning);
+            text-align: center; margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -1px;
+        }
+        .sim-controls-row { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin: 0.75rem 0; }
+        .sim-canvas-bg { background: #04060D; border-radius: 10px; border: 1px solid var(--border); display: block; }
+
+        .material-dourado { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; padding: 1rem; }
+        .md-bloco {
+            padding: 0.875rem 1rem; border-radius: 10px;
+            text-align: center; font-weight: 700; cursor: pointer;
+            transition: transform 0.18s, box-shadow 0.18s;
+            font-size: 0.78rem; min-width: 80px; color: white;
+            border: 2px solid transparent;
+        }
+        .md-bloco:hover { transform: scale(1.07); box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
+        .md-bloco:active { transform: scale(0.97); }
+
+        .grafico-barras { display: flex; align-items: flex-end; justify-content: center; gap: 1.25rem; height: 180px; padding: 1rem; }
+        .barra { width: 50px; border-radius: 8px 8px 0 0; transition: height 0.4s cubic-bezier(.22,.68,0,1.2); cursor: pointer; }
+        .barra-label { text-align: center; margin-top: 5px; font-size: 0.7rem; color: var(--text-secondary); }
+
+        /* Número exibido */
+        .numero-exibido {
+            font-size: 2.5rem; font-weight: 800; text-align: center;
+            margin: 0.75rem 0; color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Info chips */
+        .info-chip {
+            background: var(--surface-2); padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm); font-size: 0.72rem;
+            border: 1px solid var(--border); text-align: center;
+        }
+        .info-chip b { display: block; margin-bottom: 2px; font-size: 0.7rem; }
+
+        .nota-box {
+            padding: 0.75rem 1rem; background: var(--surface-2);
+            border-radius: var(--radius-sm); font-size: 0.8rem;
+            color: var(--text-secondary); margin-top: 0.5rem;
+            border: 1px solid var(--border);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 720px) {
+            .hero-grid { grid-template-columns: 1fr; }
+            .navbar { height: auto; padding: 0.5rem 1rem; }
+            .nav-tabs { overflow-x: auto; }
+            .page { padding: 1rem; }
+        }
     </style>
 </head>
 <body>
+
 <nav class="navbar">
-    <div class="logo">MathEM·SP | 3D + 10 Questões</div>
+    <div class="logo">MathEM·SP</div>
     <div class="nav-tabs">
-        <button class="nav-tab active" onclick="changePage('home')">Início</button>
-        <button class="nav-tab" onclick="changePage('simuladores')">Simuladores</button>
-        <button class="nav-tab" onclick="changePage('arena')">Arena</button>
-        <button class="nav-tab" onclick="changePage('quiz')">Quiz</button>
-        <button class="nav-tab" onclick="changePage('professor')">Professor</button>
+        <button class="nav-tab active" onclick="changePage('home')">📚 Início</button>
+        <button class="nav-tab" onclick="changePage('simuladores')">🎮 Simuladores</button>
+        <button class="nav-tab" onclick="changePage('arena')">⚡ Arena</button>
+        <button class="nav-tab" onclick="changePage('quiz')">📝 Quiz</button>
+        <button class="nav-tab" onclick="changePage('professor')">👨‍🏫 Professor</button>
     </div>
-    <div class="user-stats"><div class="stat-badge">⭐ <span id="xpTotal">0</span> XP</div></div>
+    <div class="user-stats">
+        <div class="stat-badge">⭐ <span id="xpTotal">0</span> XP</div>
+        <div class="stat-badge">🔥 <span id="streak">0</span>d</div>
+    </div>
 </nav>
 
-<div class="page active" id="page-home"><div class="card"><h2>🎓 Currículo Paulista - Matemática EF/EM</h2><p>Selecione sua série: cada turma possui 10 questões na Arena, 10 no Quiz com explicações detalhadas, e simulador 3D interativo.</p></div>
-<div class="series-selector" id="serieSelectorHome"></div>
-<div class="section-title">Aprendizagens Essenciais</div><div class="ae-grid" id="aeGrid"></div>
-<div id="simGlobalPanel" class="sim-panel"><div class="panel-header"><span id="simTitle">Simulador</span><button class="btn-sm" onclick="closeGlobalSim()">✕ Fechar</button></div><div class="sim-canvas" id="simCanvasContainer"></div></div>
-<div id="planoGlobalPanel" class="plano-panel"><div class="panel-header"><span id="planoTitle">Plano</span><button class="btn-sm" onclick="closeGlobalPlano()">Fechar</button></div><div id="planoContent"></div></div></div>
+<!-- ══════════════ HOME ══════════════ -->
+<div class="page active" id="page-home">
+    <div class="hero-grid">
+        <div class="card card-glow">
+            <div style="font-size:0.7rem;text-transform:uppercase;color:var(--primary);font-weight:700;letter-spacing:.08em;margin-bottom:.4rem;">Currículo Paulista</div>
+            <div style="font-size:1.6rem;font-weight:800;margin-bottom:.4rem;">Matemática <span style="background:var(--grad-primary);-webkit-background-clip:text;background-clip:text;color:transparent;">EF + EM</span></div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);">Selecione sua turma para acessar Aprendizagens Essenciais, Simuladores e Quizzes alinhados ao Currículo Paulista.</div>
+        </div>
+        <div class="card">
+            <div style="font-size:0.72rem;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;">Progresso da série</div>
+            <div style="font-size:2.2rem;font-weight:800;font-family:'JetBrains Mono',monospace;" id="progressPercent">—</div>
+            <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar" style="width:0%"></div></div>
+            <div style="font-size:0.75rem;color:var(--text-tertiary);" id="progressLabel">Selecione uma turma</div>
+        </div>
+    </div>
 
-<div class="page" id="page-simuladores"><div class="series-selector" id="serieSelectorSim"></div><div class="section-title">Simuladores Interativos (10 por série)</div><div class="ae-grid" id="simuladoresGrid"></div><div id="simPagePanel" class="sim-panel"><div class="panel-header"><span id="simPageTitle"></span><button onclick="document.getElementById('simPagePanel').classList.remove('active')">✕</button></div><div class="sim-canvas" id="simPageContainer"></div></div></div>
+    <div class="series-selector" id="serieSelectorHome">
+        <button class="series-btn" onclick="selectSerie('ef6',this)">🏫 6º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef7',this)">🏫 7º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef8',this)">🏫 8º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef9',this)">🏫 9º Ano</button>
+        <button class="series-btn" onclick="selectSerie('em1',this)">🎓 1ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em2',this)">🎓 2ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em3',this)">🎓 3ª EM</button>
+    </div>
 
-<div class="page" id="page-arena"><div class="series-selector" id="serieSelectorArena"></div>
-<div class="arena-card"><div class="arena-header-bg"><div class="arena-hud"><div><div class="arena-badge">⚡ Arena (10 desafios)</div><div id="arenaSerieLabel"></div></div><div><div class="arena-score-box"><div>PONTOS</div><div id="arenaScoreVal">0</div></div><div class="arena-score-box"><div>ACERTOS</div><div id="arenaAcertos">0/0</div></div></div></div><div class="arena-progress-bar"><div class="arena-progress-fill" id="arenaProgressFill" style="width:0%"></div></div></div>
-<div class="arena-body" id="arenaBody"><div id="arenaEmptyState"><div>⚡</div><div>Selecione uma turma</div></div><div id="arenaQuestionArea" style="display:none;"><div id="arenaQNum"></div><div id="arenaQText"></div><div class="arena-opts" id="arenaOptions"></div><div class="arena-feedback" id="arenaFeedback"></div><button class="btn-primary" id="arenaNextBtn" style="display:none;" onclick="nextArenaQuestion()">Próximo →</button></div><div id="arenaResultArea" style="display:none;text-align:center;"></div></div></div></div>
+    <div class="section-title" id="aeSectionTitle">Aprendizagens Essenciais</div>
+    <div class="ae-grid" id="aeGrid"><div class="empty-state">📌 Selecione uma turma acima para começar.</div></div>
 
-<div class="page" id="page-quiz"><div class="series-selector" id="serieSelectorQuiz"></div><div class="section-title">Quiz com 10 questões + Explicações Detalhadas</div><div style="background:var(--surface);border-radius:var(--radius);"><div class="panel-header"><span id="quizHeader">Questão</span><span id="quizTimer">⏱ 0:00</span></div><div style="padding:1.5rem;" id="quizBody"></div><div style="padding:1rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;"><span>🏆 Pontuação: <strong id="quizScore">0</strong></span><button class="btn-primary" id="quizNextBtn" onclick="nextQuizQuestion()" style="display:none;">Próxima →</button></div></div></div>
+    <div id="simGlobalPanel" class="sim-panel">
+        <div class="panel-header">
+            <span id="simTitle">Simulador</span>
+            <button class="btn-secondary" onclick="closeGlobalSim()">✕ Fechar</button>
+        </div>
+        <div class="sim-canvas" id="simCanvasContainer"></div>
+    </div>
 
-<div class="page" id="page-professor"><div class="series-selector" id="serieSelectorProf"></div><div class="section-title">Estratégias Metodológicas</div><div class="ae-grid" id="profGrid"></div><div id="simProfPanel" class="sim-panel"><div class="panel-header"><span id="simProfTitle"></span><button onclick="document.getElementById('simProfPanel').classList.remove('active')">✕</button></div><div class="sim-canvas" id="simProfContainer"></div></div></div>
-<div class="toast" id="toast"><span id="toastMsg"></span><span id="toastText"></span></div>
+    <div id="planoGlobalPanel" class="plano-panel">
+        <div class="panel-header">
+            <span id="planoTitle">Plano de Aula</span>
+            <button class="btn-secondary" onclick="closeGlobalPlano()">✕ Fechar</button>
+        </div>
+        <div id="planoContent" style="padding:1.5rem;"></div>
+    </div>
+</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- ══════════════ SIMULADORES ══════════════ -->
+<div class="page" id="page-simuladores">
+    <div class="series-selector" id="serieSelectorSim">
+        <button class="series-btn" onclick="selectSerie('ef6',this,'sim')">🏫 6º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef7',this,'sim')">🏫 7º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef8',this,'sim')">🏫 8º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef9',this,'sim')">🏫 9º Ano</button>
+        <button class="series-btn" onclick="selectSerie('em1',this,'sim')">🎓 1ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em2',this,'sim')">🎓 2ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em3',this,'sim')">🎓 3ª EM</button>
+    </div>
+    <div class="section-title" id="simuladoresTitle">Simuladores Interativos</div>
+    <div class="ae-grid" id="simuladoresGrid"></div>
+    <div id="simPagePanel" class="sim-panel">
+        <div class="panel-header">
+            <span id="simPageTitle">Simulador</span>
+            <button class="btn-secondary" onclick="document.getElementById('simPagePanel').classList.remove('active')">✕ Fechar</button>
+        </div>
+        <div class="sim-canvas" id="simPageContainer"></div>
+    </div>
+</div>
+
+<!-- ══════════════ ARENA ══════════════ -->
+<div class="page" id="page-arena">
+    <div class="series-selector" id="serieSelectorArena">
+        <button class="series-btn" onclick="selectSerie('ef6',this,'arena')">🏫 6º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef7',this,'arena')">🏫 7º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef8',this,'arena')">🏫 8º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef9',this,'arena')">🏫 9º Ano</button>
+        <button class="series-btn" onclick="selectSerie('em1',this,'arena')">🎓 1ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em2',this,'arena')">🎓 2ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em3',this,'arena')">🎓 3ª EM</button>
+    </div>
+
+    <!-- CARD PRINCIPAL DA ARENA -->
+    <div class="arena-card" id="arenaCard">
+        <!-- Cabeçalho com canvas decorativo + HUD -->
+        <div class="arena-header-bg">
+            <canvas id="arenaCanvas" class="arena-canvas-bg"></canvas>
+            <div class="arena-hud">
+                <div class="arena-hud-left">
+                    <div class="arena-badge" id="arenaChallenge">⚡ Arena</div>
+                    <div class="arena-serie-label" id="arenaSerieLabel">Selecione uma turma</div>
+                </div>
+                <div class="arena-hud-right">
+                    <div class="arena-score-box">
+                        <div class="arena-score-label">PONTOS</div>
+                        <div class="arena-score-val" id="arenaScoreVal">0</div>
+                    </div>
+                    <div class="arena-score-box">
+                        <div class="arena-score-label">ACERTOS</div>
+                        <div class="arena-score-val" id="arenaAcertos">0/0</div>
+                    </div>
+                    <div class="arena-timer-box">
+                        <svg width="44" height="44" viewBox="0 0 44 44">
+                            <circle cx="22" cy="22" r="18" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
+                            <circle id="arenaTimerCircle" cx="22" cy="22" r="18" fill="none" stroke="#4F8EF7" stroke-width="3"
+                                stroke-dasharray="113" stroke-dashoffset="0" stroke-linecap="round"
+                                transform="rotate(-90 22 22)" style="transition:stroke-dashoffset 1s linear,stroke 0.3s"/>
+                        </svg>
+                        <span class="arena-timer-text" id="arenaTimerText">15</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Barra de progresso das questões -->
+            <div class="arena-progress-bar">
+                <div class="arena-progress-fill" id="arenaProgressFill" style="width:0%"></div>
+            </div>
+        </div>
+
+        <!-- Corpo: questão + opções -->
+        <div class="arena-body" id="arenaBody">
+            <div class="arena-empty-state" id="arenaEmptyState">
+                <div style="font-size:3rem;margin-bottom:.75rem;">⚡</div>
+                <div style="font-size:1.1rem;font-weight:700;margin-bottom:.4rem;">Arena de Desafios</div>
+                <div style="font-size:0.85rem;color:var(--text-secondary);">Selecione uma turma acima para iniciar os desafios cronometrados!</div>
+            </div>
+            <div id="arenaQuestionArea" style="display:none;">
+                <div class="arena-q-num" id="arenaQNum">Questão 1 de 4</div>
+                <div class="arena-q-text" id="arenaQText"></div>
+                <div class="arena-opts" id="arenaOptions"></div>
+                <div class="arena-feedback" id="arenaFeedback"></div>
+                <div style="display:flex;justify-content:flex-end;margin-top:1rem;">
+                    <button class="btn-primary" id="arenaNextBtn" style="display:none;" onclick="nextArenaQuestion()">Próximo Desafio →</button>
+                </div>
+            </div>
+            <div id="arenaResultArea" style="display:none;text-align:center;padding:1.5rem 1rem;">
+                <div style="font-size:3rem;margin-bottom:.5rem;" id="arenaResultEmoji">🏆</div>
+                <div style="font-size:1.3rem;font-weight:800;margin-bottom:.3rem;" id="arenaResultTitle">Arena Concluída!</div>
+                <div style="font-size:2.5rem;font-weight:800;color:var(--warning);font-family:'JetBrains Mono',monospace;margin:.5rem 0;" id="arenaResultScore">0</div>
+                <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.25rem;" id="arenaResultDetail"></div>
+                <button class="btn-primary" onclick="reiniciarArena()">🔄 Jogar Novamente</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ QUIZ ══════════════ -->
+<div class="page" id="page-quiz">
+    <div class="series-selector" id="serieSelectorQuiz">
+        <button class="series-btn" onclick="selectSerie('ef6',this,'quiz')">🏫 6º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef7',this,'quiz')">🏫 7º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef8',this,'quiz')">🏫 8º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef9',this,'quiz')">🏫 9º Ano</button>
+        <button class="series-btn" onclick="selectSerie('em1',this,'quiz')">🎓 1ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em2',this,'quiz')">🎓 2ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em3',this,'quiz')">🎓 3ª EM</button>
+    </div>
+    <div class="section-title" id="quizTitle">Quiz — Prova Paulista</div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;">
+        <div class="panel-header">
+            <span id="quizHeader">Questão</span>
+            <span id="quizTimer" style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text-tertiary);">⏱ 0:00</span>
+        </div>
+        <div style="padding:1.5rem;" id="quizBody">
+            <div class="empty-state">📌 Selecione uma turma acima para começar o quiz</div>
+        </div>
+        <div style="padding:1rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:0.85rem;">🏆 Pontuação: <strong id="quizScore" style="font-family:'JetBrains Mono',monospace;color:var(--warning);">0</strong></span>
+            <button class="btn-primary" id="quizNextBtn" onclick="nextQuizQuestion()" style="display:none;">Próxima →</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ PROFESSOR ══════════════ -->
+<div class="page" id="page-professor">
+    <div class="series-selector" id="serieSelectorProf">
+        <button class="series-btn" onclick="selectSerie('ef6',this,'prof')">🏫 6º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef7',this,'prof')">🏫 7º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef8',this,'prof')">🏫 8º Ano</button>
+        <button class="series-btn" onclick="selectSerie('ef9',this,'prof')">🏫 9º Ano</button>
+        <button class="series-btn" onclick="selectSerie('em1',this,'prof')">🎓 1ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em2',this,'prof')">🎓 2ª EM</button>
+        <button class="series-btn" onclick="selectSerie('em3',this,'prof')">🎓 3ª EM</button>
+    </div>
+    <div class="section-title" id="profTitle">Painel do Professor</div>
+    <div class="ae-grid" id="profGrid"></div>
+    <div id="simProfPanel" class="sim-panel">
+        <div class="panel-header">
+            <span id="simProfTitle">Estratégia</span>
+            <button class="btn-secondary" onclick="document.getElementById('simProfPanel').classList.remove('active')">✕ Fechar</button>
+        </div>
+        <div class="sim-canvas" id="simProfContainer"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast">
+    <span id="toastMsg"></span>
+    <span id="toastText"></span>
+</div>
+
 <script>
-// ============================================================
-// BANCO DE DADOS COMPLETO: 10 questões para cada série (Quiz e Arena)
-// Explicações didáticas em TODAS as alternativas (campo expl)
-// ============================================================
-function gerarQuestoesPorSerie(serie) {
-    // Base comum com explicações ricas, adaptadas por nível
-    const questoesBase = [
-        { q: "Calcule 25 + 37.", opts: ["52","62","72","58"], correct: 1, expl: "25 + 30 = 55; 55 + 7 = 62. Portanto, 25+37=62." },
-        { q: "Qual é o valor de 3 × 8?", opts: ["24","21","27","32"], correct: 0, expl: "3 × 8 significa somar 8 três vezes: 8+8+8 = 24." },
-        { q: "Se x = 4, qual o valor de 2x + 3?", opts: ["11","9","10","8"], correct: 0, expl: "Substituindo x: 2·4 = 8; 8+3 = 11." },
-        { q: "Uma pizza foi dividida em 8 fatias. Comi 3. Que fração sobrou?", opts: ["3/8","5/8","1/2","1/4"], correct: 1, expl: "Sobraram 8-3 = 5 fatias, ou seja, 5/8 da pizza." },
-        { q: "Raiz quadrada de 81 é:", opts: ["7","8","9","10"], correct: 2, expl: "9 × 9 = 81, então √81 = 9." },
-        { q: "O triplo de 12 é:", opts: ["24","36","48","30"], correct: 1, expl: "Triplo = multiplicar por 3: 12×3=36." },
-        { q: "30% de 200 é igual a:", opts: ["30","60","50","40"], correct: 1, expl: "30% = 30/100 = 0,3; 0,3 × 200 = 60." },
-        { q: "Qual é o resultado de (-5) + (+8)?", opts: ["-13","3","13","-3"], correct: 1, expl: "Sinais diferentes: subtrai 8-5=3 e mantém sinal do maior (positivo)." },
-        { q: "O valor de 2³ é:", opts: ["6","8","9","16"], correct: 1, expl: "2³ = 2×2×2 = 8." },
-        { q: "Perímetro de um quadrado de lado 5 cm:", opts: ["10 cm","15 cm","20 cm","25 cm"], correct: 2, expl: "Perímetro = 4 × lado = 4×5 = 20 cm." }
-    ];
-    // Adapta para cada série (mantém coerência)
-    return questoesBase.map(q => ({ ...q, expl: q.expl + (serie >= 7 ? " (Conceito fundamental para essa série)." : "") }));
-}
-
-// Dados completos para cada série (10 simuladores, 10 questões)
+/* ═══════════════════════════════════════════
+   BANCO DE DADOS — Currículo Paulista
+═══════════════════════════════════════════ */
 const seriesData = {
-    ef6: { name:"6º Ano - EF", aes:[{code:"EF06MA01",title:"Sistema Decimal",sim:"decimal",quiz:true},{code:"EF06MA02",title:"Reta Numérica",sim:"reta",quiz:true},{code:"EF06MA03",title:"Operações",sim:"operacoes",quiz:true},{code:"EF06MA06",title:"Múltiplos",sim:"multiplos",quiz:true}],
-        simuladores:["decimal","reta","operacoes","multiplos","geometria3d","graficos","inteiros","fracao","potencia","pitagoras"],
-        arenaChallenges: gerarQuestoesPorSerie(6), quizBank: gerarQuestoesPorSerie(6) },
-    ef7: { name:"7º Ano - EF", aes:[{code:"EF07MA03",title:"Números Inteiros",sim:"inteiros",quiz:true}],
-        simuladores:["inteiros","fracao","multiplos","geometria3d","graficos","decimal","reta","operacoes","potencia","pitagoras"],
-        arenaChallenges: gerarQuestoesPorSerie(7), quizBank: gerarQuestoesPorSerie(7) },
-    ef8: { name:"8º Ano - EF", aes:[{code:"EF08MA01",title:"Potenciação",sim:"potencia",quiz:true}],
-        simuladores:["potencia","sistema","semelhanca","geometria3d","pitagoras","quadratica","afim","exponencial","ciclo","progressao"],
-        arenaChallenges: gerarQuestoesPorSerie(8), quizBank: gerarQuestoesPorSerie(8) },
-    ef9: { name:"9º Ano - EF", aes:[{code:"EF09MA14",title:"Pitágoras",sim:"pitagoras",quiz:true}],
-        simuladores:["pitagoras","quadratica","trigonometria","geometria3d","afim","sistema","potencia","progressao","analitica","graficos"],
-        arenaChallenges: gerarQuestoesPorSerie(9), quizBank: gerarQuestoesPorSerie(9) },
-    em1: { name:"1ª EM", aes:[{code:"EM13MAT101",title:"Função Afim",sim:"afim",quiz:true}],
-        simuladores:["afim","exponencial","geometria3d","quadratica","sistema","pitagoras","trigonometria","ciclo","progressao","analitica"],
-        arenaChallenges: gerarQuestoesPorSerie(10), quizBank: gerarQuestoesPorSerie(10) },
-    em2: { name:"2ª EM", aes:[{code:"EM13MAT103",title:"Trigonometria",sim:"ciclo",quiz:true}],
-        simuladores:["ciclo","progressao","geometria3d","afim","exponencial","analitica","sistema","pitagoras","quadratica","trigonometria"],
-        arenaChallenges: gerarQuestoesPorSerie(11), quizBank: gerarQuestoesPorSerie(11) },
-    em3: { name:"3ª EM", aes:[{code:"EM13MAT301",title:"Geom. Analítica",sim:"analitica",quiz:true}],
-        simuladores:["analitica","sistema","geometria3d","afim","exponencial","ciclo","progressao","pitagoras","quadratica","trigonometria"],
-        arenaChallenges: gerarQuestoesPorSerie(12), quizBank: gerarQuestoesPorSerie(12) }
+    ef6: {
+        name: "6º Ano — EF",
+        aes: [
+            { code:"EF06MA02", title:"Sistema de Numeração Decimal",     desc:"Compor e decompor números naturais reconhecendo o valor posicional de cada algarismo.", sim:"decimal",    quiz:true },
+            { code:"EF06MA01", title:"Comparação na Reta Numérica",      desc:"Comparar e ordenar números naturais e inteiros na reta numérica.", sim:"reta",       quiz:true },
+            { code:"EF06MA03", title:"Operações com Números Naturais",   desc:"Resolver problemas com adição, subtração, multiplicação e divisão.", sim:"operacoes",  quiz:true },
+            { code:"EF06MA06", title:"Múltiplos e Divisores",            desc:"Problemas envolvendo MMC e MDC em contextos reais.", sim:"multiplos",  quiz:true }
+        ],
+        simuladores: [
+            { id:"decimal",   nome:"🔢 Sistema de Numeração", desc:"Material dourado digital — composição e decomposição.", tipo:"decimal"   },
+            { id:"reta",      nome:"📏 Reta Numérica",        desc:"Localize e compare números na reta.",                   tipo:"reta"      },
+            { id:"operacoes", nome:"➕ Operações Básicas",    desc:"Visualize as 4 operações fundamentais.",                tipo:"operacoes" },
+            { id:"multiplos", nome:"🔵 Múltiplos / Primos",  desc:"Crivo de Eratóstenes interativo.",                     tipo:"multiplos" }
+        ],
+        arenaChallenges: [
+            { q:"Qual é o valor posicional do dígito 7 no número 3.752?", opts:["7 unidades","7 dezenas","7 centenas","7 milhares"], correct:2 },
+            { q:"125 + 38 = ?",                                           opts:["153","163","173","143"],                            correct:1 },
+            { q:"Qual dos números abaixo é múltiplo de 3?",               opts:["14","21","25","32"],                                correct:1 },
+            { q:"MMC(4, 6) = ?",                                          opts:["2","12","24","6"],                                  correct:1 }
+        ],
+        quizBank: [
+            { q:"Qual o valor de 5²?",    opts:["10","15","25","20"], correct:2, group:"G2" },
+            { q:"√64 = ?",               opts:["6","7","8","9"],     correct:2, group:"G1" },
+            { q:"MDC(12, 18) = ?",        opts:["3","6","9","12"],    correct:1, group:"G2" }
+        ],
+        estrategias: [
+            { id:"decimal",   nome:"🎲 Material Dourado",   desc:"Composição e decomposição com blocos concretos.", tipo:"decimal"  },
+            { id:"graficos",  nome:"📊 Gráficos e Tabelas", desc:"Leitura e interpretação de dados do cotidiano.",  tipo:"graficos" }
+        ]
+    },
+    ef7: {
+        name: "7º Ano — EF",
+        aes: [
+            { code:"EF07MA01", title:"Múltiplos e Divisores",    desc:"Resolver problemas com MMC e MDC em contextos reais.", sim:"multiplos", quiz:true },
+            { code:"EF07MA03", title:"Números Inteiros",          desc:"Comparar e ordenar inteiros negativos e positivos na reta numérica.", sim:"inteiros", quiz:true },
+            { code:"EF07MA07", title:"Frações e Decimais",        desc:"Operações com números racionais e frações equivalentes.", sim:"fracao", quiz:true }
+        ],
+        simuladores: [
+            { id:"inteiros",  nome:"➖ Números Inteiros",       desc:"Operações com negativos na reta numérica.",   tipo:"inteiros"  },
+            { id:"fracao",    nome:"🥧 Frações Equivalentes",   desc:"Compare frações visualmente.",                tipo:"fracao"    },
+            { id:"multiplos", nome:"🔵 MMC e MDC",              desc:"Algoritmo de Euclides e crivo interativo.",   tipo:"multiplos" }
+        ],
+        arenaChallenges: [
+            { q:"(-5) + (+8) = ?",    opts:["-13","3","13","-3"], correct:1 },
+            { q:"30% de 200 = ?",     opts:["30","60","50","40"], correct:1 },
+            { q:"(-3) × (-4) = ?",    opts:["-12","12","7","-7"], correct:1 }
+        ],
+        quizBank: [
+            { q:"Calcule: (-3) × (-4)", opts:["-12","12","7","-7"], correct:1, group:"G2" },
+            { q:"Qual é o oposto de -7?", opts:["7","-7","0","1/7"], correct:0, group:"G1" }
+        ],
+        estrategias: [
+            { id:"inteiros",  nome:"🎲 Jogos com Inteiros",   desc:"Compreensão de negativos com jogos.",       tipo:"inteiros" },
+            { id:"fracao",    nome:"📐 Dobraduras e Frações", desc:"Explorando frações com papel dobrado.",     tipo:"fracao"   }
+        ]
+    },
+    ef8: {
+        name: "8º Ano — EF",
+        aes: [
+            { code:"EF08MA01", title:"Potenciação e Radiciação",    desc:"Potências com expoentes inteiros e raízes.", sim:"potencia",   quiz:true },
+            { code:"EF08MA07", title:"Equações do 1º Grau",         desc:"Resolução de equações lineares com uma variável.", sim:"sistema", quiz:true },
+            { code:"EF08MA16", title:"Semelhança de Triângulos",    desc:"Critérios de semelhança e razão de semelhança.", sim:"semelhanca", quiz:true }
+        ],
+        simuladores: [
+            { id:"potencia",   nome:"🔋 Potenciação",          desc:"Explore potências de base inteira e negativa.",       tipo:"potencia"   },
+            { id:"sistema",    nome:"📈 Equações Lineares",     desc:"Resolva graficamente no plano cartesiano.",           tipo:"sistema"    },
+            { id:"semelhanca", nome:"📐 Semelhança",            desc:"Triângulos semelhantes com razão interativa.",        tipo:"semelhanca" }
+        ],
+        arenaChallenges: [
+            { q:"2³ = ?",                     opts:["6","8","9","16"],  correct:1 },
+            { q:"Se x = 3, então 2x² − 5 = ?", opts:["13","7","11","9"], correct:0 },
+            { q:"3⁴ = ?",                     opts:["12","27","81","64"],correct:2 }
+        ],
+        quizBank: [
+            { q:"Calcule 2⁵",  opts:["16","32","64","128"], correct:1, group:"G2" },
+            { q:"√144 = ?",    opts:["11","12","13","14"],  correct:1, group:"G1" }
+        ],
+        estrategias: [
+            { id:"potencia", nome:"🧩 Padrões e Potências",  desc:"Investigação de sequências numéricas.", tipo:"potencia" },
+            { id:"sistema",  nome:"📱 Plano Cartesiano",     desc:"Visualização gráfica de equações.",    tipo:"sistema"  }
+        ]
+    },
+    ef9: {
+        name: "9º Ano — EF",
+        aes: [
+            { code:"EF09MA14", title:"Teorema de Pitágoras", desc:"Resolver problemas usando a² + b² = c².", sim:"pitagoras",    quiz:true },
+            { code:"EF09MA11", title:"Função Quadrática",    desc:"Identificar e representar funções do 2º grau.", sim:"quadratica", quiz:true },
+            { code:"EF09MA08", title:"Trigonometria",        desc:"Razões trigonométricas no triângulo retângulo.", sim:"trigonometria", quiz:true }
+        ],
+        simuladores: [
+            { id:"pitagoras",    nome:"📐 Teorema de Pitágoras",  desc:"Visualize a² + b² = c² com quadrados.", tipo:"pitagoras"    },
+            { id:"quadratica",   nome:"📈 Parábola — 2º Grau",    desc:"Explore a parábola com a, b, c.", tipo:"quadratica"   },
+            { id:"trigonometria",nome:"📐 Trigonometria",         desc:"sen, cos, tg no triângulo retângulo.", tipo:"trigonometria" }
+        ],
+        arenaChallenges: [
+            { q:"Catetos 6 e 8 → hipotenusa = ?",             opts:["10","12","14","9"],    correct:0 },
+            { q:"sen(30°) = ?",                               opts:["0,5","√2/2","√3/2","1"],correct:0 },
+            { q:"Hipotenusa 13, cateto 5 → outro cateto = ?", opts:["8","12","10","11"],    correct:1 }
+        ],
+        quizBank: [
+            { q:"Catetos 5 e 12 → hipotenusa = ?", opts:["13","17","15","10"],  correct:0, group:"G2" },
+            { q:"cos(60°) = ?",                    opts:["1","√3/2","0,5","0"], correct:2, group:"G1" }
+        ],
+        estrategias: [
+            { id:"pitagoras",    nome:"📐 Demonstração de Pitágoras", desc:"Construção geométrica interativa.", tipo:"pitagoras"    },
+            { id:"trigonometria",nome:"🔺 Trig no Cotidiano",          desc:"Aplicações práticas das razões.", tipo:"trigonometria" }
+        ]
+    },
+    em1: {
+        name: "1ª Série — EM",
+        aes: [
+            { code:"EM13MAT101", title:"Função Afim",        desc:"Reconhecer e representar funções do 1º grau graficamente.", sim:"afim",       quiz:true },
+            { code:"EM13MAT104", title:"Função Exponencial", desc:"Modelar crescimento e decrescimento exponencial.", sim:"exponencial", quiz:true }
+        ],
+        simuladores: [
+            { id:"afim",       nome:"📈 Função Afim",        desc:"Explore f(x) = ax + b interativamente.", tipo:"afim"       },
+            { id:"exponencial",nome:"📈 Função Exponencial", desc:"Crescimento e decrescimento com base.",  tipo:"exponencial" }
+        ],
+        arenaChallenges: [
+            { q:"f(x) = 2x + 3, f(4) = ?",                         opts:["11","8","10","12"], correct:0 },
+            { q:"Qual o coeficiente angular de f(x) = 3x − 5?",    opts:["3","-5","5","3x"],  correct:0 }
+        ],
+        quizBank: [
+            { q:"f(x) = −x + 4, f(2) = ?", opts:["2","6","-2","0"], correct:0, group:"G1" }
+        ],
+        estrategias: [
+            { id:"afim",       nome:"📈 Gráfico da Função Afim",  desc:"Construção do gráfico passo a passo.", tipo:"afim"       },
+            { id:"exponencial",nome:"💰 Juros Compostos",         desc:"Aplicação real da função exponencial.", tipo:"exponencial" }
+        ]
+    },
+    em2: {
+        name: "2ª Série — EM",
+        aes: [
+            { code:"EM13MAT103", title:"Trigonometria no Ciclo", desc:"Funções seno, cosseno e tangente no ciclo trigonométrico.", sim:"ciclo",      quiz:true },
+            { code:"EM13MAT201", title:"Progressões (PA / PG)", desc:"Identificar e calcular termos e somas de progressões.", sim:"progressao", quiz:true }
+        ],
+        simuladores: [
+            { id:"ciclo",      nome:"⭕ Ciclo Trigonométrico", desc:"Seno e cosseno animados na circunferência.", tipo:"ciclo"      },
+            { id:"progressao", nome:"🔢 Progressões PA/PG",   desc:"Visualize termos e somas de progressões.",  tipo:"progressao" }
+        ],
+        arenaChallenges: [
+            { q:"2ˣ = 8, x = ?",              opts:["2","3","4","1"],    correct:1 },
+            { q:"PA: a₁=2, r=3, a₄ = ?",     opts:["8","11","14","9"],  correct:1 }
+        ],
+        quizBank: [
+            { q:"PA: 2, 5, 8, 11… razão = ?", opts:["2","3","5","11"], correct:1, group:"G1" }
+        ],
+        estrategias: [
+            { id:"ciclo",      nome:"⭕ Construção do Ciclo", desc:"Animação interativa das funções trig.", tipo:"ciclo"      },
+            { id:"progressao", nome:"📊 PA no Cotidiano",     desc:"Progressões em problemas reais.",      tipo:"progressao" }
+        ]
+    },
+    em3: {
+        name: "3ª Série — EM",
+        aes: [
+            { code:"EM13MAT301", title:"Geometria Analítica", desc:"Ponto, reta e circunferência no plano cartesiano.", sim:"analitica", quiz:true },
+            { code:"EM13MAT302", title:"Sistemas Lineares",   desc:"Resolução de sistemas 2×2 com métodos algébrico e gráfico.", sim:"sistema", quiz:true }
+        ],
+        simuladores: [
+            { id:"analitica", nome:"📊 Geometria Analítica", desc:"Distância entre pontos e equação da reta.", tipo:"analitica" },
+            { id:"sistema",   nome:"🔢 Sistemas Lineares",   desc:"Resolução gráfica e verificação de soluções.", tipo:"sistema" }
+        ],
+        arenaChallenges: [
+            { q:"x + y = 5 e x − y = 1 → x = ?",    opts:["3","2","4","1"], correct:0 },
+            { q:"Distância de A(0,0) a B(3,4) = ?", opts:["5","7","6","4"],  correct:0 }
+        ],
+        quizBank: [
+            { q:"x + y = 5 e 2x − y = 4 → x = ?", opts:["3","2","4","1"], correct:0, group:"G1" }
+        ],
+        estrategias: [
+            { id:"analitica", nome:"📊 Plano Cartesiano",        desc:"Construção de retas e distâncias.",    tipo:"analitica" },
+            { id:"sistema",   nome:"🔢 Método de Substituição",  desc:"Passo a passo visual do método.",      tipo:"sistema"   }
+        ]
+    }
 };
 
-// ============================================================
-// SIMULADOR 3D (Cubo, Esfera, Cilindro) - disponível para todos
-// ============================================================
-const simulators = {};
-simulators.geometria3d = function(container) {
-    container.innerHTML = `<div id="threeContainer" style="width:100%;height:380px;background:#04060D;"></div><div class="explicacao-box" style="margin-top:12px;">🧊 Figuras 3D: Cubo (azul), Esfera (verde), Cilindro (laranja). Arraste o mouse para girar a câmera e visualize formas geométricas espaciais.</div>`;
-    const threeDiv = document.getElementById('threeContainer');
-    const scene = new THREE.Scene(); scene.background = new THREE.Color(0x04060D);
-    const camera = new THREE.PerspectiveCamera(45, threeDiv.clientWidth/threeDiv.clientHeight, 0.1, 1000);
-    camera.position.set(3,2,5); camera.lookAt(0,0,0);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(threeDiv.clientWidth, threeDiv.clientHeight);
-    threeDiv.appendChild(renderer.domElement);
-    const ambientLight = new THREE.AmbientLight(0x404060);
-    scene.add(ambientLight);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight.position.set(2,5,3);
-    scene.add(dirLight);
-    const backLight = new THREE.PointLight(0x4466ff, 0.3);
-    backLight.position.set(-2,1,-3);
-    scene.add(backLight);
-    const cube = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), new THREE.MeshStandardMaterial({ color: 0x4F8EF7, metalness:0.3 }));
-    cube.position.set(-1.2, 0.2, 0);
-    scene.add(cube);
-    const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 32), new THREE.MeshStandardMaterial({ color: 0x22C97A, emissive:0x114422 }));
-    sphere.position.set(0, 0.2, 0.8);
-    scene.add(sphere);
-    const cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,1,32), new THREE.MeshStandardMaterial({ color: 0xF5A623 }));
-    cylinder.position.set(1.2, 0.2, -0.3);
-    scene.add(cylinder);
-    const axesHelper = new THREE.AxesHelper(2);
-    axesHelper.material.transparent = true; axesHelper.material.opacity = 0.15;
-    scene.add(axesHelper);
-    let isDragging = false, lastX = 0, lastY = 0;
-    threeDiv.addEventListener('mousedown', (e) => { isDragging = true; lastX = e.clientX; lastY = e.clientY; });
-    window.addEventListener('mouseup', () => isDragging = false);
-    window.addEventListener('mousemove', (e) => {
-        if(!isDragging) return;
-        const dx = e.clientX - lastX, dy = e.clientY - lastY;
-        camera.position.x += dx * 0.01;
-        camera.position.y -= dy * 0.01;
-        camera.lookAt(0,0,0);
-        lastX = e.clientX; lastY = e.clientY;
-    });
-    function animate() { requestAnimationFrame(animate); cube.rotation.y += 0.008; sphere.rotation.x += 0.005; cylinder.rotation.z += 0.007; renderer.render(scene, camera); }
-    animate();
-    window.addEventListener('resize', () => { camera.aspect = threeDiv.clientWidth/threeDiv.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(threeDiv.clientWidth, threeDiv.clientHeight); });
+/* ═══════════════════════════════════════════
+   ESTADO GLOBAL
+═══════════════════════════════════════════ */
+let currentSerie   = null;
+let arenaState     = { idx:0, score:0, questions:[], answered:false };
+let arenaAnimID    = null;
+let arenaTimerID   = null;
+let arenaSecsLeft  = 15;
+let arenaCorrects  = 0;
+let quizState      = null;
+let quizTimerID    = null;
+let quizSeconds    = 0;
+let xpTotal        = 0;
+
+/* ═══════════════════════════════════════════
+   SIMULADORES
+═══════════════════════════════════════════ */
+const simulators = {
+
+    /* ── Material Dourado ── */
+    decimal(container) {
+        let valor = 0;
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>🎲 Material Dourado — Composição de Números</h3>
+            <div class="numero-exibido" id="ndValor">0</div>
+            <div style="text-align:center;font-size:0.75rem;color:var(--text-tertiary);margin-bottom:10px;font-family:'JetBrains Mono',monospace;">
+                Milhar: <b id="nd_mil">0</b> &nbsp;|&nbsp;
+                Centenas: <b id="nd_cen">0</b> &nbsp;|&nbsp;
+                Dezenas: <b id="nd_dez">0</b> &nbsp;|&nbsp;
+                Unidades: <b id="nd_uni">0</b>
+            </div>
+            <div class="material-dourado">
+                <div class="md-bloco" style="background:#DC2626;" onclick="nd_add(1000)">🏛️<br>Milhar<br><b>+1000</b></div>
+                <div class="md-bloco" style="background:#2563EB;" onclick="nd_add(100)">📦<br>Centena<br><b>+100</b></div>
+                <div class="md-bloco" style="background:#059669;" onclick="nd_add(10)">📏<br>Dezena<br><b>+10</b></div>
+                <div class="md-bloco" style="background:#D97706;" onclick="nd_add(1)">⚪<br>Unidade<br><b>+1</b></div>
+                <div class="md-bloco" style="background:#7C3AED;" onclick="nd_add(-1)">↩️<br>Remover<br><b>−1</b></div>
+            </div>
+            <div class="sim-controls-row">
+                <button class="btn-secondary" onclick="nd_reset()">🗑️ Limpar</button>
+                <button class="btn-primary" onclick="nd_desafio()">🎯 Meta: 2.547</button>
+                <button class="btn-secondary" onclick="nd_decompor()">🔍 Decompor</button>
+            </div>
+            <div id="nd_msg" class="nota-box" style="margin-top:10px;display:none;"></div>
+        </div>`;
+
+        function nd_atualizar() {
+            const m=Math.floor(valor/1000), c=Math.floor((valor%1000)/100), d=Math.floor((valor%100)/10), u=valor%10;
+            document.getElementById('ndValor').textContent = valor.toLocaleString('pt-BR');
+            document.getElementById('nd_mil').textContent = m;
+            document.getElementById('nd_cen').textContent = c;
+            document.getElementById('nd_dez').textContent = d;
+            document.getElementById('nd_uni').textContent = u;
+        }
+
+        window.nd_add = n => { valor = Math.max(0, valor + n); nd_atualizar(); };
+        window.nd_reset = () => { valor = 0; nd_atualizar(); ndMsg(''); };
+        window.nd_desafio = () => {
+            if (valor === 2547) {
+                ndMsg('<span style="color:var(--success)">✅ Correto! 2.547 = 2×1000 + 5×100 + 4×10 + 7</span>');
+                showToast("🏆", "+200 XP — Desafio concluído!"); addXP(200);
+            } else {
+                const diff = 2547 - valor;
+                ndMsg(`<span style="color:var(--warning)">🎯 Você tem ${valor.toLocaleString('pt-BR')}. ${diff>0?'Faltam '+diff.toLocaleString('pt-BR'):'Passou por '+(-diff)} para chegar em 2.547</span>`);
+            }
+        };
+        window.nd_decompor = () => {
+            if (!valor) { ndMsg('Forme um número primeiro!'); return; }
+            const m=Math.floor(valor/1000), c=Math.floor((valor%1000)/100), d=Math.floor((valor%100)/10), u=valor%10;
+            const partes = [];
+            if(m) partes.push(`${m}×1000`);
+            if(c) partes.push(`${c}×100`);
+            if(d) partes.push(`${d}×10`);
+            if(u||!partes.length) partes.push(`${u}`);
+            ndMsg(`<span style="color:var(--info)">${valor.toLocaleString('pt-BR')} = ${partes.join(' + ')}</span>`);
+        };
+
+        function ndMsg(html) {
+            const el = document.getElementById('nd_msg');
+            if (!html) { el.style.display='none'; return; }
+            el.innerHTML = html; el.style.display='block';
+        }
+        nd_atualizar();
+    },
+
+    /* ── Reta Numérica ── */
+    reta(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📏 Reta Numérica — Comparação e Ordem</h3>
+            <canvas id="retaCanvas" class="sim-canvas-bg" style="width:100%;margin:12px 0;"></canvas>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:12px 0;">
+                <div><label>Ponto A: <b id="retaAval">0</b></label>
+                    <input type="range" id="retaA" min="-10" max="10" value="0" oninput="retaUpdate()"></div>
+                <div><label>Ponto B: <b id="retaBval">5</b></label>
+                    <input type="range" id="retaB" min="-10" max="10" value="5" oninput="retaUpdate()"></div>
+            </div>
+            <div id="retaMsg" class="nota-box" style="text-align:center;"></div>
+        </div>`;
+
+        window.retaUpdate = () => {
+            const a = parseInt(document.getElementById('retaA').value);
+            const b = parseInt(document.getElementById('retaB').value);
+            document.getElementById('retaAval').textContent = a;
+            document.getElementById('retaBval').textContent = b;
+            const rel = a<b ? `A < B  (A está à esquerda de B)` : a>b ? `A > B  (A está à direita de B)` : `A = B  (mesmo ponto)`;
+            const cor = a<b ? 'var(--info)' : a>b ? 'var(--warning)' : 'var(--success)';
+            document.getElementById('retaMsg').innerHTML = `<span style="color:${cor};font-family:'JetBrains Mono',monospace;">${rel}</span>`;
+
+            const canvas = document.getElementById('retaCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth || 700;
+            canvas.height = 90;
+            const W = canvas.width, H = 90, cy = 52, cx = W/2;
+            const scale = (W - 80) / 22;
+            ctx.fillStyle = '#04060D'; ctx.fillRect(0,0,W,H);
+            // Linha
+            ctx.strokeStyle = 'rgba(255,255,255,0.25)'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(30,cy); ctx.lineTo(W-30,cy); ctx.stroke();
+            // Marcações
+            for (let n=-10; n<=10; n++) {
+                const px = cx + n*scale;
+                ctx.strokeStyle = n===0?'rgba(255,255,255,0.5)':'rgba(255,255,255,0.15)';
+                ctx.lineWidth = n===0 ? 2 : 1;
+                ctx.beginPath(); ctx.moveTo(px,cy-5); ctx.lineTo(px,cy+5); ctx.stroke();
+                ctx.fillStyle = n===0?'rgba(255,255,255,0.6)':'rgba(255,255,255,0.3)';
+                ctx.font = `${n===0?'bold ':' '}10px JetBrains Mono, monospace`;
+                ctx.textAlign = 'center'; ctx.fillText(n, px, cy+17);
+            }
+            // Pontos
+            [[a,'#4F8EF7','A'],[b,'#F5A623','B']].forEach(([v,cor,lbl]) => {
+                const px = cx + v*scale;
+                ctx.beginPath(); ctx.arc(px,cy,10,0,Math.PI*2);
+                ctx.fillStyle = cor; ctx.fill();
+                ctx.fillStyle = '#04060D'; ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'center'; ctx.fillText(lbl,px,cy+4);
+                ctx.fillStyle = cor; ctx.font = 'bold 10px JetBrains Mono, monospace';
+                ctx.fillText(v, px, cy-16);
+            });
+        };
+        setTimeout(() => window.retaUpdate(), 50);
+    },
+
+    /* ── Operações ── */
+    operacoes(container) {
+        let op = '+';
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>➕ As 4 Operações Fundamentais</h3>
+            <div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px;">
+                ${['+','−','×','÷'].map(o => `<button class="btn-sm ${o==='+'?'sim':''}" id="opBtn${o}" onclick="setOp('${o}')" style="font-size:1.1rem;padding:6px 16px;">${o}</button>`).join('')}
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div><label>Número A: <b id="opAval">8</b></label>
+                    <input type="range" id="opA" min="1" max="20" value="8" oninput="calcOp()"></div>
+                <div><label>Número B: <b id="opBval">4</b></label>
+                    <input type="range" id="opB" min="1" max="20" value="4" oninput="calcOp()"></div>
+            </div>
+            <div class="sim-result" id="opResult">8 + 4 = 12</div>
+            <canvas id="opCanvas" class="sim-canvas-bg" width="600" height="100" style="width:100%;margin-top:8px;"></canvas>
+            <div id="opExplica" class="nota-box" style="margin-top:10px;text-align:center;"></div>
+        </div>`;
+
+        window.setOp = o => {
+            op = o;
+            document.querySelectorAll('[id^="opBtn"]').forEach(b => b.classList.remove('sim'));
+            document.getElementById('opBtn'+o)?.classList.add('sim');
+            calcOp();
+        };
+        window.calcOp = () => {
+            const a = parseInt(document.getElementById('opA').value);
+            const b = parseInt(document.getElementById('opB').value);
+            document.getElementById('opAval').textContent = a;
+            document.getElementById('opBval').textContent = b;
+            let res, expl;
+            if(op==='+')   { res = a+b;                    expl = `Somamos ${a} com ${b}: juntamos as duas quantidades.`; }
+            else if(op==='−'){ res = a-b;                  expl = `Subtraímos ${b} de ${a}: retiramos ${b} elementos.`; }
+            else if(op==='×'){ res = a*b;                  expl = `${a} × ${b} = somar ${b} exatamente ${a} vezes = ${res}`; }
+            else             { res = (a/b).toFixed(b===1?0:2); expl = `${a} ÷ ${b} = distribuir ${a} em ${b} grupos iguais.`; }
+            document.getElementById('opResult').textContent = `${a} ${op} ${b} = ${res}`;
+            document.getElementById('opExplica').textContent = expl;
+            drawOpCanvas(a, b, op);
+        };
+
+        function drawOpCanvas(a, b, oper) {
+            const canvas = document.getElementById('opCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.clientWidth || 600;
+            canvas.height = 100;
+            const W = canvas.width;
+            ctx.fillStyle = '#04060D'; ctx.fillRect(0,0,W,100);
+            const bw = Math.min(18, Math.floor((W-60)/(Math.max(a,b,10)+2)));
+            const colors = ['#4F8EF7','#F5A623','#22C97A'];
+            if (oper==='+') {
+                for(let i=0;i<Math.min(a,20);i++) { ctx.fillStyle=colors[0]; ctx.fillRect(20+i*(bw+2),25,bw,40); }
+                ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font='bold 20px sans-serif'; ctx.fillText('+',20+Math.min(a,20)*(bw+2)+4,50);
+                let sx=20+Math.min(a,20)*(bw+2)+22;
+                for(let i=0;i<Math.min(b,20);i++) { ctx.fillStyle=colors[1]; ctx.fillRect(sx+i*(bw+2),25,bw,40); }
+            } else if (oper==='−') {
+                for(let i=0;i<Math.min(a,20);i++) { ctx.fillStyle=colors[0]; ctx.fillRect(20+i*(bw+2),25,bw,40); }
+                for(let i=0;i<Math.min(b,Math.min(a,20));i++) {
+                    ctx.strokeStyle='rgba(242,92,92,0.9)'; ctx.lineWidth=2.5;
+                    const x=20+i*(bw+2);
+                    ctx.beginPath(); ctx.moveTo(x,25); ctx.lineTo(x+bw,65); ctx.stroke();
+                }
+            } else if (oper==='×') {
+                for(let g=0;g<Math.min(a,8);g++)
+                    for(let i=0;i<Math.min(b,8);i++) {
+                        ctx.fillStyle=colors[g%3];
+                        ctx.fillRect(10+g*((bw+2)*Math.min(b,8)+6)+i*(bw+2),25,bw,36);
+                    }
+            } else {
+                for(let g=0;g<Math.min(b,10);g++) {
+                    ctx.strokeStyle=colors[g%3]; ctx.lineWidth=1.5;
+                    ctx.strokeRect(12+g*((bw+2)*3+4),20,(bw+2)*3,46);
+                    for(let i=0;i<Math.min(Math.floor(a/b),5);i++) {
+                        ctx.fillStyle=colors[g%3];
+                        ctx.fillRect(14+g*((bw+2)*3+4)+i*(bw+2),24,bw,40);
+                    }
+                }
+            }
+        }
+        calcOp();
+    },
+
+    /* ── Crivo ── */
+    multiplos(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>🔵 Crivo de Eratóstenes — Múltiplos e Primos</h3>
+            <div class="sim-controls-row">
+                <label style="display:flex;align-items:center;gap:8px;">Múltiplos de: <input type="number" id="crivoN" value="2" min="2" max="10" style="width:60px;" oninput="desenharCrivo()"></label>
+                <button class="btn-primary" onclick="mostrarPrimos()">🔍 Primos</button>
+                <button class="btn-secondary" onclick="desenharCrivo()">🔄 Reset</button>
+            </div>
+            <div id="crivoGrid" style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin-top:14px;max-width:480px;margin-left:auto;margin-right:auto;"></div>
+            <div id="crivoInfo" class="nota-box" style="text-align:center;margin-top:10px;"></div>
+        </div>`;
+
+        window.desenharCrivo = () => {
+            const n = parseInt(document.getElementById('crivoN').value) || 2;
+            const grid = document.getElementById('crivoGrid');
+            grid.innerHTML = '';
+            for(let i=1;i<=100;i++) {
+                const d = document.createElement('div');
+                d.textContent = i;
+                const isMultiple = i>1 && i%n===0;
+                d.style.cssText = `padding:5px 2px;text-align:center;border-radius:5px;font-size:0.7rem;font-weight:700;cursor:pointer;
+                    background:${isMultiple?'rgba(79,142,247,0.2)':'var(--surface-2)'};
+                    color:${isMultiple?'var(--primary)':'var(--text-tertiary)'};
+                    border:1px solid ${isMultiple?'rgba(79,142,247,0.4)':'transparent'};`;
+                grid.appendChild(d);
+            }
+            const list=[]; for(let k=n;k<=100;k+=n)list.push(k);
+            document.getElementById('crivoInfo').innerHTML = `Múltiplos de <b>${n}</b> até 100: ${list.slice(0,8).join(', ')}${list.length>8?'...':''}`;
+        };
+
+        window.mostrarPrimos = () => {
+            const sieve = Array(101).fill(true); sieve[0]=sieve[1]=false;
+            for(let i=2;i<=10;i++) if(sieve[i]) for(let j=i*i;j<=100;j+=i) sieve[j]=false;
+            const cells = document.querySelectorAll('#crivoGrid div');
+            cells.forEach((c,i) => {
+                const num=i+1;
+                if(sieve[num]) { c.style.background='rgba(34,201,122,0.2)'; c.style.color='var(--success)'; c.style.border='1px solid rgba(34,201,122,0.4)'; }
+                else           { c.style.background='var(--surface-2)'; c.style.color='var(--text-tertiary)'; c.style.border='1px solid transparent'; }
+            });
+            document.getElementById('crivoInfo').innerHTML = 'Números <b style="color:var(--success)">primos</b> até 100 destacados em verde.';
+        };
+        window.desenharCrivo();
+    },
+
+    /* ── Inteiros ── */
+    inteiros(container) {
+        let valor = 0;
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>➖ Números Inteiros — Reta Interativa</h3>
+            <div class="sim-result" id="intVal" style="font-size:3rem;">0</div>
+            <canvas id="intCanvas" class="sim-canvas-bg" style="width:100%;margin:12px 0;"></canvas>
+            <div class="sim-controls-row">
+                ${[-10,-5,-1,'0',1,5,10].map(v=>`<button class="btn-sm ${v===0||v==='0'?'':v>0?'sim':''}" onclick="moverInt(${v})" style="${v===0||v==='0'?'':''}">
+                    ${v===0||v==='0'?'Reset':(v>0?'+':'')+v}</button>`).join('')}
+            </div>
+            <div id="intContexto" class="nota-box" style="text-align:center;margin-top:10px;"></div>
+        </div>`;
+
+        function desenharReta() {
+            const canvas=document.getElementById('intCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||700; canvas.height=80;
+            const W=canvas.width, cy=45, cx=W/2, scale=(W-80)/22;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,W,80);
+            ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=2;
+            ctx.beginPath(); ctx.moveTo(30,cy); ctx.lineTo(W-30,cy); ctx.stroke();
+            for(let n=-10;n<=10;n++) {
+                const px=cx+n*scale;
+                ctx.strokeStyle=n===0?'rgba(255,255,255,0.5)':'rgba(255,255,255,0.15)';
+                ctx.lineWidth=n===0?2:1;
+                ctx.beginPath(); ctx.moveTo(px,cy-5); ctx.lineTo(px,cy+5); ctx.stroke();
+                ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='10px JetBrains Mono, monospace';
+                ctx.textAlign='center'; ctx.fillText(n,px,cy+17);
+            }
+            const pv=Math.max(-10,Math.min(10,valor));
+            const px=cx+pv*scale;
+            ctx.beginPath(); ctx.arc(px,cy,11,0,Math.PI*2);
+            ctx.fillStyle=valor<0?'#F25C5C':valor===0?'#9B6FF7':'#22C97A'; ctx.fill();
+            ctx.fillStyle='white'; ctx.font='bold 11px JetBrains Mono, monospace';
+            ctx.textAlign='center'; ctx.fillText(valor,px,cy+4);
+        }
+
+        window.moverInt = d => {
+            if(d===0||d==='0') valor=0; else valor=Math.max(-10,Math.min(10,valor+d));
+            document.getElementById('intVal').textContent = valor;
+            document.getElementById('intVal').style.color = valor<0?'var(--danger)':valor===0?'var(--secondary)':'var(--success)';
+            const contextos = ['Muito frio ❄️','Abaixo do mar 🌊','Em dívida 💸','No zero — equilíbrio ⚖️','Temperatura amena ☀️','Altitude positiva 🏔️','Grande lucro 💰'];
+            const idx = valor<=-7?0:valor<=-4?1:valor<=-1?2:valor===0?3:valor<=3?4:valor<=6?5:6;
+            document.getElementById('intContexto').innerHTML = `${valor<0?'<span style="color:var(--danger)">Negativo</span>':valor===0?'<span style="color:var(--secondary)">Zero</span>':'<span style="color:var(--success)">Positivo</span>'} — ${contextos[idx]}`;
+            desenharReta();
+        };
+        setTimeout(() => desenharReta(), 50);
+    },
+
+    /* ── Frações ── */
+    fracao(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>🥧 Frações — Visualização e Equivalência</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div>
+                    <label>Numerador A: <b id="fNumA">1</b></label>
+                    <input type="range" id="fNA" min="0" max="8" value="1" oninput="updateFrac()">
+                    <label>Denominador A: <b id="fDenA">2</b></label>
+                    <input type="range" id="fDA" min="1" max="8" value="2" oninput="updateFrac()">
+                </div>
+                <div>
+                    <label>Numerador B: <b id="fNumB">3</b></label>
+                    <input type="range" id="fNB" min="0" max="8" value="3" oninput="updateFrac()">
+                    <label>Denominador B: <b id="fDenB">4</b></label>
+                    <input type="range" id="fDB" min="1" max="8" value="4" oninput="updateFrac()">
+                </div>
+            </div>
+            <div style="display:flex;justify-content:center;gap:32px;margin:20px 0;align-items:center;">
+                <canvas id="fCanvas1" width="130" height="130" class="sim-canvas-bg"></canvas>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+                    <div id="fCompare" style="font-size:2rem;font-weight:800;font-family:'JetBrains Mono',monospace;"></div>
+                    <div id="fDecA"    style="font-size:0.78rem;color:var(--text-secondary);"></div>
+                    <div id="fDecB"    style="font-size:0.78rem;color:var(--text-secondary);"></div>
+                </div>
+                <canvas id="fCanvas2" width="130" height="130" class="sim-canvas-bg"></canvas>
+            </div>
+            <div id="fMsg" class="nota-box" style="text-align:center;"></div>
+        </div>`;
+
+        function drawPie(id, num, den, color) {
+            const c=document.getElementById(id), ctx=c.getContext('2d');
+            c.width=130; c.height=130;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,130,130);
+            ctx.beginPath(); ctx.arc(65,65,52,0,Math.PI*2);
+            ctx.fillStyle='rgba(255,255,255,0.04)'; ctx.fill();
+            ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1; ctx.stroke();
+            if(num>0) {
+                ctx.beginPath(); ctx.moveTo(65,65);
+                ctx.arc(65,65,52,-Math.PI/2,-Math.PI/2+(num/den)*2*Math.PI);
+                ctx.closePath(); ctx.fillStyle=color; ctx.fill();
+            }
+            for(let i=0;i<den;i++) {
+                const a=-Math.PI/2+(i/den)*2*Math.PI;
+                ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1.5;
+                ctx.beginPath(); ctx.moveTo(65,65); ctx.lineTo(65+52*Math.cos(a),65+52*Math.sin(a)); ctx.stroke();
+            }
+            ctx.fillStyle='white'; ctx.font='bold 13px JetBrains Mono, monospace';
+            ctx.textAlign='center'; ctx.fillText(`${num}/${den}`,65,70);
+        }
+
+        window.updateFrac = () => {
+            const na=+document.getElementById('fNA').value, da=+document.getElementById('fDA').value;
+            const nb=+document.getElementById('fNB').value, db=+document.getElementById('fDB').value;
+            document.getElementById('fNumA').textContent=na; document.getElementById('fDenA').textContent=da;
+            document.getElementById('fNumB').textContent=nb; document.getElementById('fDenB').textContent=db;
+            drawPie('fCanvas1',na,da,'rgba(79,142,247,0.75)');
+            drawPie('fCanvas2',nb,db,'rgba(245,166,35,0.75)');
+            const va=na/da, vb=nb/db;
+            const sym=va<vb?'<':va>vb?'>':'=';
+            const cor=sym==='='?'var(--success)':sym==='<'?'var(--info)':'var(--warning)';
+            document.getElementById('fCompare').innerHTML=`<span style="color:${cor}">${sym}</span>`;
+            document.getElementById('fDecA').textContent=`${na}/${da} = ${(va*100).toFixed(0)}%`;
+            document.getElementById('fDecB').textContent=`${nb}/${db} = ${(vb*100).toFixed(0)}%`;
+            document.getElementById('fMsg').innerHTML=sym==='='
+                ?`<span style="color:var(--success)">✅ ${na}/${da} e ${nb}/${db} são frações equivalentes!</span>`
+                :`<span>${na}/${da} é <b style="color:${cor}">${sym==='<'?'menor que':'maior que'}</b> ${nb}/${db}</span>`;
+        };
+        window.updateFrac();
+    },
+
+    /* ── Potenciação ── */
+    potencia(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>🔋 Potenciação e Radiciação</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div><label>Base: <b id="potBaseVal">2</b></label>
+                    <input type="range" id="potBase" min="-5" max="10" value="2" oninput="calcPot()"></div>
+                <div><label>Expoente: <b id="potExpVal">3</b></label>
+                    <input type="range" id="potExp" min="-3" max="8" value="3" oninput="calcPot()"></div>
+            </div>
+            <div class="sim-result" id="potResultado">2³ = 8</div>
+            <canvas id="potCanvas" class="sim-canvas-bg" style="width:100%;margin-top:10px;"></canvas>
+            <div id="potExplica" class="nota-box" style="margin-top:8px;text-align:center;"></div>
+        </div>`;
+
+        window.calcPot = () => {
+            const base=parseFloat(document.getElementById('potBase').value);
+            const exp=parseInt(document.getElementById('potExp').value);
+            const res=Math.pow(base,exp);
+            document.getElementById('potBaseVal').textContent=base;
+            document.getElementById('potExpVal').textContent=exp;
+            const sups=['⁰','¹','²','³','⁴','⁵','⁶','⁷','⁸'];
+            const supE = exp>=0&&exp<=8?sups[exp]:`^${exp}`;
+            document.getElementById('potResultado').textContent=`${base}${supE} = ${Number.isInteger(res)?res:res.toFixed(4)}`;
+            const expl = exp>1 ? `${base} × ${Array(Math.min(exp-1,5)).fill(base).join(' × ')}${exp-1>5?'…':''} = ${Number.isInteger(res)?res:res.toFixed(4)}`
+                :exp===1?`Qualquer base elevada a 1 = a própria base`
+                :exp===0?`Qualquer base ≠ 0 elevada a 0 = 1`
+                :`Expoente negativo: 1/${base}^${-exp} = ${res.toFixed(4)}`;
+            document.getElementById('potExplica').textContent=expl;
+            // Canvas
+            const canvas=document.getElementById('potCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||600; canvas.height=140;
+            const W=canvas.width;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,W,140);
+            ctx.strokeStyle='rgba(255,255,255,0.07)'; ctx.lineWidth=1;
+            for(let y=20;y<140;y+=20){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+            const maxE=Math.max(exp,5,1);
+            ctx.strokeStyle='#4F8EF7'; ctx.lineWidth=2.5; ctx.beginPath();
+            for(let i=0;i<=maxE*20;i++) {
+                const x=(i/(maxE*20))*W, yv=a_Math_pow(base,i/20);
+                const yp=130-Math.min(120,Math.max(2,yv/Math.max(Math.abs(res),1)*110));
+                i===0?ctx.moveTo(x,yp):ctx.lineTo(x,yp);
+            }
+            ctx.stroke();
+            const rpx=(exp/maxE)*W, rpy=130-Math.min(120,Math.max(2,Math.abs(res)/Math.max(Math.abs(res),1)*110));
+            ctx.beginPath(); ctx.arc(rpx,rpy,7,0,Math.PI*2); ctx.fillStyle='#F5A623'; ctx.fill();
+        };
+
+        function a_Math_pow(b,e){try{return Math.pow(b,e);}catch(x){return 0;}}
+        window.calcPot();
+    },
+
+    /* ── Pitágoras ── */
+    pitagoras(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📐 Teorema de Pitágoras — a² + b² = c²</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div><label>Cateto a: <b id="pitAval">3</b></label>
+                    <input type="range" id="pitA" min="1" max="12" value="3" oninput="calcPit()"></div>
+                <div><label>Cateto b: <b id="pitBval">4</b></label>
+                    <input type="range" id="pitB" min="1" max="12" value="4" oninput="calcPit()"></div>
+            </div>
+            <div class="sim-result" id="pitRes">c = 5.00</div>
+            <canvas id="pitCanvas" class="sim-canvas-bg" style="width:100%;margin-top:10px;"></canvas>
+            <div id="pitMsg" class="nota-box" style="margin-top:8px;text-align:center;"></div>
+        </div>`;
+
+        window.calcPit = () => {
+            const a=parseFloat(document.getElementById('pitA').value), b=parseFloat(document.getElementById('pitB').value);
+            const c=Math.sqrt(a*a+b*b);
+            document.getElementById('pitAval').textContent=a; document.getElementById('pitBval').textContent=b;
+            document.getElementById('pitRes').textContent=`c = ${c.toFixed(2)}`;
+            const isInt=Math.abs(c-Math.round(c))<0.001;
+            document.getElementById('pitMsg').innerHTML=
+                `a²+b²=c²: ${a}²+${b}² = ${a*a}+${b*b} = ${a*a+b*b} → c = ${c.toFixed(2)}${isInt?` <span style="color:var(--success)">✅ Terna Pitagórica!</span>`:''}`;
+
+            const canvas=document.getElementById('pitCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||500; canvas.height=220;
+            const W=canvas.width;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,W,220);
+            const sc=Math.min((W-100)/(a+c+1),(220-80)/(b+c+1));
+            const ox=50, oy=185;
+            // Quadrado de a
+            ctx.fillStyle='rgba(79,142,247,0.12)'; ctx.strokeStyle='rgba(79,142,247,0.4)'; ctx.lineWidth=1.5;
+            ctx.beginPath(); ctx.rect(ox, oy-a*sc, a*sc, a*sc); ctx.fill(); ctx.stroke();
+            ctx.fillStyle='rgba(79,142,247,0.5)'; ctx.font='11px JetBrains Mono'; ctx.textAlign='center';
+            ctx.fillText(`a²=${a*a}`,ox+a*sc/2,oy-a*sc/2+4);
+            // Quadrado de b
+            ctx.fillStyle='rgba(245,166,35,0.12)'; ctx.strokeStyle='rgba(245,166,35,0.4)';
+            ctx.beginPath(); ctx.rect(ox-b*sc, oy-b*sc, b*sc, b*sc); ctx.fill(); ctx.stroke();
+            ctx.fillStyle='rgba(245,166,35,0.5)';
+            ctx.fillText(`b²=${b*b}`,ox-b*sc/2,oy-b*sc/2+4);
+            // Triângulo
+            ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox+a*sc,oy); ctx.lineTo(ox,oy-b*sc); ctx.closePath();
+            ctx.strokeStyle='#4F8EF7'; ctx.lineWidth=3; ctx.stroke();
+            ctx.fillStyle='rgba(79,142,247,0.07)'; ctx.fill();
+            // Ângulo reto
+            ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1.5;
+            ctx.strokeRect(ox,oy-10,10,10);
+            // Labels
+            ctx.fillStyle='#4F8EF7'; ctx.font='bold 12px sans-serif'; ctx.fillText(`a=${a}`,ox+a*sc/2,oy+15);
+            ctx.fillStyle='#F5A623'; ctx.fillText(`b=${b}`,ox-18,oy-b*sc/2);
+            ctx.fillStyle='#22C97A'; ctx.fillText(`c=${c.toFixed(1)}`,ox+a*sc/2+14,oy-b*sc/2-8);
+        };
+        window.calcPit();
+    },
+
+    /* ── Semelhança ── */
+    semelhanca(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📐 Semelhança de Triângulos</h3>
+            <div><label>Razão de semelhança k: <b id="kVal">1.5</b></label>
+                <input type="range" id="kSlider" min="0.5" max="3" step="0.1" value="1.5" oninput="calcSem()"></div>
+            <canvas id="semCanvas" class="sim-canvas-bg" style="width:100%;margin-top:14px;"></canvas>
+            <div id="semMsg" class="nota-box" style="text-align:center;margin-top:8px;"></div>
+        </div>`;
+
+        window.calcSem = () => {
+            const k=parseFloat(document.getElementById('kSlider').value);
+            document.getElementById('kVal').textContent=k.toFixed(1);
+            const canvas=document.getElementById('semCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||600; canvas.height=220;
+            const W=canvas.width;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,W,220);
+            // Triângulo 1
+            ctx.beginPath(); ctx.moveTo(60,180); ctx.lineTo(160,180); ctx.lineTo(60,90); ctx.closePath();
+            ctx.strokeStyle='#4F8EF7'; ctx.lineWidth=2.5; ctx.stroke();
+            ctx.fillStyle='rgba(79,142,247,0.08)'; ctx.fill();
+            ctx.fillStyle='#4F8EF7'; ctx.font='11px JetBrains Mono'; ctx.textAlign='center';
+            ctx.fillText('A',50,184); ctx.fillText('B',163,184); ctx.fillText('C',50,88);
+            ctx.fillText('100',110,195); ctx.fillText('100',42,138);
+            // Triângulo 2
+            const ox=W/2+10;
+            ctx.beginPath(); ctx.moveTo(ox,180); ctx.lineTo(ox+100*k,180); ctx.lineTo(ox,180-100*k); ctx.closePath();
+            ctx.strokeStyle='#F5A623'; ctx.lineWidth=2.5; ctx.stroke();
+            ctx.fillStyle='rgba(245,166,35,0.08)'; ctx.fill();
+            ctx.fillStyle='#F5A623';
+            ctx.fillText("A'",ox-10,184); ctx.fillText("B'",ox+100*k+6,184); ctx.fillText("C'",ox-10,180-100*k);
+            ctx.fillText(`${(100*k).toFixed(0)}`,ox+50*k,195);
+            document.getElementById('semMsg').textContent=`k = ${k.toFixed(1)}× — Todos os lados do 2º triângulo são ${k.toFixed(1)} vezes os do 1º. Ângulos iguais, lados proporcionais.`;
+        };
+        window.calcSem();
+    },
+
+    /* ── Sistema / Função Afim gráfico ── */
+    sistema(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📈 Sistema de Equações — Gráfico Interativo</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div>
+                    <label style="color:var(--primary);">Reta 1: y = <b id="s1aV">1</b>x + <b id="s1bV">2</b></label>
+                    <input type="range" id="s1a" min="-4" max="4" value="1" oninput="drawSis()"> <small style="color:var(--text-tertiary)">a (angular)</small>
+                    <input type="range" id="s1b" min="-8" max="8" value="2" oninput="drawSis()"> <small style="color:var(--text-tertiary)">b (linear)</small>
+                </div>
+                <div>
+                    <label style="color:var(--warning);">Reta 2: y = <b id="s2aV">-1</b>x + <b id="s2bV">4</b></label>
+                    <input type="range" id="s2a" min="-4" max="4" value="-1" oninput="drawSis()"> <small style="color:var(--text-tertiary)">a (angular)</small>
+                    <input type="range" id="s2b" min="-8" max="8" value="4" oninput="drawSis()"> <small style="color:var(--text-tertiary)">b (linear)</small>
+                </div>
+            </div>
+            <canvas id="sisCanvas" class="sim-canvas-bg" style="width:100%;margin-top:10px;"></canvas>
+            <div id="sisSol" class="nota-box" style="text-align:center;margin-top:8px;font-weight:600;"></div>
+        </div>`;
+
+        window.drawSis = () => {
+            const a1=parseFloat(document.getElementById('s1a').value), b1=parseFloat(document.getElementById('s1b').value);
+            const a2=parseFloat(document.getElementById('s2a').value), b2=parseFloat(document.getElementById('s2b').value);
+            document.getElementById('s1aV').textContent=a1; document.getElementById('s1bV').textContent=b1;
+            document.getElementById('s2aV').textContent=a2; document.getElementById('s2bV').textContent=b2;
+            const canvas=document.getElementById('sisCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||600; canvas.height=260;
+            const W=canvas.width, H=260, cx=W/2, cy=H/2, sc=20;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,W,H);
+            // Grid
+            ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+            for(let i=-15;i<=15;i++){ctx.beginPath();ctx.moveTo(cx+i*sc,0);ctx.lineTo(cx+i*sc,H);ctx.stroke();}
+            for(let i=-8;i<=8;i++){ctx.beginPath();ctx.moveTo(0,cy+i*sc);ctx.lineTo(W,cy+i*sc);ctx.stroke();}
+            // Eixos
+            ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1.5;
+            ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+            // Retas
+            function drawLine(a,b,color){
+                ctx.strokeStyle=color; ctx.lineWidth=2.5; ctx.beginPath();
+                const x0=-cx/sc-1, x1=(W-cx)/sc+1;
+                ctx.moveTo(cx+x0*sc,cy-(a*x0+b)*sc); ctx.lineTo(cx+x1*sc,cy-(a*x1+b)*sc); ctx.stroke();
+            }
+            drawLine(a1,b1,'#4F8EF7'); drawLine(a2,b2,'#F5A623');
+            // Solução
+            if(a1!==a2){
+                const xS=(b2-b1)/(a1-a2), yS=a1*xS+b1;
+                const px=cx+xS*sc, py=cy-yS*sc;
+                if(py>-10&&py<H+10){
+                    ctx.beginPath(); ctx.arc(px,py,9,0,Math.PI*2); ctx.fillStyle='#22C97A'; ctx.fill();
+                    ctx.strokeStyle='white'; ctx.lineWidth=2.5; ctx.stroke();
+                    ctx.fillStyle='white'; ctx.font='10px JetBrains Mono'; ctx.textAlign='center';
+                    ctx.fillText(`(${xS.toFixed(1)},${yS.toFixed(1)})`,px,py-14);
+                }
+                document.getElementById('sisSol').innerHTML=`<span style="color:var(--success)">✅ Solução única: x = ${xS.toFixed(2)}, y = ${yS.toFixed(2)}</span>`;
+            } else if(b1===b2){
+                document.getElementById('sisSol').innerHTML=`<span style="color:var(--info)">♾️ Infinitas soluções — retas coincidentes (S.P.I.)</span>`;
+            } else {
+                document.getElementById('sisSol').innerHTML=`<span style="color:var(--danger)">❌ Sem solução — retas paralelas (S.I.)</span>`;
+            }
+        };
+        window.drawSis();
+    },
+
+    /* ── Quadrática ── */
+    quadratica(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📈 Função Quadrática — f(x) = ax² + bx + c</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+                <div><label>a: <b id="qaVal">1</b></label>
+                    <input type="range" id="qa" min="-3" max="3" step="0.5" value="1" oninput="drawQuad()"></div>
+                <div><label>b: <b id="qbVal">0</b></label>
+                    <input type="range" id="qb" min="-6" max="6" value="0" oninput="drawQuad()"></div>
+                <div><label>c: <b id="qcVal">-4</b></label>
+                    <input type="range" id="qc" min="-8" max="8" value="-4" oninput="drawQuad()"></div>
+            </div>
+            <canvas id="quadCanvas" class="sim-canvas-bg" style="width:100%;margin-top:10px;"></canvas>
+            <div id="quadInfo" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;text-align:center;font-size:0.72rem;"></div>
+        </div>`;
+
+        window.drawQuad = () => {
+            const a=parseFloat(document.getElementById('qa').value), b=parseFloat(document.getElementById('qb').value), c=parseFloat(document.getElementById('qc').value);
+            document.getElementById('qaVal').textContent=a; document.getElementById('qbVal').textContent=b; document.getElementById('qcVal').textContent=c;
+            const canvas=document.getElementById('quadCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||600; canvas.height=260;
+            const W=canvas.width, H=260, cx=W/2, cy=H/2, sc=20;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,W,H);
+            ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+            for(let i=-15;i<=15;i++){ctx.beginPath();ctx.moveTo(cx+i*sc,0);ctx.lineTo(cx+i*sc,H);ctx.stroke();}
+            for(let i=-7;i<=7;i++){ctx.beginPath();ctx.moveTo(0,cy+i*sc);ctx.lineTo(W,cy+i*sc);ctx.stroke();}
+            ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1.5;
+            ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+            // Parábola
+            ctx.strokeStyle='#9B6FF7'; ctx.lineWidth=3; ctx.beginPath(); let first=true;
+            for(let xp=0;xp<W;xp++) {
+                const x=(xp-cx)/sc, y=a*x*x+b*x+c, yp=cy-y*sc;
+                if(yp>-20&&yp<H+20){ first?ctx.moveTo(xp,yp):ctx.lineTo(xp,yp); first=false; }
+                else first=true;
+            }
+            ctx.stroke();
+            // Vértice
+            if(a!==0){
+                const vx=-b/(2*a), vy=a*vx*vx+b*vx+c;
+                const vpx=cx+vx*sc, vpy=cy-vy*sc;
+                if(vpy>-10&&vpy<H+10){
+                    ctx.beginPath(); ctx.arc(vpx,vpy,7,0,Math.PI*2); ctx.fillStyle='#F5A623'; ctx.fill();
+                    ctx.fillStyle='rgba(245,166,35,0.8)'; ctx.font='10px JetBrains Mono'; ctx.textAlign='center';
+                    ctx.fillText(`V(${vx.toFixed(1)},${vy.toFixed(1)})`,vpx,vpy+(vy>0?16:-8));
+                }
+                const delta=b*b-4*a*c;
+                const raizes=delta<0?'Sem raízes reais':delta===0?`x = ${(-b/(2*a)).toFixed(2)}`:`x₁=${((-b+Math.sqrt(delta))/(2*a)).toFixed(2)}, x₂=${((-b-Math.sqrt(delta))/(2*a)).toFixed(2)}`;
+                document.getElementById('quadInfo').innerHTML=`
+                    <div class="info-chip"><b style="color:var(--warning)">Vértice</b>(${vx.toFixed(1)}, ${vy.toFixed(1)})</div>
+                    <div class="info-chip"><b style="color:var(--info)">Δ = ${delta.toFixed(1)}</b>${raizes}</div>
+                    <div class="info-chip"><b style="color:var(--success)">Concavidade</b>${a>0?'⬆ Cima':'⬇ Baixo'}</div>`;
+            }
+        };
+        window.drawQuad();
+    },
+
+    /* ── Trigonometria ── */
+    trigonometria(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📐 Razões Trigonométricas</h3>
+            <div><label>Ângulo θ: <b id="trigAng">30</b>°</label>
+                <input type="range" id="trigSlider" min="1" max="89" value="30" oninput="calcTrig()"></div>
+            <div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;align-items:flex-start;">
+                <canvas id="trigCanvas" class="sim-canvas-bg" width="240" height="200" style="flex:0 0 240px;"></canvas>
+                <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:180px;">
+                    <div id="trigSen"    class="info-chip"></div>
+                    <div id="trigCos"    class="info-chip"></div>
+                    <div id="trigTan"    class="info-chip"></div>
+                    <div id="trigNotavel" class="nota-box" style="font-size:0.75rem;"></div>
+                </div>
+            </div>
+        </div>`;
+
+        window.calcTrig = () => {
+            const deg=parseInt(document.getElementById('trigSlider').value);
+            document.getElementById('trigAng').textContent=deg;
+            const rad=deg*Math.PI/180;
+            const s=Math.sin(rad), co=Math.cos(rad), t=Math.tan(rad);
+            document.getElementById('trigSen').innerHTML=`<b style="color:#4F8EF7">sen(${deg}°)</b> = Oposto/Hipotenusa = <b style="font-family:'JetBrains Mono'">${s.toFixed(4)}</b>`;
+            document.getElementById('trigCos').innerHTML=`<b style="color:#F5A623">cos(${deg}°)</b> = Adjacente/Hipotenusa = <b style="font-family:'JetBrains Mono'">${co.toFixed(4)}</b>`;
+            document.getElementById('trigTan').innerHTML=`<b style="color:#22C97A">tg(${deg}°)</b> = sen/cos = <b style="font-family:'JetBrains Mono'">${Math.abs(t)>99?'→∞':t.toFixed(4)}</b>`;
+            const notaveis={30:'sen=½, cos=√3/2, tg=√3/3',45:'sen=cos=√2/2, tg=1',60:'sen=√3/2, cos=½, tg=√3',90:'sen=1, cos=0, tg=∞'};
+            document.getElementById('trigNotavel').textContent=notaveis[deg]?`⭐ Ângulo notável: ${notaveis[deg]}`:`💡 Memorize: 30°, 45°, 60° e 90°`;
+            // Canvas
+            const canvas=document.getElementById('trigCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=240; canvas.height=200;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,240,200);
+            const ox=35, oy=170, hip=100;
+            const ex=ox+hip*co, ey=oy-hip*s;
+            // Ângulo reto
+            ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1.5;
+            ctx.strokeRect(ex,ey,10,10);
+            // Lados
+            ctx.strokeStyle='#9B6FF7'; ctx.lineWidth=2.5;
+            ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ex,oy); ctx.stroke();
+            ctx.strokeStyle='#4F8EF7';
+            ctx.beginPath(); ctx.moveTo(ex,oy); ctx.lineTo(ex,ey); ctx.stroke();
+            ctx.strokeStyle='#F5A623';
+            ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ex,ey); ctx.stroke();
+            // Labels
+            ctx.fillStyle='#9B6FF7'; ctx.font='11px JetBrains Mono'; ctx.textAlign='center';
+            ctx.fillText(`adj=${co.toFixed(2)}`,ox+hip*co/2,oy+14);
+            ctx.fillStyle='#4F8EF7'; ctx.fillText(`op=${s.toFixed(2)}`,ex+32,oy-hip*s/2);
+            ctx.fillStyle='#F5A623'; ctx.fillText('hip=1',ox+hip*co/2-22,oy-hip*s/2-8);
+            // Arco do ângulo
+            ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1.5;
+            ctx.beginPath(); ctx.arc(ox,oy,24,0,-rad,true); ctx.stroke();
+            ctx.fillStyle='white'; ctx.font='11px sans-serif'; ctx.fillText(`${deg}°`,ox+30,oy-8);
+        };
+        window.calcTrig();
+    },
+
+    /* ── Função Afim ── */
+    afim(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📈 Função Afim — f(x) = ax + b</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div><label>Coef. angular a: <b id="afimA">1</b></label>
+                    <input type="range" id="afimSlA" min="-5" max="5" step="0.5" value="1" oninput="drawAfim()"></div>
+                <div><label>Coef. linear b: <b id="afimB">0</b></label>
+                    <input type="range" id="afimSlB" min="-8" max="8" value="0" oninput="drawAfim()"></div>
+            </div>
+            <canvas id="afimCanvas" class="sim-canvas-bg" style="width:100%;margin-top:10px;"></canvas>
+            <div id="afimInfo" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;text-align:center;font-size:0.72rem;"></div>
+        </div>`;
+
+        window.drawAfim = () => {
+            const a=parseFloat(document.getElementById('afimSlA').value), b=parseFloat(document.getElementById('afimSlB').value);
+            document.getElementById('afimA').textContent=a; document.getElementById('afimB').textContent=b;
+            const canvas=document.getElementById('afimCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||600; canvas.height=260;
+            const W=canvas.width, H=260, cx=W/2, cy=H/2, sc=20;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,W,H);
+            ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+            for(let i=-15;i<=15;i++){ctx.beginPath();ctx.moveTo(cx+i*sc,0);ctx.lineTo(cx+i*sc,H);ctx.stroke();}
+            for(let i=-7;i<=7;i++){ctx.beginPath();ctx.moveTo(0,cy+i*sc);ctx.lineTo(W,cy+i*sc);ctx.stroke();}
+            ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1.5;
+            ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+            // Labels eixos
+            ctx.fillStyle='rgba(255,255,255,0.2)'; ctx.font='10px JetBrains Mono'; ctx.textAlign='center';
+            for(let i=-10;i<=10;i+=2){if(i===0)continue; ctx.fillText(i,cx+i*sc,cy+13); ctx.fillText(i,cx-12,cy-i*sc+3);}
+            // Reta
+            ctx.strokeStyle='#4F8EF7'; ctx.lineWidth=3; ctx.beginPath();
+            ctx.moveTo(0,cy-(a*(-cx/sc)+b)*sc); ctx.lineTo(W,cy-(a*((W-cx)/sc)+b)*sc); ctx.stroke();
+            // Zero
+            if(a!==0){
+                const xZ=-b/a;
+                if(Math.abs(xZ)<=(cx/sc)){
+                    ctx.beginPath(); ctx.arc(cx+xZ*sc,cy,7,0,Math.PI*2); ctx.fillStyle='#22C97A'; ctx.fill();
+                }
+            }
+            // Intercepto y
+            ctx.beginPath(); ctx.arc(cx,cy-b*sc,7,0,Math.PI*2); ctx.fillStyle='#F5A623'; ctx.fill();
+            const tipo=a>0?'⬆ Crescente':a<0?'⬇ Decrescente':'➡ Constante';
+            document.getElementById('afimInfo').innerHTML=`
+                <div class="info-chip"><b style="color:var(--primary)">f(x)</b>${a}x ${b>=0?'+':''} ${b}</div>
+                <div class="info-chip"><b style="color:var(--success)">Zero</b>${a!==0?`x = ${(-b/a).toFixed(2)}`:'Sem zero'}</div>
+                <div class="info-chip"><b style="color:var(--warning)">Monot.</b>${tipo}</div>`;
+        };
+        window.drawAfim();
+    },
+
+    /* ── Exponencial ── */
+    exponencial(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📈 Função Exponencial — f(x) = a · bˣ</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div><label>Base b: <b id="expB">2.0</b></label>
+                    <input type="range" id="expSlB" min="0.1" max="4" step="0.1" value="2" oninput="drawExp()"></div>
+                <div><label>Multiplicador a: <b id="expA">1</b></label>
+                    <input type="range" id="expSlA" min="0.5" max="5" step="0.5" value="1" oninput="drawExp()"></div>
+            </div>
+            <canvas id="expCanvas" class="sim-canvas-bg" style="width:100%;margin-top:10px;"></canvas>
+            <div id="expTable" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;justify-content:center;font-size:0.72rem;"></div>
+        </div>`;
+
+        window.drawExp = () => {
+            const b=parseFloat(document.getElementById('expSlB').value), a=parseFloat(document.getElementById('expSlA').value);
+            document.getElementById('expB').textContent=b.toFixed(1); document.getElementById('expA').textContent=a;
+            const canvas=document.getElementById('expCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||600; canvas.height=240;
+            const W=canvas.width, H=240, cx=W/2, cy=H-30, sc=30;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,W,H);
+            ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+            for(let i=-10;i<=10;i++){ctx.beginPath();ctx.moveTo(cx+i*sc,0);ctx.lineTo(cx+i*sc,H);ctx.stroke();}
+            ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1.5;
+            ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+            const color=b>=1?'#22C97A':'#F25C5C';
+            ctx.strokeStyle=color; ctx.lineWidth=2.5; ctx.beginPath(); let first=true;
+            for(let xp=0;xp<W;xp++) {
+                const x=(xp-cx)/sc, y=a*Math.pow(b,x), yp=cy-y*sc*2;
+                if(yp>-50&&yp<H+50){ first?ctx.moveTo(xp,yp):ctx.lineTo(xp,yp); first=false; }
+                else first=true;
+            }
+            ctx.stroke();
+            const colors=['#4F8EF7','#9B6FF7','#22C97A','#F5A623','#F25C5C','#22D3EE','#F472B6'];
+            document.getElementById('expTable').innerHTML=[-3,-2,-1,0,1,2,3].map((x,i)=>{
+                const y=a*Math.pow(b,x);
+                return `<div class="info-chip" style="border-color:${colors[i]}40;"><b style="color:${colors[i]}">x=${x}</b>${y.toFixed(2)}</div>`;
+            }).join('');
+        };
+        window.drawExp();
+    },
+
+    /* ── Ciclo Trigonométrico ── */
+    ciclo(container) {
+        let angAtual=0, isAnim=false, animId=null;
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>⭕ Ciclo Trigonométrico Animado</h3>
+            <div><label>Ângulo: <b id="cicloAng">0</b>°</label>
+                <input type="range" id="cicloSlider" min="0" max="360" value="0" oninput="updateCiclo(+this.value)"></div>
+            <div class="sim-controls-row">
+                <button class="btn-primary" id="cicloAnimBtn" onclick="toggleCicloAnim()">▶ Animar</button>
+                <button class="btn-secondary" onclick="updateCiclo(0)">Reset</button>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+                <canvas id="cicloCanvas" class="sim-canvas-bg" width="230" height="230" style="flex:0 0 230px;height:230px;"></canvas>
+                <canvas id="cicloWave"   class="sim-canvas-bg" style="flex:1;height:230px;min-width:180px;"></canvas>
+            </div>
+            <div id="cicloVals" style="display:flex;gap:10px;justify-content:center;margin-top:8px;font-size:0.82rem;font-family:'JetBrains Mono',monospace;flex-wrap:wrap;"></div>
+        </div>`;
+
+        window.updateCiclo = deg => {
+            angAtual = ((deg%360)+360)%360;
+            document.getElementById('cicloSlider').value = angAtual;
+            document.getElementById('cicloAng').textContent = angAtual;
+            const rad = angAtual*Math.PI/180;
+            const s=Math.sin(rad), co=Math.cos(rad), t=Math.tan(rad);
+            // Círculo
+            const c=document.getElementById('cicloCanvas'), ctx=c.getContext('2d');
+            c.width=230; c.height=230;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,230,230);
+            const cx=115,cy=115,r=85;
+            ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+            ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.beginPath(); ctx.moveTo(30,cy); ctx.lineTo(200,cy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx,30); ctx.lineTo(cx,200); ctx.stroke();
+            const ex=cx+r*co, ey=cy-r*s;
+            ctx.strokeStyle='rgba(79,142,247,0.5)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+            ctx.beginPath(); ctx.moveTo(ex,cy); ctx.lineTo(ex,ey); ctx.stroke();
+            ctx.strokeStyle='rgba(245,166,35,0.5)';
+            ctx.beginPath(); ctx.moveTo(cx,ey); ctx.lineTo(ex,ey); ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.strokeStyle='#9B6FF7'; ctx.lineWidth=2.5;
+            ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(ex,ey); ctx.stroke();
+            ctx.beginPath(); ctx.arc(ex,ey,7,0,Math.PI*2); ctx.fillStyle='white'; ctx.fill();
+            ctx.strokeStyle='rgba(255,255,255,0.3)'; ctx.lineWidth=1.5;
+            ctx.beginPath(); ctx.arc(cx,cy,22,0,-rad,true); ctx.stroke();
+            ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='11px sans-serif'; ctx.textAlign='center';
+            ctx.fillText(`${angAtual}°`,cx+28,cy-6);
+            // Onda
+            const wc=document.getElementById('cicloWave'), wctx=wc.getContext('2d');
+            wc.width=wc.parentElement?.clientWidth-230-20||300; wc.height=230;
+            wctx.fillStyle='#04060D'; wctx.fillRect(0,0,wc.width,230);
+            const W=wc.width;
+            wctx.strokeStyle='rgba(255,255,255,0.1)'; wctx.lineWidth=1;
+            wctx.beginPath(); wctx.moveTo(0,115); wctx.lineTo(W,115); wctx.stroke();
+            wctx.strokeStyle='#4F8EF7'; wctx.lineWidth=2; wctx.beginPath();
+            for(let x=0;x<W;x++) wctx.lineTo(x,115-Math.sin((x/W)*2*Math.PI)*85);
+            wctx.stroke();
+            wctx.strokeStyle='#F5A623'; wctx.lineWidth=2; wctx.beginPath();
+            for(let x=0;x<W;x++) wctx.lineTo(x,115-Math.cos((x/W)*2*Math.PI)*85);
+            wctx.stroke();
+            const xMark=(angAtual/360)*W;
+            wctx.strokeStyle='rgba(255,255,255,0.35)'; wctx.lineWidth=1.5; wctx.setLineDash([3,3]);
+            wctx.beginPath(); wctx.moveTo(xMark,0); wctx.lineTo(xMark,230); wctx.stroke(); wctx.setLineDash([]);
+            document.getElementById('cicloVals').innerHTML=
+                `<span style="color:#4F8EF7">sen = ${s.toFixed(3)}</span>
+                 <span style="color:#F5A623">cos = ${co.toFixed(3)}</span>
+                 <span style="color:#22C97A">tg = ${Math.abs(t)>99?'→∞':t.toFixed(3)}</span>`;
+        };
+        window.toggleCicloAnim = () => {
+            isAnim=!isAnim;
+            document.getElementById('cicloAnimBtn').textContent=isAnim?'⏸ Pausar':'▶ Animar';
+            if(isAnim){
+                (function loop(){ if(!isAnim)return; angAtual=(angAtual+1)%360; window.updateCiclo(angAtual); animId=requestAnimationFrame(loop); })();
+            } else cancelAnimationFrame(animId);
+        };
+        window.updateCiclo(0);
+    },
+
+    /* ── Progressões ── */
+    progressao(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>🔢 Progressões Aritméticas e Geométricas</h3>
+            <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px;">
+                <button class="btn-sm sim" id="paBtn" onclick="setProgTipo('PA')">PA — Aritmética</button>
+                <button class="btn-sm"     id="pgBtn" onclick="setProgTipo('PG')">PG — Geométrica</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div><label>Primeiro termo a₁: <b id="progA1val">1</b></label>
+                    <input type="range" id="progA1" min="1" max="20" value="1" oninput="calcProg()"></div>
+                <div><label id="progRlbl">Razão r (diferença): <b id="progRval">3</b></label>
+                    <input type="range" id="progR" min="1" max="8" value="3" oninput="calcProg()"></div>
+            </div>
+            <div id="progTermos" style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:14px 0;align-items:center;"></div>
+            <canvas id="progCanvas" class="sim-canvas-bg" style="width:100%;"></canvas>
+            <div id="progInfo" class="nota-box" style="text-align:center;margin-top:8px;font-size:0.8rem;"></div>
+        </div>`;
+
+        let tipo='PA';
+        window.setProgTipo = t => {
+            tipo=t;
+            document.getElementById('paBtn').className='btn-sm '+(t==='PA'?'sim':'');
+            document.getElementById('pgBtn').className='btn-sm '+(t==='PG'?'sim':'');
+            document.getElementById('progRlbl').innerHTML=(t==='PA'?'Razão r (diferença):':'Razão r (multiplicador):')+' <b id="progRval">'+document.getElementById('progR').value+'</b>';
+            calcProg();
+        };
+        window.calcProg = () => {
+            const a1=parseFloat(document.getElementById('progA1').value), r=parseFloat(document.getElementById('progR').value);
+            document.getElementById('progA1val').textContent=a1;
+            const rvEl=document.getElementById('progRval');
+            if(rvEl) rvEl.textContent=r;
+            const terms=[];
+            for(let n=0;n<8;n++) terms.push(tipo==='PA'?a1+n*r:a1*Math.pow(r,n));
+            const colors=['#4F8EF7','#9B6FF7','#22C97A','#F5A623','#F25C5C','#22D3EE','#F472B6','#A3E635'];
+            document.getElementById('progTermos').innerHTML=terms.map((t,i)=>
+                `<div style="background:${colors[i]}22;border:1px solid ${colors[i]}66;color:${colors[i]};padding:7px 12px;border-radius:8px;font-weight:700;font-size:0.88rem;font-family:'JetBrains Mono',monospace;">${Number.isInteger(t)?t:t.toFixed(1)}</div>${i<7?'<span style="color:var(--text-tertiary);font-size:0.7rem;">→</span>':''}`
+            ).join('');
+            const canvas=document.getElementById('progCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||600; canvas.height=130;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,canvas.width,130);
+            const maxT=Math.max(...terms), minT=Math.min(...terms,0);
+            const range=maxT-minT||1;
+            const barW=(canvas.width-20)/terms.length-6;
+            terms.forEach((tv,i)=>{
+                const h=Math.max(4,((tv-minT)/range)*110);
+                const x=10+i*(barW+6), y=125-h;
+                ctx.fillStyle=colors[i];
+                ctx.beginPath(); ctx.roundRect?ctx.roundRect(x,y,barW,h,4):ctx.rect(x,y,barW,h); ctx.fill();
+                ctx.fillStyle='white'; ctx.font='bold 10px JetBrains Mono'; ctx.textAlign='center';
+                ctx.fillText(Number.isInteger(tv)?tv:tv.toFixed(1),x+barW/2,y-4);
+            });
+            const soma=terms.reduce((a,b)=>a+b,0);
+            const formula=tipo==='PA'?`aₙ = ${a1} + (n−1)×${r}`:`aₙ = ${a1} × ${r}^(n−1)`;
+            document.getElementById('progInfo').innerHTML=`<b>${formula}</b> &nbsp;|&nbsp; Soma dos 8 primeiros ≈ <b style="color:var(--warning)">${soma.toFixed(1)}</b>`;
+        };
+        window.calcProg();
+    },
+
+    /* ── Geometria Analítica ── */
+    analitica(container) {
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📊 Geometria Analítica — Distância e Inclinação</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div><label>Ponto A (x=<b id="axV">-3</b>, y=<b id="ayV">1</b>)</label>
+                    <input type="range" id="axS" min="-9" max="9" value="-3" oninput="drawAnal()"> x
+                    <input type="range" id="ayS" min="-7" max="7" value="1"  oninput="drawAnal()"> y</div>
+                <div><label>Ponto B (x=<b id="bxV">4</b>, y=<b id="byV">5</b>)</label>
+                    <input type="range" id="bxS" min="-9" max="9" value="4"  oninput="drawAnal()"> x
+                    <input type="range" id="byS" min="-7" max="7" value="5"  oninput="drawAnal()"> y</div>
+            </div>
+            <canvas id="analCanvas" class="sim-canvas-bg" style="width:100%;margin-top:10px;"></canvas>
+            <div id="analInfo" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;text-align:center;font-size:0.72rem;"></div>
+        </div>`;
+
+        window.drawAnal = () => {
+            const ax=+document.getElementById('axS').value, ay=+document.getElementById('ayS').value;
+            const bx=+document.getElementById('bxS').value, by=+document.getElementById('byS').value;
+            document.getElementById('axV').textContent=ax; document.getElementById('ayV').textContent=ay;
+            document.getElementById('bxV').textContent=bx; document.getElementById('byV').textContent=by;
+            const canvas=document.getElementById('analCanvas');
+            const ctx=canvas.getContext('2d');
+            canvas.width=canvas.parentElement?.clientWidth||600; canvas.height=260;
+            const W=canvas.width, H=260, cx=W/2, cy=H/2, sc=20;
+            ctx.fillStyle='#04060D'; ctx.fillRect(0,0,W,H);
+            ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+            for(let i=-15;i<=15;i++){ctx.beginPath();ctx.moveTo(cx+i*sc,0);ctx.lineTo(cx+i*sc,H);ctx.stroke();}
+            for(let i=-7;i<=7;i++){ctx.beginPath();ctx.moveTo(0,cy+i*sc);ctx.lineTo(W,cy+i*sc);ctx.stroke();}
+            ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1.5;
+            ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+            const pax=cx+ax*sc, pay=cy-ay*sc, pbx=cx+bx*sc, pby=cy-by*sc;
+            // Catetos pontilhados
+            ctx.strokeStyle='rgba(34,201,122,0.3)'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+            ctx.beginPath(); ctx.moveTo(pax,pay); ctx.lineTo(pbx,pay); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(pbx,pay); ctx.lineTo(pbx,pby); ctx.stroke();
+            ctx.setLineDash([]);
+            // Segmento AB
+            ctx.strokeStyle='#4F8EF7'; ctx.lineWidth=2.5;
+            ctx.beginPath(); ctx.moveTo(pax,pay); ctx.lineTo(pbx,pby); ctx.stroke();
+            // Ponto médio
+            const mpx=cx+((ax+bx)/2)*sc, mpy=cy-((ay+by)/2)*sc;
+            ctx.beginPath(); ctx.arc(mpx,mpy,5,0,Math.PI*2); ctx.fillStyle='#22C97A'; ctx.fill();
+            // Pontos A e B
+            ctx.beginPath(); ctx.arc(pax,pay,9,0,Math.PI*2); ctx.fillStyle='#4F8EF7'; ctx.fill();
+            ctx.fillStyle='white'; ctx.font='bold 11px sans-serif'; ctx.textAlign='center'; ctx.fillText('A',pax,pay+4);
+            ctx.fillStyle='rgba(79,142,247,0.8)'; ctx.font='10px JetBrains Mono'; ctx.fillText(`(${ax},${ay})`,pax,pay-14);
+            ctx.beginPath(); ctx.arc(pbx,pby,9,0,Math.PI*2); ctx.fillStyle='#F5A623'; ctx.fill();
+            ctx.fillStyle='#04060D'; ctx.font='bold 11px sans-serif'; ctx.fillText('B',pbx,pby+4);
+            ctx.fillStyle='rgba(245,166,35,0.8)'; ctx.font='10px JetBrains Mono'; ctx.fillText(`(${bx},${by})`,pbx,pby-14);
+            const dist=Math.sqrt((bx-ax)**2+(by-ay)**2);
+            const incl=ax!==bx?((by-ay)/(bx-ax)).toFixed(2):'∞';
+            const mx=((ax+bx)/2).toFixed(1), my=((ay+by)/2).toFixed(1);
+            document.getElementById('analInfo').innerHTML=`
+                <div class="info-chip"><b style="color:var(--primary)">Distância |AB|</b>${dist.toFixed(2)}</div>
+                <div class="info-chip"><b style="color:var(--success)">Ponto Médio M</b>(${mx}, ${my})</div>
+                <div class="info-chip"><b style="color:var(--warning)">Inclinação m</b>${incl}</div>`;
+        };
+        window.drawAnal();
+    },
+
+    /* Aliases */
+    sistema3(c)  { simulators.sistema(c); },
+    analitica_estr(c){ simulators.analitica(c); },
+
+    /* ── Gráficos ── */
+    graficos(container) {
+        const meses=['Jan','Fev','Mar','Abr','Mai'];
+        let dados=[45,68,32,89,54];
+        container.innerHTML = `
+        <div class="sim-inner">
+            <h3>📊 Gráficos e Tabelas de Frequência</h3>
+            <div style="text-align:center;font-weight:700;margin-bottom:10px;color:var(--text-secondary);font-size:0.85rem;">Vendas Mensais</div>
+            <div id="gfBarras" style="display:flex;align-items:flex-end;justify-content:center;gap:16px;height:170px;padding:10px;"></div>
+            <div class="sim-controls-row">
+                <button class="btn-primary"   onclick="gfUpdate()">🔄 Novos Dados</button>
+                <button class="btn-secondary" onclick="gfInterpret()">📝 Interpretar</button>
+            </div>
+            <div id="gfMsg" class="nota-box" style="margin-top:10px;text-align:center;"></div>
+        </div>`;
+
+        function renderBarras(){
+            const mx=Math.max(...dados);
+            document.getElementById('gfBarras').innerHTML=dados.map((v,i)=>`
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                    <div style="font-size:0.7rem;color:var(--text-secondary);margin-bottom:4px;font-family:'JetBrains Mono',monospace;">${v}</div>
+                    <div style="width:46px;height:${(v/mx)*140}px;background:var(--grad-primary);border-radius:8px 8px 0 0;transition:height 0.4s cubic-bezier(.22,.68,0,1.2);"></div>
+                    <div style="margin-top:6px;font-size:0.7rem;color:var(--text-secondary);">${meses[i]}</div>
+                </div>`).join('');
+        }
+        window.gfUpdate = () => { dados=dados.map(()=>Math.floor(Math.random()*90)+10); renderBarras(); document.getElementById('gfMsg').innerHTML=''; };
+        window.gfInterpret = () => {
+            const mx=Math.max(...dados), mn=Math.min(...dados), s=dados.reduce((a,b)=>a+b,0);
+            document.getElementById('gfMsg').innerHTML=
+                `📈 Maior: <b>${meses[dados.indexOf(mx)]}</b> (${mx}) &nbsp;|&nbsp; 📉 Menor: <b>${meses[dados.indexOf(mn)]}</b> (${mn}) &nbsp;|&nbsp; 📊 Média: <b>${(s/dados.length).toFixed(1)}</b>`;
+        };
+        renderBarras();
+    }
 };
 
-// Demais simuladores (versões simplificadas mas funcionais)
-simulators.decimal = (c) => { c.innerHTML = `<div class="sim-inner"><h3>🧮 Material Dourado</h3><p>Composição: 2457 = 2 milhares + 4 centenas + 5 dezenas + 7 unidades.</p><div class="sim-result">2.547</div><button class="btn-primary" onclick="alert('Explore valores posicionais com blocos virtuais.')">Explorar</button></div>`; };
-simulators.reta = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📏 Reta Numérica</h3><canvas id="retaCanvas" width="500" height="80"></canvas><script>setTimeout(()=>{let ctx=document.getElementById('retaCanvas')?.getContext('2d'); if(ctx){ctx.fillStyle='#04060D';ctx.fillRect(0,0,500,80);ctx.strokeStyle='white';ctx.beginPath();ctx.moveTo(20,40);ctx.lineTo(480,40);ctx.stroke();for(let i=-10;i<=10;i++){ctx.fillText(i,250+i*20,55);}}},50);<\/script></div>`; };
-simulators.operacoes = (c) => { c.innerHTML = `<div class="sim-inner"><h3>➕ Operações</h3><div>Adição: 234+567=801</div><div>Subtração: 789-345=444</div><div>Multiplicação: 12×8=96</div><div>Divisão: 144÷12=12</div></div>`; };
-simulators.multiplos = (c) => { c.innerHTML = `<div class="sim-inner"><h3>🔵 Múltiplos</h3><p>MMC(4,6)=12 | MDC(12,18)=6 | Primos: 2,3,5,7,11...</p></div>`; };
-simulators.inteiros = (c) => { c.innerHTML = `<div class="sim-inner"><h3>➖ Inteiros</h3><p>(-5)+8=3 | (-3)×(-4)=12 | (-15)÷3=-5</p></div>`; };
-simulators.fracao = (c) => { c.innerHTML = `<div class="sim-inner"><h3>🥧 Frações</h3><p>1/2 = 0,5 | 3/4 = 0,75 | Frações equivalentes: 2/4 = 1/2</p></div>`; };
-simulators.potencia = (c) => { c.innerHTML = `<div class="sim-inner"><h3>🔋 Potenciação</h3><p>2³=8, 5²=25, (-2)⁴=16, 10⁰=1</p></div>`; };
-simulators.sistema = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📈 Sistemas</h3><p>x+y=5 e x-y=1 → x=3, y=2</p></div>`; };
-simulators.semelhanca = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📐 Semelhança</h3><p>Triângulos com ângulos iguais e lados proporcionais.</p></div>`; };
-simulators.pitagoras = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📐 Pitágoras</h3><p>3²+4²=5² | Catetos 6 e 8 → hipotenusa 10</p></div>`; };
-simulators.quadratica = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📈 Quadrática</h3><p>f(x)=x²-4x+3 → raízes 1 e 3, vértice (2,-1)</p></div>`; };
-simulators.trigonometria = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📐 Trigonometria</h3><p>sen30°=0,5; cos60°=0,5; tg45°=1</p></div>`; };
-simulators.afim = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📈 Função Afim</h3><p>f(x)=2x+3 → coeficiente angular 2, intercepto 3</p></div>`; };
-simulators.exponencial = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📈 Exponencial</h3><p>f(x)=2ˣ → f(3)=8, f(0)=1</p></div>`; };
-simulators.ciclo = (c) => { c.innerHTML = `<div class="sim-inner"><h3>⭕ Ciclo Trigonométrico</h3><p>sen90°=1, cos0°=1, tg45°=1</p></div>`; };
-simulators.progressao = (c) => { c.innerHTML = `<div class="sim-inner"><h3>🔢 Progressões</h3><p>PA: 2,5,8,11 (r=3) | PG: 2,4,8,16 (q=2)</p></div>`; };
-simulators.analitica = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📊 Geometria Analítica</h3><p>Distância A(1,2) B(4,6) = 5 | Ponto médio (2.5,4)</p></div>`; };
-simulators.graficos = (c) => { c.innerHTML = `<div class="sim-inner"><h3>📊 Gráficos</h3><p>Interpretação de barras e setores.</p></div>`; };
-
-// ============================================================
-// LÓGICA PRINCIPAL (Arena com 10 questões, Quiz com 10 e explicações)
-// ============================================================
-let currentSerie = null, arenaState = null, quizState = null, xpTotal = 0;
-
-function changePage(p) { document.querySelectorAll('.page').forEach(el=>el.classList.remove('active')); document.getElementById(`page-${p}`).classList.add('active'); }
-function selectSerie(id, btn, ctx) {
-    currentSerie = id; const data = seriesData[id];
-    document.querySelectorAll('.series-btn').forEach(b=>b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    renderAEs(); renderSimuladores(); renderArena(); renderQuiz(); renderProfessor();
-    updateProgress();
+/* ═══════════════════════════════════════════
+   MOTOR PRINCIPAL
+═══════════════════════════════════════════ */
+function openSimulator(tipo, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    const fn = simulators[tipo];
+    if (fn) {
+        try { fn(container); }
+        catch(e) { console.error('Sim erro:', e); container.innerHTML = `<div class="sim-inner"><div class="empty-state">🔧 Simulador "${tipo}" em construção...</div></div>`; }
+    } else {
+        container.innerHTML = `<div class="sim-inner"><div class="empty-state">🔧 Simulador "${tipo}" será disponibilizado em breve.</div></div>`;
+    }
 }
-function renderAEs() { if(!currentSerie) return; const data=seriesData[currentSerie]; document.getElementById('aeGrid').innerHTML = data.aes.map(ae=>`<div class="ae-card"><div class="ae-code">${ae.code}</div><div class="ae-title">${ae.title||ae.code}</div><div class="ae-desc">Tópico essencial alinhado ao Currículo Paulista.</div><div class="ae-actions"><button class="btn-sm sim" onclick="openGlobalSim('${ae.sim}','${ae.code}')">Simular</button><button class="btn-sm quiz" onclick="startSerieQuiz()">Quiz</button><button class="btn-sm plano" onclick="openGlobalPlano('${ae.code}')">Plano</button></div></div>`).join(''); }
-function renderSimuladores() { const data=seriesData[currentSerie]; document.getElementById('simuladoresGrid').innerHTML = data.simuladores.map(tipo=>`<div class="ae-card" onclick="openPageSim('${tipo}','${tipo.toUpperCase()}')"><div class="ae-title">${tipo.toUpperCase()}</div><div class="ae-actions"><button class="btn-sm sim">▶ Iniciar</button></div></div>`).join(''); }
-function renderArena() { if(!currentSerie) return; const data=seriesData[currentSerie]; arenaState = { idx:0, score:0, questions:[...data.arenaChallenges], corrects:0 }; document.getElementById('arenaSerieLabel').innerHTML = data.name; document.getElementById('arenaScoreVal').innerText='0'; document.getElementById('arenaAcertos').innerHTML=`0/${arenaState.questions.length}`; document.getElementById('arenaEmptyState').style.display='none'; document.getElementById('arenaQuestionArea').style.display='block'; document.getElementById('arenaResultArea').style.display='none'; displayArenaQuestion(); }
-function displayArenaQuestion() { if(arenaState.idx>=arenaState.questions.length){ finishArena(); return; } const q=arenaState.questions[arenaState.idx]; document.getElementById('arenaQNum').innerHTML=`Questão ${arenaState.idx+1}/${arenaState.questions.length}`; document.getElementById('arenaQText').innerHTML=q.q; document.getElementById('arenaOptions').innerHTML=q.opts.map((opt,i)=>`<button class="arena-opt" onclick="answerArena(${i})"><span class="arena-opt-letter">${String.fromCharCode(65+i)}</span>${opt}</button>`).join(''); document.getElementById('arenaFeedback').innerHTML=''; document.getElementById('arenaNextBtn').style.display='none'; arenaState.answered=false; startArenaTimer(); }
-function startArenaTimer(){ if(arenaState.timer)clearInterval(arenaState.timer); let sec=15; document.getElementById('arenaFeedback').innerHTML=`⏱ ${sec}s`; arenaState.timer=setInterval(()=>{ sec--; document.getElementById('arenaFeedback').innerHTML=`⏱ ${sec}s`; if(sec<=0&&!arenaState.answered){ clearInterval(arenaState.timer); answerArena(-1); } },1000); }
-function answerArena(sel){ if(arenaState.answered)return; clearInterval(arenaState.timer); const q=arenaState.questions[arenaState.idx]; const isCorrect = (sel===q.correct); if(isCorrect){ arenaState.score+=100; arenaState.corrects++; document.getElementById('arenaScoreVal').innerText=arenaState.score; addXP(100); } const fb = isCorrect ? `✅ Correto! ${q.expl||'Muito bem!'}` : `❌ Errado! Resposta correta: ${q.opts[q.correct]}. Explicação: ${q.expl||'Revise o conceito.'}`; document.getElementById('arenaFeedback').innerHTML=`<div class="explicacao-box">${fb}</div>`; arenaState.answered=true; document.querySelectorAll('.arena-opt').forEach((btn,i)=>{ btn.classList.add('disabled'); if(i===q.correct)btn.classList.add('correct'); if(i===sel&&!isCorrect)btn.classList.add('wrong'); }); arenaState.idx++; document.getElementById('arenaNextBtn').style.display='block'; }
-function nextArenaQuestion(){ displayArenaQuestion(); }
-function finishArena(){ document.getElementById('arenaQuestionArea').style.display='none'; document.getElementById('arenaResultArea').style.display='block'; document.getElementById('arenaResultArea').innerHTML=`<div style="font-size:1.5rem;">🏆 Pontuação final: ${arenaState.score} pts</div><div>Acertos: ${arenaState.corrects}/${arenaState.questions.length}</div><button class="btn-primary" onclick="renderArena()">Jogar Novamente</button>`; }
-function renderQuiz(){ if(!currentSerie)return; const data=seriesData[currentSerie]; quizState={questions:[...data.quizBank], idx:0, score:0, answered:false}; displayQuizQuestion(); }
-function displayQuizQuestion(){ if(quizState.idx>=quizState.questions.length){ finishQuiz(); return; } const q=quizState.questions[quizState.idx]; document.getElementById('quizHeader').innerHTML=`Questão ${quizState.idx+1}/${quizState.questions.length}`; document.getElementById('quizBody').innerHTML=`<div class="quiz-question">${q.q}</div><div class="quiz-options">${q.opts.map((opt,i)=>`<div class="quiz-option" onclick="answerQuiz(${i})">${opt}</div>`).join('')}</div>`; document.getElementById('quizNextBtn').style.display='none'; quizState.answered=false; }
-function answerQuiz(sel){ if(quizState.answered)return; const q=quizState.questions[quizState.idx]; const correct=sel===q.correct; if(correct){ quizState.score+=100; addXP(100); } const explDiv = `<div class="explicacao-box">${correct?'✅ Correto! ':'❌ Errado! '} ${q.expl||(correct?'Parabéns!':'Estude mais.')}</div>`; document.getElementById('quizBody').innerHTML+=explDiv; document.querySelectorAll('.quiz-option').forEach((el,i)=>{ el.classList.add('disabled'); if(i===q.correct)el.classList.add('correct'); if(i===sel&&!correct)el.classList.add('wrong'); }); quizState.answered=true; quizState.idx++; document.getElementById('quizNextBtn').style.display='block'; document.getElementById('quizScore').innerText=quizState.score; }
-function nextQuizQuestion(){ displayQuizQuestion(); }
-function finishQuiz(){ document.getElementById('quizBody').innerHTML=`<div class="empty-state">🏆 Quiz finalizado! Pontuação: ${quizState.score}</div>`; document.getElementById('quizNextBtn').style.display='none'; }
-function openGlobalSim(tipo,tit){ document.getElementById('simTitle').innerHTML=tit; document.getElementById('simGlobalPanel').classList.add('active'); if(simulators[tipo]) simulators[tipo](document.getElementById('simCanvasContainer')); else document.getElementById('simCanvasContainer').innerHTML=`<div class="sim-inner">Simulador em construção.</div>`; }
-function openPageSim(tipo,tit){ document.getElementById('simPageTitle').innerHTML=tit; document.getElementById('simPagePanel').classList.add('active'); if(simulators[tipo]) simulators[tipo](document.getElementById('simPageContainer')); else document.getElementById('simPageContainer').innerHTML=`<div class="sim-inner">Em breve.</div>`; }
-function openGlobalPlano(code){ document.getElementById('planoContent').innerHTML=`<div><b>Plano de Aula - ${code}</b><p>Metodologias ativas: resolução de problemas, uso de simuladores 3D, avaliação formativa com rubricas.</p></div>`; document.getElementById('planoGlobalPanel').classList.add('active'); }
-function startSerieQuiz(){ renderQuiz(); changePage('quiz'); }
-function renderProfessor(){ const data=seriesData[currentSerie]; document.getElementById('profGrid').innerHTML=data.simuladores.map(tipo=>`<div class="ae-card" onclick="openProfSim('${tipo}','${tipo}')"><div class="ae-title">🎓 Estratégia: ${tipo}</div><div class="ae-actions"><button class="btn-sm sim">Ver recurso</button></div></div>`).join(''); }
-function openProfSim(tipo,tit){ document.getElementById('simProfTitle').innerHTML=tit; document.getElementById('simProfPanel').classList.add('active'); if(simulators[tipo]) simulators[tipo](document.getElementById('simProfContainer')); }
-function updateProgress(){ const p = Math.min(95, Math.floor(xpTotal/500)*15+10); document.getElementById('xpTotal').innerText=xpTotal; }
-function addXP(v){ xpTotal+=v; updateProgress(); showToast(`+${v} XP`,''); }
-function showToast(msg){ const t=document.getElementById('toast'); document.getElementById('toastText').innerHTML=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
-function closeGlobalSim(){ document.getElementById('simGlobalPanel').classList.remove('active'); }
+
+function openGlobalSim(tipo, title) {
+    document.getElementById('simTitle').textContent = title;
+    const panel = document.getElementById('simGlobalPanel');
+    panel.classList.add('active');
+    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    openSimulator(tipo, 'simCanvasContainer');
+}
+function closeGlobalSim()  { document.getElementById('simGlobalPanel').classList.remove('active'); }
 function closeGlobalPlano(){ document.getElementById('planoGlobalPanel').classList.remove('active'); }
-function initSelectors(){ const series=['ef6','ef7','ef8','ef9','em1','em2','em3']; const names=['6º Ano','7º Ano','8º Ano','9º Ano','1ª EM','2ª EM','3ª EM']; series.forEach((s,i)=>{ const btn=`<button class="series-btn" onclick="selectSerie('${s}',this)">${names[i]}</button>`; document.querySelectorAll('.series-selector').forEach(sel=>sel.innerHTML+=btn); }); selectSerie('ef6',document.querySelector('#serieSelectorHome .series-btn')); }
-initSelectors();
+
+function openGlobalPlano(code) {
+    const data = seriesData[currentSerie] || {};
+    const ae = (data.aes||[]).find(a => a.code === code) || {};
+    document.getElementById('planoTitle').textContent = `📋 Plano de Aula — ${code}`;
+    document.getElementById('planoContent').innerHTML = `
+        <h3 style="margin-bottom:14px;font-size:1rem;">${ae.title||code}</h3>
+        <div style="display:grid;gap:10px;">
+            <div style="background:var(--surface-2);border-left:3px solid var(--primary);padding:12px;border-radius:8px;">
+                <b>🎯 Objetivos de Aprendizagem</b><br>
+                <span style="font-size:0.82rem;color:var(--text-secondary);">${ae.desc||'Desenvolver habilidades matemáticas alinhadas ao Currículo Paulista.'}</span>
+            </div>
+            <div style="background:var(--surface-2);border-left:3px solid var(--success);padding:12px;border-radius:8px;">
+                <b>📅 Sequência Didática (4 aulas × 50 min)</b><br>
+                <span style="font-size:0.82rem;color:var(--text-secondary);">
+                    <b>Aula 1:</b> Diagnóstico e problematização |
+                    <b>Aula 2:</b> Conceituação e formalização |
+                    <b>Aula 3:</b> Prática com simulador e exercícios |
+                    <b>Aula 4:</b> Avaliação e sistematização
+                </span>
+            </div>
+            <div style="background:var(--surface-2);border-left:3px solid var(--warning);padding:12px;border-radius:8px;">
+                <b>📚 Recursos Didáticos</b><br>
+                <span style="font-size:0.82rem;color:var(--text-secondary);">Simulador interativo, material concreto, atividades em grupo, slides e vídeo complementar.</span>
+            </div>
+            <div style="background:var(--surface-2);border-left:3px solid var(--info);padding:12px;border-radius:8px;">
+                <b>✅ Avaliação — Prova Paulista</b><br>
+                <span style="font-size:0.82rem;color:var(--text-secondary);">Questões alinhadas à Matriz da Prova Paulista. Rubrica com critérios de desempenho por nível (Abaixo do Básico, Básico, Adequado, Avançado).</span>
+            </div>
+        </div>`;
+    const panel = document.getElementById('planoGlobalPanel');
+    panel.classList.add('active');
+    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* Selecionar série — sincroniza todas as páginas */
+function selectSerie(id, el, context) {
+    currentSerie = id;
+    const data = seriesData[id];
+    // Marca botão ativo no seletor correto
+    if(el) {
+        const parent = el.closest('.series-selector');
+        if(parent) parent.querySelectorAll('.series-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+    }
+    renderAEs(); renderSimuladores(); renderArena(); renderQuiz(); renderProfessor(); updateProgress();
+    closeGlobalSim(); closeGlobalPlano();
+    showToast("🎯", data.name);
+    // Navegar para a aba correspondente ao contexto
+    if(context==='sim')   changePage('simuladores');
+    else if(context==='arena') changePage('arena');
+    else if(context==='quiz')  changePage('quiz');
+    else if(context==='prof')  changePage('professor');
+}
+
+function renderAEs() {
+    if(!currentSerie) return;
+    const data = seriesData[currentSerie];
+    document.getElementById('aeSectionTitle').textContent = `Aprendizagens Essenciais — ${data.name}`;
+    if(!data.aes.length) {
+        document.getElementById('aeGrid').innerHTML='<div class="empty-state">📚 Em desenvolvimento.</div>'; return;
+    }
+    document.getElementById('aeGrid').innerHTML = data.aes.map(ae => `
+        <div class="ae-card">
+            <div class="ae-header">
+                <span class="ae-code">${ae.code}</span>
+            </div>
+            <div class="ae-title">${ae.title}</div>
+            <div class="ae-desc">${ae.desc}</div>
+            <div class="ae-actions">
+                ${ae.sim  ? `<button class="btn-sm sim"   onclick="openGlobalSim('${ae.sim}','${ae.title}')">🎮 Simular</button>` : ''}
+                ${ae.quiz ? `<button class="btn-sm quiz"  onclick="startSerieQuiz()">📝 Quiz</button>` : ''}
+                <button class="btn-sm plano" onclick="openGlobalPlano('${ae.code}')">📋 Plano</button>
+            </div>
+        </div>`).join('');
+}
+
+function renderSimuladores() {
+    if(!currentSerie) return;
+    const data = seriesData[currentSerie];
+    document.getElementById('simuladoresTitle').textContent = `Simuladores — ${data.name}`;
+    document.getElementById('simuladoresGrid').innerHTML = data.simuladores.length
+        ? data.simuladores.map(sim => `
+            <div class="ae-card" onclick="openPageSim('${sim.tipo}','${sim.nome}')">
+                <div class="ae-title">${sim.nome}</div>
+                <div class="ae-desc">${sim.desc}</div>
+                <div class="ae-actions"><button class="btn-sm sim" onclick="event.stopPropagation();openPageSim('${sim.tipo}','${sim.nome}')">▶ Iniciar</button></div>
+            </div>`).join('')
+        : '<div class="empty-state">🎯 Simuladores em breve.</div>';
+}
+
+function openPageSim(tipo, title) {
+    document.getElementById('simPageTitle').textContent = title;
+    const panel = document.getElementById('simPagePanel');
+    panel.classList.add('active');
+    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    openSimulator(tipo, 'simPageContainer');
+}
+
+function renderProfessor() {
+    if(!currentSerie) return;
+    const data = seriesData[currentSerie];
+    document.getElementById('profTitle').textContent = `Estratégias Metodológicas — ${data.name}`;
+    document.getElementById('profGrid').innerHTML = data.estrategias.length
+        ? data.estrategias.map(e => `
+            <div class="ae-card" onclick="openProfSim('${e.tipo}','${e.nome}')">
+                <div class="ae-title">${e.nome}</div>
+                <div class="ae-desc">${e.desc}</div>
+                <div class="ae-actions"><button class="btn-sm sim" onclick="event.stopPropagation();openProfSim('${e.tipo}','${e.nome}')">🎮 Experimentar</button></div>
+            </div>`).join('')
+        : '<div class="empty-state">📚 Estratégias em breve.</div>';
+}
+
+function openProfSim(tipo, title) {
+    document.getElementById('simProfTitle').textContent = title;
+    const panel = document.getElementById('simProfPanel');
+    panel.classList.add('active');
+    panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    openSimulator(tipo, 'simProfContainer');
+}
+
+/* ─── Arena ─── */
+function renderArena() {
+    if(!currentSerie) return;
+    const data = seriesData[currentSerie];
+    document.getElementById('arenaChallenge').textContent = '⚡ Arena';
+    document.getElementById('arenaSerieLabel').textContent = data.name;
+    arenaState = { idx:0, score:0, questions:[...data.arenaChallenges], answered:false };
+    arenaCorrects = 0;
+    document.getElementById('arenaScoreVal').textContent = '0';
+    document.getElementById('arenaAcertos').textContent = `0/${data.arenaChallenges.length}`;
+    document.getElementById('arenaProgressFill').style.width = '0%';
+    startArenaAnimation();
+    // Mostra área de questão
+    document.getElementById('arenaEmptyState').style.display   = 'none';
+    document.getElementById('arenaQuestionArea').style.display = 'block';
+    document.getElementById('arenaResultArea').style.display   = 'none';
+    displayArenaQuestion();
+}
+
+function reiniciarArena() {
+    renderArena();
+}
+
+function startArenaAnimation() {
+    if(arenaAnimID) cancelAnimationFrame(arenaAnimID);
+    const canvas = document.getElementById('arenaCanvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const rng = mulberry32(42);
+    const stars = Array.from({length:80}, ()=>({ x:rng(), y:rng(), r:rng()*1.2+0.2, o:0.1+rng()*0.5 }));
+    function animate(ts) {
+        const t = ts * 0.001;
+        const W = canvas.parentElement?.clientWidth  || 600;
+        const H = canvas.parentElement?.clientHeight || 130;
+        canvas.width = W; canvas.height = H;
+        ctx.fillStyle = '#04060D'; ctx.fillRect(0,0,W,H);
+        // Estrelas estáticas
+        stars.forEach(s => {
+            ctx.beginPath(); ctx.arc(s.x*W, s.y*H, s.r, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(255,255,255,${s.o})`; ctx.fill();
+        });
+        // Ondas animadas
+        ctx.strokeStyle='rgba(79,142,247,0.45)'; ctx.lineWidth=2; ctx.beginPath();
+        for(let x=0;x<W;x+=2){const y=H/2+Math.sin(x*0.018+t)*32+Math.cos(x*0.009+t*1.4)*14; x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);} ctx.stroke();
+        ctx.strokeStyle='rgba(155,111,247,0.3)'; ctx.lineWidth=1.5; ctx.beginPath();
+        for(let x=0;x<W;x+=2){const y=H/2+Math.sin(x*0.026+t*0.7+2)*20; x===0?ctx.moveTo(x,y):ctx.lineTo(x,y);} ctx.stroke();
+        arenaAnimID = requestAnimationFrame(animate);
+    }
+    arenaAnimID = requestAnimationFrame(animate);
+}
+function mulberry32(a){ return function(){ a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296; }; }
+
+function startArenaTimer() {
+    clearInterval(arenaTimerID);
+    arenaSecsLeft = 15;
+    updateArenaTimerUI(15, 15);
+    arenaTimerID = setInterval(() => {
+        arenaSecsLeft--;
+        updateArenaTimerUI(arenaSecsLeft, 15);
+        if(arenaSecsLeft <= 0) {
+            clearInterval(arenaTimerID);
+            // Tempo esgotado — marca como errado
+            if(!arenaState.answered) {
+                arenaState.answered = true;
+                const q = arenaState.questions[arenaState.idx];
+                document.querySelectorAll('.arena-opt').forEach((el,i) => {
+                    el.classList.add('disabled');
+                    if(i===q.correct) el.classList.add('correct');
+                });
+                document.getElementById('arenaFeedback').innerHTML =
+                    `<span style="color:var(--warning)">⏱ Tempo esgotado! Resposta correta: <b>${q.opts[q.correct]}</b></span>`;
+                document.getElementById('arenaNextBtn').style.display = 'block';
+                arenaState.idx++;
+                arenaState.answered = false;
+            }
+        }
+    }, 1000);
+}
+
+function updateArenaTimerUI(cur, max) {
+    const el = document.getElementById('arenaTimerText');
+    const circle = document.getElementById('arenaTimerCircle');
+    if(el) el.textContent = cur;
+    if(circle) {
+        const pct = cur / max;
+        const dash = 113;
+        circle.style.strokeDashoffset = dash * (1 - pct);
+        circle.style.stroke = cur > 8 ? '#4F8EF7' : cur > 4 ? '#F5A623' : '#F25C5C';
+    }
+}
+
+function displayArenaQuestion() {
+    clearInterval(arenaTimerID);
+    const qs = arenaState.questions;
+    const total = qs.length;
+
+    if(arenaState.idx >= total) {
+        // Resultado final
+        document.getElementById('arenaQuestionArea').style.display = 'none';
+        document.getElementById('arenaResultArea').style.display   = 'block';
+        updateArenaTimerUI(0, 15);
+        const pct = arenaCorrects/total;
+        document.getElementById('arenaResultEmoji').textContent = pct>=0.8?'🏆':pct>=0.5?'⭐':'💪';
+        document.getElementById('arenaResultTitle').textContent =
+            pct>=0.8?'Excelente! Arena Concluída!':pct>=0.5?'Bom trabalho!':'Continue praticando!';
+        document.getElementById('arenaResultScore').textContent = `${arenaState.score} pts`;
+        document.getElementById('arenaResultDetail').textContent =
+            `${arenaCorrects} de ${total} questões corretas (${Math.round(pct*100)}%)`;
+        document.getElementById('arenaProgressFill').style.width = '100%';
+        return;
+    }
+
+    const q = qs[arenaState.idx];
+    const letters = ['A','B','C','D'];
+
+    // Progresso
+    document.getElementById('arenaProgressFill').style.width = `${(arenaState.idx/total)*100}%`;
+    document.getElementById('arenaChallenge').textContent = `⚡ Desafio ${arenaState.idx+1}/${total}`;
+    document.getElementById('arenaAcertos').textContent = `${arenaCorrects}/${total}`;
+
+    // Questão com animação de entrada
+    const qArea = document.getElementById('arenaQuestionArea');
+    qArea.classList.remove('arena-q-enter');
+    void qArea.offsetWidth; // reflow
+    qArea.classList.add('arena-q-enter');
+
+    document.getElementById('arenaQNum').textContent = `Questão ${arenaState.idx+1} de ${total}`;
+    document.getElementById('arenaQText').textContent = q.q;
+    document.getElementById('arenaFeedback').innerHTML = '';
+    document.getElementById('arenaNextBtn').style.display = 'none';
+
+    document.getElementById('arenaOptions').innerHTML = q.opts.map((opt, i) => `
+        <button class="arena-opt" onclick="answerArena(${i})">
+            <span class="arena-opt-letter">${letters[i]}</span>
+            ${opt}
+        </button>`).join('');
+
+    startArenaTimer();
+}
+
+function answerArena(sel) {
+    if(arenaState.answered) return;
+    arenaState.answered = true;
+    clearInterval(arenaTimerID);
+    const q = arenaState.questions[arenaState.idx];
+    const ok = sel === q.correct;
+    if(ok) {
+        const bonus = arenaSecsLeft >= 10 ? 150 : arenaSecsLeft >= 5 ? 100 : 75;
+        arenaState.score += bonus;
+        arenaCorrects++;
+        document.getElementById('arenaScoreVal').textContent = arenaState.score;
+        document.getElementById('arenaAcertos').textContent = `${arenaCorrects}/${arenaState.questions.length}`;
+        showToast("✅", `+${bonus} XP${bonus>100?' (rápido! 🔥)':''}`);
+        addXP(bonus);
+    } else {
+        showToast("❌", `Resposta: ${q.opts[q.correct]}`);
+    }
+    document.querySelectorAll('.arena-opt').forEach((el, i) => {
+        el.classList.add('disabled');
+        if(i === q.correct) el.classList.add('correct');
+        else if(i === sel)  el.classList.add('wrong');
+    });
+    document.getElementById('arenaFeedback').innerHTML = ok
+        ? `<span style="color:var(--success)">✅ Correto! ${arenaSecsLeft >= 10 ? '+150 pts (velocidade máxima!)' : '+100 pts'}</span>`
+        : `<span style="color:var(--danger)">❌ Resposta correta: <b>${q.opts[q.correct]}</b></span>`;
+    document.getElementById('arenaNextBtn').style.display = 'block';
+    arenaState.idx++;
+    arenaState.answered = false;
+}
+function nextArenaQuestion(){ displayArenaQuestion(); }
+
+/* ─── Quiz ─── */
+function renderQuiz() {
+    if(!currentSerie) return;
+    const data = seriesData[currentSerie];
+    document.getElementById('quizTitle').textContent=`Quiz — ${data.name}`;
+    if(data.quizBank && data.quizBank.length) {
+        quizState = { questions:[...data.quizBank], idx:0, score:0, answered:false };
+        quizSeconds=0; clearInterval(quizTimerID);
+        quizTimerID=setInterval(()=>{ quizSeconds++; const m=Math.floor(quizSeconds/60),s=quizSeconds%60; document.getElementById('quizTimer').textContent=`⏱ ${m}:${s.toString().padStart(2,'0')}`; },1000);
+        displayQuizQuestion();
+    } else {
+        document.getElementById('quizBody').innerHTML='<div class="empty-state">📝 Questões em desenvolvimento.</div>';
+    }
+}
+
+function startSerieQuiz(){ renderQuiz(); changePage('quiz'); }
+
+function displayQuizQuestion() {
+    if(!quizState || quizState.idx>=quizState.questions.length) {
+        clearInterval(quizTimerID);
+        document.getElementById('quizBody').innerHTML=`<div style="text-align:center;padding:2rem;"><div style="font-size:2rem;margin-bottom:1rem;">🏆</div><div style="font-size:1.1rem;font-weight:700;">Quiz Finalizado!</div><div style="font-size:2rem;font-weight:800;color:var(--warning);font-family:'JetBrains Mono',monospace;margin-top:.5rem;">${quizState?.score||0} pts</div></div>`;
+        document.getElementById('quizNextBtn').style.display='none';
+        return;
+    }
+    const q=quizState.questions[quizState.idx];
+    const total=quizState.questions.length;
+    document.getElementById('quizHeader').textContent=`Questão ${quizState.idx+1} de ${total}${q.group?' — '+q.group:''}`;
+    document.getElementById('quizBody').innerHTML=`
+        <div class="quiz-question">${q.q}</div>
+        <div class="quiz-options">${q.opts.map((opt,i)=>`<div class="quiz-option" onclick="answerQuiz(${i})">${opt}</div>`).join('')}</div>`;
+    document.getElementById('quizNextBtn').style.display='none';
+    document.getElementById('quizScore').textContent=quizState.score;
+}
+
+function answerQuiz(sel) {
+    if(!quizState||quizState.answered) return;
+    quizState.answered=true;
+    const q=quizState.questions[quizState.idx];
+    const ok=sel===q.correct;
+    if(ok){ quizState.score+=100; showToast("✅","+100 XP!"); addXP(100); }
+    else  { showToast("❌",`Correto: ${q.opts[q.correct]}`); }
+    document.querySelectorAll('#quizBody .quiz-option').forEach((el,i)=>{
+        el.classList.add('disabled');
+        if(i===q.correct) el.classList.add('correct');
+        else if(i===sel)  el.classList.add('wrong');
+    });
+    document.getElementById('quizScore').textContent=quizState.score;
+    document.getElementById('quizNextBtn').style.display='block';
+    quizState.idx++; quizState.answered=false;
+}
+function nextQuizQuestion(){ displayQuizQuestion(); }
+
+/* ─── Progresso ─── */
+function updateProgress(){
+    if(!currentSerie){return;}
+    const data = seriesData[currentSerie];
+    // Simula progresso baseado em XP e turma
+    const p = Math.min(95, Math.floor((xpTotal/500)*100) + Math.floor(Math.random()*10)+5);
+    document.getElementById('progressPercent').textContent=p+'%';
+    document.getElementById('progressBar').style.width=p+'%';
+    document.getElementById('progressLabel').textContent=`${data.name} — ${p}% concluído`;
+}
+
+function addXP(n){ xpTotal+=n; document.getElementById('xpTotal').textContent=xpTotal; updateProgress(); }
+
+/* ─── Navegação ─── */
+function changePage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(`page-${page}`).classList.add('active');
+    const tabs=document.querySelectorAll('.nav-tab');
+    ['home','simuladores','arena','quiz','professor'].forEach((p,i) => tabs[i].classList.toggle('active',p===page));
+}
+
+/* ─── Toast ─── */
+let toastTimer;
+function showToast(icon, msg) {
+    clearTimeout(toastTimer);
+    document.getElementById('toastMsg').textContent=icon;
+    document.getElementById('toastText').textContent=msg;
+    const t=document.getElementById('toast');
+    t.classList.add('show');
+    toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ─── Init ─── */
+window.addEventListener('load', () => {
+    selectSerie('ef6', document.querySelector('#serieSelectorHome .series-btn'));
+});
 </script>
 </body>
-</html>
-```
+    </html>

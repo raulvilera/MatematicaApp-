@@ -4,13 +4,19 @@
    Network-First para a API da Anthropic.
    ============================================================ */
 
-const CACHE_NAME = 'matematica-app-v2';
-const CACHE_VERSION = 2;
+const CACHE_NAME = 'matematica-app-v3';
+const CACHE_VERSION = 3;
 
-// Assets que serão cacheados no install
+// ✅ CORREÇÃO: caminhos absolutos para coincidir com o escopo '/' do Vercel
+// O SW é servido na raiz (/sw.js) e opera no escopo '/'
 const PRECACHE_ASSETS = [
+  '/',
+  '/index.html',
   '/mathem.html',
   '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png',
+  'https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=JetBrains+Mono:wght@700&display=swap',
   'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
 ];

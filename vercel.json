@@ -1,12 +1,6 @@
 {
   "version": 2,
   "name": "mathem-sp",
-  "builds": [
-    {
-      "src": "**/*",
-      "use": "@vercel/static"
-    }
-  ],
   "routes": [
     {
       "src": "/sw.js",
@@ -33,6 +27,16 @@
       }
     },
     {
+      "src": "/index.html",
+      "dest": "/index.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      }
+    },
+    {
       "src": "/mathem.html",
       "dest": "/mathem.html",
       "headers": {
@@ -44,7 +48,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/mathem.html"
+      "dest": "/index.html"
     }
   ],
   "headers": [

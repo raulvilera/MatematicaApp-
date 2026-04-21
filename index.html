@@ -157,6 +157,9 @@
   }
   .install-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.04); }
   .install-btn span { font-size: 1.1rem; }
+
+  /* ✅ CORREÇÃO: seletor .loading-txt estava faltando — CSS órfão quebrava o parsing */
+  .loading-txt {
     font-size: 0.72rem;
     color: rgba(255,255,255,0.65);
     font-weight: 700;
@@ -244,7 +247,8 @@
 
   // ── Registro do Service Worker ──
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js', { scope: './' })
+    // ✅ CORREÇÃO: scope '/' para compatibilidade com Vercel (serve na raiz)
+    navigator.serviceWorker.register('./sw.js', { scope: '/' })
       .then(reg => console.log('[SW] Registrado:', reg.scope))
       .catch(err => console.warn('[SW] Erro:', err));
   }

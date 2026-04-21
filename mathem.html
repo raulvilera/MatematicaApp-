@@ -1007,6 +1007,13 @@ function gerarQ_em3(){
   ];
 }
 
+// ✅ CORREÇÃO: embaralha as opções para que a resposta correta não seja sempre a última
+function shuffleOpts(q) {
+  const correctText = q.opts[q.correct];
+  const shuffled = [...q.opts].sort(() => Math.random() - 0.5);
+  return { ...q, opts: shuffled, correct: shuffled.indexOf(correctText) };
+}
+
 function gerarQ(serie){
   return [
     {q:"Calcule 3/4 + 1/4.",opts:["1/2","3/8","7/8","1"],correct:3,expl:"3/4+1/4=4/4=1. Mesmos denominadores, somam-se os numeradores."},
@@ -1019,7 +1026,7 @@ function gerarQ(serie){
     {q:"Catetos 3 e 4. Hipotenusa:",opts:["6","7","8","5"],correct:3,expl:"3²+4²=9+16=25; √25=5."},
     {q:"Número de diagonais de um pentágono:",opts:["3","4","6","5"],correct:3,expl:"n(n-3)/2=5·2/2=5."},
     {q:"Qual fração equivale a 0,25?",opts:["1/2","1/3","1/5","1/4"],correct:3,expl:"0,25=25/100=1/4."}
-  ].map(q=>({...q,expl:q.expl+(serie>=8?' (Série '+serie+'º)':'')}));
+  ].map(q=>shuffleOpts({...q,expl:q.expl+(serie>=8?' (Série '+serie+'º)':'')}));
 }
 
 /* ====================================================
@@ -4869,8 +4876,9 @@ function displayArenaQ(){
   ).join('');
   document.getElementById('arenaFeedback').innerHTML = '';
   document.getElementById('arenaNextBtn').style.display = 'none';
+  // ✅ CORREÇÃO: limpa o timer ANTES de resetar answered, evitando condição de corrida
+  if (arenaState.timer) { clearInterval(arenaState.timer); arenaState.timer = null; }
   arenaState.answered = false;
-  if (arenaState.timer) clearInterval(arenaState.timer);
   let sec = 15;
   document.getElementById('arenaFeedback').innerHTML = `⏱ ${sec}s`;
   arenaState.timer = setInterval(() => {

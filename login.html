@@ -132,7 +132,7 @@ async function doRegister(){
   btn.disabled=true;btn.textContent='Criando conta...';
   var result=await SubscriptionService.supabase.auth.signUp({email:email,password:password,options:{data:{full_name:name}}});
   if(result.error){
-    var msg='Erro ao criar conta.';
+    var msg='Erro: ' + (result.error.message || result.error.status || JSON.stringify(result.error));
     if(result.error.message&&result.error.message.includes('already registered')) msg='Este e-mail já está cadastrado. Faça login.';
     showMsg(msg,'error');btn.disabled=false;btn.textContent='Criar conta gratis';return;
   }

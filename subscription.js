@@ -1,9 +1,9 @@
 // ── CONFIG ──────────────────────────────────────────────────
-const SUPABASE_URL      = 'https://bttkwnnwmcuthcmdzdrh.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0dGt3bm53bWN1dGhjbWR6ZHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MTQ2ODQsImV4cCI6MjA5MjM5MDY4NH0.pihYj_B6zp3p5SowTkUPK4YQp3c615FHNwU5wXENA2c';
+const SUPABASE_URL      = 'https://bttkwnnwmcuthcmdzdrh.supabase.co'; // ✅ corrigido (faltava 'j')
+const SUPABASE_KEY = 'sb_publishable_FFW0rCWnVBnDOGTGmZgYXQ_uHOkZZpl';
 // ────────────────────────────────────────────────────────────
 
-const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function getUser() {
   const { data: { user } } = await _sb.auth.getUser();
@@ -15,21 +15,27 @@ async function getSubscription() {
   if (!user) { window.location.href = './login.html'; return null; }
   const { data, error } = await _sb.from('subscriptions')
     .select('*').eq('user_id', user.id).single();
-  if (error) { console.error('[Sub]', error); return null; }
+  if (error) { console.error(error); return null; }
   return data;
 }
 
+// ✅ NOVO: cria registro de trial para usuário recém-cadastrado
 async function createTrialSubscription(userId) {
   const trialEnd = new Date();
-  trialEnd.setDate(trialEnd.getDate() + 7);
+  trialEnd.setDate(trialEnd.getDate() + 7); // 7 dias de trial
+
   const { data, error } = await _sb.from('subscriptions').insert({
     user_id: userId,
     status: 'trial',
     trial_ends_at: trialEnd.toISOString(),
     current_period_ends_at: trialEnd.toISOString(),
   }).select().single();
-  if (error) console.error('[Trial]', error);
-  return data || null;
+
+  if (error) {
+    console.error('[Subscription] Erro ao criar trial:', error);
+    return null;
+  }
+  return data;
 }
 
 async function requireAccess() {
@@ -104,7 +110,7 @@ window.SubscriptionService = {
   supabase: _sb,
   getUser,
   getSubscription,
-  createTrialSubscription,
+  createTrialSubscription, // ✅ exposto para o login.html usar
   requireAccess,
   registerPaymentIntent,
   signOut

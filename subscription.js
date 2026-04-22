@@ -1,6 +1,6 @@
 // ── CONFIG ──────────────────────────────────────────────────
 const SUPABASE_URL      = 'https://ewglvgxmqwjeuxcqesws.supabase.co'; // ✅ corrigido (faltava 'j')
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3Z2x2Z3htcXdqZXV4Y3Flc3dzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MDM3NjAsImV4cCI6MjA5MjM3OTc2MH0.J-C5EGIVNqakuZFVs3qPTt2Zd1FLFNO37p9d5anH_bY';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0dGt3bm53bWN1dGhjbWR6ZHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MTQ2ODQsImV4cCI6MjA5MjM5MDY4NH0.pihYj_B6zp3p5SowTkUPK4YQp3c615FHNwU5wXENA2c';
 // ────────────────────────────────────────────────────────────
 
 const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

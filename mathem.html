@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./subscription.js"></script>
+<script>(async function(){document.documentElement.style.visibility="hidden";var ok=await SubscriptionService.requireAccess();if(ok)document.documentElement.style.visibility="visible";})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Matemática·SP | Currículo Paulista Completo</title>
+<title>Matemática·SP | Base Nacional · EF/EM</title>
 
 <!-- ═══ PWA ═══ -->
 <link rel="manifest" href="/manifest.json">
@@ -18,7 +21,7 @@
 <meta name="msapplication-TileImage" content="/icon-192.png">
 <!-- ══════════ -->
 
-<meta name="description" content="Simuladores interativos de matemática para o Currículo Paulista — EF e EM">
+<meta name="description" content="Simuladores interativos de matemática para o Base Nacional — EF e EM">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
@@ -525,8 +528,8 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 <!-- PÁGINAS -->
 <div class="page active" id="page-home">
   <div style="background:linear-gradient(135deg,#080B12,#0D1528);border:1px solid var(--border-2);border-radius:var(--radius);padding:1.125rem;margin-bottom:0.875rem;">
-    <h2 style="font-size:clamp(0.95rem,2.5vw,1.2rem);margin-bottom:0.4rem;">🎓 Currículo Paulista — Matemática EF/EM</h2>
-    <p style="font-size:0.8rem;color:var(--text-secondary);">Plataforma completa com <strong style="color:var(--secondary)">todos os temas</strong> do Currículo Paulista: simuladores interativos, atividades geradas por IA, Arena e Quiz para cada tópico.</p>
+    <h2 style="font-size:clamp(0.95rem,2.5vw,1.2rem);margin-bottom:0.4rem;">🎓 Base Nacional — Matemática EF/EM</h2>
+    <p style="font-size:0.8rem;color:var(--text-secondary);">Plataforma completa com <strong style="color:var(--secondary)">todos os temas</strong> da Base Nacional (BNCC): simuladores interativos, atividades geradas por IA, Arena e Quiz para cada tópico.</p>
   </div>
   <div class="serie-nav" id="serieNavHome"></div>
   <div id="temasContainerHome" class="temas-container" style="display:none;">
@@ -739,7 +742,7 @@ const ef9_aes = [
   {code:'EF09MA07',title:'Expressões algébricas com números reais',sim:'afim',tag:'alg',desc:'Valor numérico de expressões algébricas envolvendo números reais e radicais.'},
 ];
 
-/* ── 1ª SÉRIE EM — 28 aulas (Currículo Paulista) ── */
+/* ── 1ª SÉRIE EM — 28 aulas (Base Nacional / BNCC) ── */
 const em1_aes = [
   {code:'EM1-A01',title:'Retomando equações do 1º grau',sim:'sistema',tag:'alg',
    desc:'Revisão de equações lineares: isolamento da incógnita, verificação da solução e propriedades da igualdade.'},
@@ -799,7 +802,7 @@ const em1_aes = [
    desc:'Revisão geral integrando equações, grandezas, funções e função afim com aplicações.'},
 ];
 
-/* ── 2ª SÉRIE EM — 28 aulas (Currículo Paulista) ── */
+/* ── 2ª SÉRIE EM — 28 aulas (Base Nacional / BNCC) ── */
 const em2_aes = [
   {code:'EM2-A01',title:'Explorando equações exponenciais',sim:'exponencial',tag:'alg',
    desc:'Reconhecimento e resolução de equações exponenciais simples. Propriedades das potências.'},
@@ -859,7 +862,7 @@ const em2_aes = [
    desc:'Revisão integrada de exponencial e logarítmica com problemas nível ENEM/vestibular.'},
 ];
 
-/* ── 3ª SÉRIE EM — 28 aulas (Currículo Paulista) ── */
+/* ── 3ª SÉRIE EM — 28 aulas (Base Nacional / BNCC) ── */
 const em3_aes = [
   {code:'EM3-A01',title:'Princípio multiplicativo da contagem',sim:'combinatoria',tag:'alg',
    desc:'Princípio fundamental da contagem. Diagrama de árvore e tabela de possibilidades.'},
@@ -4114,10 +4117,10 @@ async function carregarAtv(tipoIdx){
   if(atvState.cache[k]){renderAtv(atvState.cache[k],tipo);return;}
 
   const curriculoInfo = {
-    ef6:`6º Ano EF — Currículo Paulista: Frações, Geometria (ângulos, polígonos, triângulos, quadriláteros)`,
-    ef7:`7º Ano EF — Currículo Paulista: Números Racionais, Plano Cartesiano, Áreas`,
-    ef8:`8º Ano EF — Currículo Paulista: Álgebra, Equações 1º grau, Sistemas de equações`,
-    ef9:`9º Ano EF — Currículo Paulista: Semelhança, Teorema de Pitágoras, Números Reais`,
+    ef6:`6º Ano EF — Base Nacional (BNCC): Frações, Geometria (ângulos, polígonos, triângulos, quadriláteros)`,
+    ef7:`7º Ano EF — Base Nacional (BNCC): Números Racionais, Plano Cartesiano, Áreas`,
+    ef8:`8º Ano EF — Base Nacional (BNCC): Álgebra, Equações 1º grau, Sistemas de equações`,
+    ef9:`9º Ano EF — Base Nacional (BNCC): Semelhança, Teorema de Pitágoras, Números Reais`,
     em1:`1ª série EM — Funções Afim, Quadrática, Exponencial, Logaritmos, Trigonometria, Progressões`,
     em2:`2ª série EM — Ciclo trigonométrico, Matrizes, Estatística, Probabilidade`,
     em3:`3ª série EM — Geometria Analítica, Geometria Espacial, Combinatória, Complexos`,
@@ -5086,7 +5089,7 @@ td:first-child{background:#E8F0FB;font-weight:bold;color:#1E3A8A;width:160px;fon
 <div style="font-size:12pt;font-weight:bold;margin:4px 0;">${titulo}</div>
 <div style="font-size:10pt;color:#555;">${periodo}</div></div>
 <table>${Object.entries(campos).map(([k,v])=>`<tr><td>${k}</td><td>${v.replace(/\n/g,'<br>')}</td></tr>`).join('')}</table>
-<div class="rod">Matemática·SP — Plataforma de Matemática · Currículo Paulista</div>
+<div class="rod">Matemática·SP — Plataforma de Matemática · Base Nacional / BNCC</div>
 <script>window.onload=()=>{window.print();}<\/script></body></html>`;
   const blob = new Blob([html], {type:'text/html;charset=utf-8'});
   const url = URL.createObjectURL(blob);

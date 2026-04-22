@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrar - Matematica@App</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#C0392B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./subscription.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#1a0000 0%,#5C0A0A 30%,#B71C1C 65%,#FF5252 100%);
+  font-family:'Nunito',sans-serif;overflow:hidden;}
+.particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{position:absolute;color:rgba(255,150,150,0.28);font-family:'JetBrains Mono',monospace;
+  font-weight:900;user-select:none;animation:pfly linear infinite;}
+@keyframes pfly{0%{transform:translateY(110vh) rotate(0deg);opacity:0;}8%{opacity:1;}88%{opacity:.6;}100%{transform:translateY(-12vh) rotate(360deg);opacity:0;}}
+.card{position:relative;z-index:10;background:rgba(0,0,0,0.45);backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,82,82,0.35);border-radius:24px;padding:2.4rem 2rem;
+  width:min(92vw,420px);box-shadow:0 32px 64px rgba(0,0,0,0.5);
+  animation:cardIn 0.7s cubic-bezier(0.34,1.4,0.64,1) both;}
+@keyframes cardIn{from{opacity:0;transform:translateY(36px) scale(0.93);}to{opacity:1;transform:none;}}
+.logo{text-align:center;font-weight:900;font-size:1.8rem;margin-bottom:0.3rem;}
+.logo .mat{color:#fff;}.logo .at{color:#FF5252;font-family:'JetBrains Mono',monospace;}.logo .app{color:#FFCDD2;}
+.tagline{text-align:center;color:rgba(255,205,210,0.7);font-size:0.8rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.8rem;}
+.tabs{display:flex;background:rgba(255,255,255,0.06);border-radius:12px;padding:4px;margin-bottom:1.6rem;gap:4px;}
+.tab{flex:1;padding:0.5rem;border:none;background:transparent;color:rgba(255,205,210,0.6);
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;border-radius:9px;cursor:pointer;transition:0.2s;}
+.tab.active{background:rgba(255,82,82,0.3);color:white;}
+.field{margin-bottom:1rem;}
+label{display:block;color:rgba(255,205,210,0.8);font-size:0.78rem;font-weight:800;
+  letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.4rem;}
+input{width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);
+  border:1.5px solid rgba(255,82,82,0.25);border-radius:12px;color:white;
+  font-family:'Nunito',sans-serif;font-size:0.95rem;outline:none;transition:0.2s;}
+input::placeholder{color:rgba(255,205,210,0.3);}
+input:focus{border-color:rgba(255,82,82,0.7);background:rgba(255,82,82,0.08);}
+.trial-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(255,82,82,0.12);
+  border:1px solid rgba(255,82,82,0.3);border-radius:12px;padding:0.7rem 1rem;margin-bottom:1.2rem;}
+.trial-badge .icon{font-size:1.4rem;}
+.trial-badge p{font-size:0.82rem;font-weight:700;color:rgba(255,205,210,0.9);line-height:1.4;}
+.trial-badge strong{color:#FF8A80;}
+.btn{width:100%;padding:0.85rem;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#C0392B,#FF5252);color:white;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;
+  transition:0.2s;box-shadow:0 8px 24px rgba(180,0,0,0.4);}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(180,0,0,0.5);}
+.btn:disabled{opacity:0.5;transform:none;cursor:not-allowed;}
+.msg{margin-top:0.9rem;padding:0.65rem 1rem;border-radius:10px;font-size:0.82rem;
+  font-weight:700;text-align:center;display:none;}
+.msg.error{background:rgba(255,82,82,0.15);color:#FF8A80;border:1px solid rgba(255,82,82,0.3);}
+.msg.success{background:rgba(34,201,122,0.12);color:#6EE7B7;border:1px solid rgba(34,201,122,0.25);}
+.forgot{text-align:center;margin-top:0.9rem;}
+.forgot a{color:rgba(255,180,180,0.7);font-size:0.78rem;font-weight:700;text-decoration:none;cursor:pointer;}
+.forgot a:hover{color:#FF8A80;}
+</style>
+</head>
+<body>
+<div class="particles" id="pts"></div>
+<div class="card">
+  <div class="logo"><span class="mat">Matematica</span><span class="at">@</span><span class="app">App</span></div>
+  <div class="tagline">Base Nacional · EF/EM</div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('login')">Entrar</button>
+    <button class="tab" onclick="switchTab('register')">Criar conta</button>
+  </div>
+  <div id="formLogin">
+    <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com"></div>
+    <div class="field"><label>Senha</label><input type="password" id="loginPassword" placeholder="........"></div>
+    <button class="btn" id="btnLogin" onclick="doLogin()">Entrar</button>
+    <div class="forgot"><a onclick="doForgot()">Esqueci minha senha</a></div>
+  </div>
+  <div id="formRegister" style="display:none;">
+    <div class="trial-badge">
+      <span class="icon">&#127873;</span>
+      <p><strong>7 dias gratis</strong> sem cobrar nada agora.<br>Depois: R$21,99/mes ou R$250,00/ano.</p>
+    </div>
+    <div class="field"><label>Nome completo</label><input type="text" id="regName" placeholder="Seu nome"></div>
+    <div class="field"><label>E-mail</label><input type="email" id="regEmail" placeholder="seu@email.com"></div>
+    <div class="field"><label>Senha (min. 6 caracteres)</label><input type="password" id="regPassword" placeholder="........"></div>
+    <button class="btn" id="btnRegister" onclick="doRegister()">Criar conta gratis</button>
+  </div>
+  <div class="msg" id="msg"></div>
+</div>
+<script>
+var syms=['pi','E','V','S','x','2','inf','D','a','b'];
+var c=document.getElementById('pts');
+for(var i=0;i<30;i++){
+  var el=document.createElement('span');
+  el.className='particle';
+  el.textContent=syms[Math.floor(Math.random()*syms.length)];
+  el.style.cssText='left:'+Math.random()*100+'%;font-size:'+(12+Math.random()*20)+'px;animation-duration:'+(8+Math.random()*12)+'s;animation-delay:-'+(Math.random()*14)+'s;';
+  c.appendChild(el);
+}
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',(i===0&&tab==='login')||(i===1&&tab==='register'));});
+  document.getElementById('formLogin').style.display=tab==='login'?'':'none';
+  document.getElementById('formRegister').style.display=tab==='register'?'':'none';
+  showMsg('','');
+}
+function showMsg(text,type){
+  var el=document.getElementById('msg');
+  el.style.display=text?'block':'none';
+  el.className='msg '+type;
+  el.textContent=text;
+}
+async function doLogin(){
+  var email=document.getElementById('loginEmail').value.trim();
+  var password=document.getElementById('loginPassword').value;
+  if(!email||!password){showMsg('Preencha e-mail e senha.','error');return;}
+  var btn=document.getElementById('btnLogin');
+  btn.disabled=true;btn.textContent='Entrando...';
+  var result=await SubscriptionService.supabase.auth.signInWithPassword({email:email,password:password});
+  if(result.error){showMsg('E-mail ou senha incorretos.','error');btn.disabled=false;btn.textContent='Entrar';return;}
+  var ok=await SubscriptionService.requireAccess();
+  if(ok) window.location.href='./mathem.html';
+}
+async function doRegister(){
+  var name=document.getElementById('regName').value.trim();
+  var email=document.getElementById('regEmail').value.trim();
+  var password=document.getElementById('regPassword').value;
+  if(!name||!email||!password){showMsg('Preencha todos os campos.','error');return;}
+  if(password.length<6){showMsg('Senha deve ter ao menos 6 caracteres.','error');return;}
+  var btn=document.getElementById('btnRegister');
+  btn.disabled=true;btn.textContent='Criando conta...';
+  var result=await SubscriptionService.supabase.auth.signUp({email:email,password:password,options:{data:{full_name:name}}});
+  if(result.error){showMsg('Erro ao criar conta.','error');btn.disabled=false;btn.textContent='Criar conta gratis';return;}
+  showMsg('Conta criada! Seu periodo gratuito comeca agora.','success');
+  setTimeout(function(){window.location.href='./mathem.html';},1800);
+}
+async function doForgot(){
+  var email=document.getElementById('loginEmail').value.trim();
+  if(!email){showMsg('Digite seu e-mail no campo acima primeiro.','error');return;}
+  var result=await SubscriptionService.supabase.auth.resetPasswordForEmail(email);
+  if(result.error){showMsg('Erro ao enviar e-mail.','error');return;}
+  showMsg('Link de redeficao enviado para seu e-mail!','success');
+}
+(async function(){
+  var user=await SubscriptionService.getUser();
+  if(!user) return;
+  var sub=await SubscriptionService.getSubscription();
+  if(!sub) return;
+  var now=new Date();
+  var trialOk=sub.status==='trial'&&now<new Date(sub.trial_ends_at);
+  var activeOk=sub.status==='active'&&now<new Date(sub.current_period_ends_at);
+  if(trialOk||activeOk) window.location.href='./mathem.html';
+})();
+</script>
+</body>
+</html>

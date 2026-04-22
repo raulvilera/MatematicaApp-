@@ -1,17 +1,17 @@
 /* ============================================================
    Matemática@App — Service Worker
    Estratégia: Cache-First para assets estáticos,
-   Network-First para a API da Anthropic.
+   Network-First para HTML de navegação (evita loop de splash).
    ============================================================ */
 
-const CACHE_NAME = 'matematica-app-v3';
-const CACHE_VERSION = 3;
+const CACHE_NAME = 'matematica-app-v4';
+const CACHE_VERSION = 4;
 
-// ✅ CORREÇÃO: caminhos absolutos para coincidir com o escopo '/' do Vercel
-// O SW é servido na raiz (/sw.js) e opera no escopo '/'
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
+  '/login.html',
+  '/paywall.html',
   '/mathem.html',
   '/manifest.json',
   '/icon-192.png',
@@ -21,11 +21,10 @@ const PRECACHE_ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js',
 ];
 
-// ── INSTALL: pré-cacheia assets essenciais ──────────────────
+// ── INSTALL ──────────────────────────────────────────────────
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      // Adiciona individualmente para não falhar tudo se um asset externo estiver fora
       return Promise.allSettled(
         PRECACHE_ASSETS.map(url =>
           cache.add(url).catch(err => console.warn('[SW] Falha ao cachear:', url, err))
@@ -35,7 +34,7 @@ self.addEventListener('install', event => {
   );
 });
 
-// ── ACTIVATE: remove caches antigos ────────────────────────
+// ── ACTIVATE ─────────────────────────────────────────────────
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -51,40 +50,62 @@ self.addEventListener('activate', event => {
   );
 });
 
-// ── FETCH: estratégia por tipo de request ──────────────────
+// ── FETCH ─────────────────────────────────────────────────────
 self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // API da Anthropic → sempre Network (nunca cachear respostas de IA)
+  // API da Anthropic → sempre Network
   if (url.hostname === 'api.anthropic.com') {
     event.respondWith(fetch(request));
     return;
   }
 
-  // Google Fonts → Cache-First com fallback de rede
+  // Google Fonts → Cache-First
   if (url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
     event.respondWith(cacheFirst(request));
     return;
   }
 
-  // CDN (Three.js etc.) → Cache-First
+  // CDN → Cache-First
   if (url.hostname === 'cdnjs.cloudflare.com') {
     event.respondWith(cacheFirst(request));
     return;
   }
 
-  // Arquivos locais (HTML, JS, CSS, imagens) → Cache-First com revalidação
-  if (request.destination === 'document' || url.origin === self.location.origin) {
-    event.respondWith(staleWhileRevalidate(request));
+  // ✅ CORREÇÃO: Documentos HTML → Network-First para evitar loop de splash
+  // O index.html faz redirect para login.html; se vier do cache (stale),
+  // o SW pode interceptar o redirect e servir o index novamente em loop.
+  if (request.destination === 'document') {
+    event.respondWith(networkFirst(request));
     return;
   }
 
-  // Default → Network com fallback de cache
+  // Outros assets do origin → Cache-First
+  if (url.origin === self.location.origin) {
+    event.respondWith(cacheFirst(request));
+    return;
+  }
+
+  // Default
   event.respondWith(networkWithCacheFallback(request));
 });
 
-// ── Estratégias de cache ────────────────────────────────────
+// ── Estratégias ───────────────────────────────────────────────
+
+async function networkFirst(request) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const response = await fetch(request);
+    if (response.ok) cache.put(request, response.clone());
+    return response;
+  } catch {
+    const cached = await cache.match(request);
+    return cached || new Response(offlinePage(), {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    });
+  }
+}
 
 async function cacheFirst(request) {
   const cached = await caches.match(request);
@@ -101,20 +122,6 @@ async function cacheFirst(request) {
   }
 }
 
-async function staleWhileRevalidate(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request);
-
-  const networkPromise = fetch(request).then(response => {
-    if (response.ok) cache.put(request, response.clone());
-    return response;
-  }).catch(() => null);
-
-  return cached || await networkPromise || new Response(offlinePage(), {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' }
-  });
-}
-
 async function networkWithCacheFallback(request) {
   try {
     const response = await fetch(request);
@@ -129,7 +136,7 @@ async function networkWithCacheFallback(request) {
   }
 }
 
-// ── Página offline inline ───────────────────────────────────
+// ── Página offline inline ─────────────────────────────────────
 function offlinePage() {
   return `<!DOCTYPE html>
 <html lang="pt-br">
@@ -159,7 +166,7 @@ function offlinePage() {
 </html>`;
 }
 
-// ── Mensagens do cliente (ex: forçar update) ───────────────
+// ── Mensagens do cliente ──────────────────────────────────────
 self.addEventListener('message', event => {
   if (event.data === 'SKIP_WAITING') self.skipWaiting();
   if (event.data === 'CLEAR_CACHE') {

@@ -131,9 +131,16 @@ async function doRegister(){
   var btn=document.getElementById('btnRegister');
   btn.disabled=true;btn.textContent='Criando conta...';
   var result=await SubscriptionService.supabase.auth.signUp({email:email,password:password,options:{data:{full_name:name}}});
-  if(result.error){showMsg('Erro ao criar conta.','error');btn.disabled=false;btn.textContent='Criar conta gratis';return;}
-  showMsg('Conta criada! Seu periodo gratuito comeca agora.','success');
-  setTimeout(function(){window.location.href='./mathem.html';},1800);
+  if(result.error){
+    var msg='Erro ao criar conta.';
+    if(result.error.message&&result.error.message.includes('already registered')) msg='Este e-mail já está cadastrado. Faça login.';
+    showMsg(msg,'error');btn.disabled=false;btn.textContent='Criar conta gratis';return;
+  }
+  // Cria registro de trial automaticamente
+  var userId=result.data&&result.data.user&&result.data.user.id;
+  if(userId) await SubscriptionService.createTrialSubscription(userId);
+  showMsg('Conta criada! Seu período gratuito de 7 dias começa agora. ✅','success');
+  setTimeout(function(){window.location.href='./mathem.html';},2000);
 }
 async function doForgot(){
   var email=document.getElementById('loginEmail').value.trim();

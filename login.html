@@ -111,6 +111,39 @@ function showMsg(text,type){
   el.className='msg '+type;
   el.textContent=text;
 }
+function _parseError(err){
+  if(!err) return 'Erro desconhecido.';
+  // Tenta extrair message de instâncias de classe (AuthApiError, etc.)
+  var msg = err.message
+    || err.msg
+    || err.error_description
+    || err.error;
+  // Se ainda vazio, força serialização incluindo propriedades do prototype
+  if(!msg){
+    try { msg = JSON.stringify(err, Object.getOwnPropertyNames(err)); } catch(e){}
+  }
+  // Se ainda vazio ou apenas "{}", tenta toString
+  if(!msg || msg === '{}'){
+    var ts = (typeof err.toString === 'function') ? err.toString() : '';
+    if(ts && ts !== '[object Object]') msg = ts;
+  }
+  if(!msg || msg === '{}') msg = 'Erro desconhecido. Tente novamente.';
+  // Traduz mensagens comuns do Supabase
+  var ml = msg.toLowerCase();
+  if(ml.includes('already registered') || ml.includes('already been registered'))
+    return 'Este e-mail já está cadastrado. Faça login.';
+  if(ml.includes('rate limit') || ml.includes('too many requests'))
+    return 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
+  if(ml.includes('invalid email') || ml.includes('unable to validate email'))
+    return 'E-mail inválido. Verifique e tente novamente.';
+  if(ml.includes('password') && ml.includes('short'))
+    return 'Senha muito curta. Use ao menos 6 caracteres.';
+  if(ml.includes('signup') && ml.includes('disabled'))
+    return 'Cadastro temporariamente desativado. Tente mais tarde.';
+  if(ml.includes('network') || ml.includes('fetch'))
+    return 'Erro de conexão. Verifique sua internet e tente novamente.';
+  return msg;
+}
 async function doLogin(){
   var email=document.getElementById('loginEmail').value.trim();
   var password=document.getElementById('loginPassword').value;
@@ -132,13 +165,19 @@ async function doRegister(){
   btn.disabled=true;btn.textContent='Criando conta...';
   var result=await SubscriptionService.supabase.auth.signUp({email:email,password:password,options:{data:{full_name:name}}});
   if(result.error){
-    var msg='Erro: ' + (result.error.message || result.error.status || JSON.stringify(result.error));
-    if(result.error.message&&result.error.message.includes('already registered')) msg='Este e-mail já está cadastrado. Faça login.';
-    showMsg(msg,'error');btn.disabled=false;btn.textContent='Criar conta gratis';return;
+    showMsg(_parseError(result.error),'error');
+    btn.disabled=false;btn.textContent='Criar conta gratis';
+    return;
+  }
+  // Supabase retorna user=null quando email já existe e confirmação está desativada
+  var userId=result.data&&result.data.user&&result.data.user.id;
+  if(!userId){
+    showMsg('Este e-mail já está cadastrado. Faça login.','error');
+    btn.disabled=false;btn.textContent='Criar conta gratis';
+    return;
   }
   // Cria registro de trial automaticamente
-  var userId=result.data&&result.data.user&&result.data.user.id;
-  if(userId) await SubscriptionService.createTrialSubscription(userId);
+  await SubscriptionService.createTrialSubscription(userId);
   showMsg('Conta criada! Seu período gratuito de 7 dias começa agora. ✅','success');
   setTimeout(function(){window.location.href='./mathem.html';},2000);
 }
@@ -147,7 +186,7 @@ async function doForgot(){
   if(!email){showMsg('Digite seu e-mail no campo acima primeiro.','error');return;}
   var result=await SubscriptionService.supabase.auth.resetPasswordForEmail(email);
   if(result.error){showMsg('Erro ao enviar e-mail.','error');return;}
-  showMsg('Link de redeficao enviado para seu e-mail!','success');
+  showMsg('Link de redefinição enviado para seu e-mail!','success');
 }
 (async function(){
   var user=await SubscriptionService.getUser();

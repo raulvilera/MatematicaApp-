@@ -1,7 +1,7 @@
-// ── CONFIG — substitua pelas suas chaves do Supabase ──
-const SUPABASE_URL     = 'https://ewglvgxmqweuxcqesws.supabase.co';
+// ── CONFIG ──────────────────────────────────────────────────
+const SUPABASE_URL      = 'https://ewglvgxmqwjeuxcqesws.supabase.co'; // ✅ corrigido (faltava 'j')
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3Z2x2Z3htcXdqZXV4Y3Flc3dzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MDM3NjAsImV4cCI6MjA5MjM3OTc2MH0.J-C5EGIVNqakuZFVs3qPTt2Zd1FLFNO37p9d5anH_bY';
-// ──────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────
 
 const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -16,6 +16,25 @@ async function getSubscription() {
   const { data, error } = await _sb.from('subscriptions')
     .select('*').eq('user_id', user.id).single();
   if (error) { console.error(error); return null; }
+  return data;
+}
+
+// ✅ NOVO: cria registro de trial para usuário recém-cadastrado
+async function createTrialSubscription(userId) {
+  const trialEnd = new Date();
+  trialEnd.setDate(trialEnd.getDate() + 7); // 7 dias de trial
+
+  const { data, error } = await _sb.from('subscriptions').insert({
+    user_id: userId,
+    status: 'trial',
+    trial_ends_at: trialEnd.toISOString(),
+    current_period_ends_at: trialEnd.toISOString(),
+  }).select().single();
+
+  if (error) {
+    console.error('[Subscription] Erro ao criar trial:', error);
+    return null;
+  }
   return data;
 }
 
@@ -58,18 +77,18 @@ function _showTrialBanner(days) {
     text-align:center;padding:0.55rem 1rem;font-family:'Nunito',sans-serif;
     font-weight:800;font-size:0.82rem;display:flex;align-items:center;
     justify-content:center;gap:0.8rem;box-shadow:0 -4px 20px rgba(0,0,0,0.4);">
-    <span>Periodo gratuito: <strong>${days} ${plural} restante${days > 1 ? 's' : ''}</strong></span>
+    <span>Período gratuito: <strong>${days} ${plural} restante${days > 1 ? 's' : ''}</strong></span>
     <a href="./paywall.html" style="background:white;color:#B71C1C;padding:0.3rem 0.85rem;
       border-radius:99px;font-size:0.78rem;font-weight:900;text-decoration:none;">Assinar agora</a>
     <button onclick="this.parentElement.parentElement.remove()"
-      style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:1.2rem;cursor:pointer;">x</button>
+      style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:1.2rem;cursor:pointer;">✕</button>
   </div>`;
   document.body.appendChild(div);
 }
 
 async function registerPaymentIntent(plan) {
   const user = await getUser();
-  if (!user) return { error: 'Nao autenticado' };
+  if (!user) return { error: 'Não autenticado' };
   const sub = await getSubscription();
   const amounts = { monthly: 2199, yearly: 25000 };
   const { data, error } = await _sb.from('payments').insert({
@@ -87,4 +106,12 @@ async function signOut() {
   window.location.href = './login.html';
 }
 
-window.SubscriptionService = { supabase: _sb, getUser, getSubscription, requireAccess, registerPaymentIntent, signOut };
+window.SubscriptionService = {
+  supabase: _sb,
+  getUser,
+  getSubscription,
+  createTrialSubscription, // ✅ exposto para o login.html usar
+  requireAccess,
+  registerPaymentIntent,
+  signOut
+};

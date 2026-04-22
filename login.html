@@ -72,25 +72,25 @@ input:focus{border-color:rgba(255,82,82,0.7);background:rgba(255,82,82,0.08);}
     <button class="tab" onclick="switchTab('register')">Criar conta</button>
   </div>
   <div id="formLogin">
-    <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com"></div>
-    <div class="field"><label>Senha</label><input type="password" id="loginPassword" placeholder="........"></div>
+    <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="field"><label>Senha</label><input type="password" id="loginPassword" placeholder="........" autocomplete="current-password"></div>
     <button class="btn" id="btnLogin" onclick="doLogin()">Entrar</button>
     <div class="forgot"><a onclick="doForgot()">Esqueci minha senha</a></div>
   </div>
   <div id="formRegister" style="display:none;">
     <div class="trial-badge">
       <span class="icon">&#127873;</span>
-      <p><strong>7 dias gratis</strong> sem cobrar nada agora.<br>Depois: R$21,99/mes ou R$250,00/ano.</p>
+      <p><strong>7 dias gratis</strong> sem cobrar nada agora.<br>Depois: R$21,99/mês ou R$250,00/ano.</p>
     </div>
-    <div class="field"><label>Nome completo</label><input type="text" id="regName" placeholder="Seu nome"></div>
-    <div class="field"><label>E-mail</label><input type="email" id="regEmail" placeholder="seu@email.com"></div>
-    <div class="field"><label>Senha (min. 6 caracteres)</label><input type="password" id="regPassword" placeholder="........"></div>
+    <div class="field"><label>Nome completo</label><input type="text" id="regName" placeholder="Seu nome" autocomplete="name"></div>
+    <div class="field"><label>E-mail</label><input type="email" id="regEmail" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="field"><label>Senha (min. 6 caracteres)</label><input type="password" id="regPassword" placeholder="........" autocomplete="new-password"></div>
     <button class="btn" id="btnRegister" onclick="doRegister()">Criar conta gratis</button>
   </div>
   <div class="msg" id="msg"></div>
 </div>
 <script>
-var syms=['pi','E','V','S','x','2','inf','D','a','b'];
+var syms=['π','∑','√','∫','×','÷','²','³','∞','Δ','θ','≠','±','α','β','λ'];
 var c=document.getElementById('pts');
 for(var i=0;i<30;i++){
   var el=document.createElement('span');
@@ -113,36 +113,17 @@ function showMsg(text,type){
 }
 function _parseError(err){
   if(!err) return 'Erro desconhecido.';
-  // Tenta extrair message de instâncias de classe (AuthApiError, etc.)
-  var msg = err.message
-    || err.msg
-    || err.error_description
-    || err.error;
-  // Se ainda vazio, força serialização incluindo propriedades do prototype
-  if(!msg){
-    try { msg = JSON.stringify(err, Object.getOwnPropertyNames(err)); } catch(e){}
-  }
-  // Se ainda vazio ou apenas "{}", tenta toString
-  if(!msg || msg === '{}'){
-    var ts = (typeof err.toString === 'function') ? err.toString() : '';
-    if(ts && ts !== '[object Object]') msg = ts;
-  }
-  if(!msg || msg === '{}') msg = 'Erro desconhecido. Tente novamente.';
-  // Traduz mensagens comuns do Supabase
-  var ml = msg.toLowerCase();
-  if(ml.includes('already registered') || ml.includes('already been registered'))
-    return 'Este e-mail já está cadastrado. Faça login.';
-  if(ml.includes('rate limit') || ml.includes('too many requests'))
-    return 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
-  if(ml.includes('invalid email') || ml.includes('unable to validate email'))
-    return 'E-mail inválido. Verifique e tente novamente.';
-  if(ml.includes('password') && ml.includes('short'))
-    return 'Senha muito curta. Use ao menos 6 caracteres.';
-  if(ml.includes('signup') && ml.includes('disabled'))
-    return 'Cadastro temporariamente desativado. Tente mais tarde.';
-  if(ml.includes('network') || ml.includes('fetch'))
-    return 'Erro de conexão. Verifique sua internet e tente novamente.';
-  return msg;
+  var msg=err.message||err.msg||err.error_description||err.error||'';
+  if(!msg){try{msg=JSON.stringify(err,Object.getOwnPropertyNames(err));}catch(e){}}
+  if(!msg||msg==='{}'){var ts=(typeof err.toString==='function')?err.toString():'';if(ts&&ts!=='[object Object]')msg=ts;}
+  if(!msg||msg==='{}') msg='Erro desconhecido. Tente novamente.';
+  var ml=msg.toLowerCase();
+  if(ml.includes('already registered')||ml.includes('already been registered')) return 'Este e-mail já está cadastrado. Faça login.';
+  if(ml.includes('invalid login credentials')) return 'E-mail ou senha incorretos. Verifique e tente novamente.';
+  if(ml.includes('email not confirmed')) return 'Confirme seu e-mail antes de entrar.';
+  if(ml.includes('rate limit')||ml.includes('too many requests')) return 'Muitas tentativas. Aguarde alguns minutos.';
+  if(ml.includes('network')||ml.includes('fetch')) return 'Erro de conexão. Verifique sua internet.';
+  return 'Erro: '+msg;
 }
 async function doLogin(){
   var email=document.getElementById('loginEmail').value.trim();
@@ -151,7 +132,17 @@ async function doLogin(){
   var btn=document.getElementById('btnLogin');
   btn.disabled=true;btn.textContent='Entrando...';
   var result=await SubscriptionService.supabase.auth.signInWithPassword({email:email,password:password});
-  if(result.error){showMsg('E-mail ou senha incorretos.','error');btn.disabled=false;btn.textContent='Entrar';return;}
+  if(result.error){
+    showMsg(_parseError(result.error),'error');
+    btn.disabled=false;btn.textContent='Entrar';
+    return;
+  }
+  // Garante trial se não existir
+  var user=result.data&&result.data.user;
+  if(user){
+    var subCheck=await SubscriptionService.supabase.from('subscriptions').select('id').eq('user_id',user.id).maybeSingle();
+    if(!subCheck.data) await SubscriptionService.createTrialSubscription(user.id);
+  }
   var ok=await SubscriptionService.requireAccess();
   if(ok) window.location.href='./mathem.html';
 }
@@ -169,24 +160,22 @@ async function doRegister(){
     btn.disabled=false;btn.textContent='Criar conta gratis';
     return;
   }
-  // Supabase retorna user=null quando email já existe e confirmação está desativada
   var userId=result.data&&result.data.user&&result.data.user.id;
   if(!userId){
     showMsg('Este e-mail já está cadastrado. Faça login.','error');
     btn.disabled=false;btn.textContent='Criar conta gratis';
     return;
   }
-  // Cria registro de trial automaticamente
   await SubscriptionService.createTrialSubscription(userId);
-  showMsg('Conta criada! Seu período gratuito de 7 dias começa agora. ✅','success');
+  showMsg('Conta criada! Período gratuito de 7 dias iniciado. ✅','success');
   setTimeout(function(){window.location.href='./mathem.html';},2000);
 }
 async function doForgot(){
   var email=document.getElementById('loginEmail').value.trim();
   if(!email){showMsg('Digite seu e-mail no campo acima primeiro.','error');return;}
   var result=await SubscriptionService.supabase.auth.resetPasswordForEmail(email);
-  if(result.error){showMsg('Erro ao enviar e-mail.','error');return;}
-  showMsg('Link de redefinição enviado para seu e-mail!','success');
+  if(result.error){showMsg(_parseError(result.error),'error');return;}
+  showMsg('Link de redefinição enviado! Verifique seu e-mail.','success');
 }
 (async function(){
   var user=await SubscriptionService.getUser();

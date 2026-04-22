@@ -1,5 +1,5 @@
 // ── CONFIG ──────────────────────────────────────────────────
-const SUPABASE_URL      = 'https://bttkwnnwmcuthcmdzdrh.supabase.co'; // ✅ corrigido (faltava 'j')
+const SUPABASE_URL      = 'https://bttkwnnwmcuthcmdzdrh.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0dGt3bm53bWN1dGhjbWR6ZHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MTQ2ODQsImV4cCI6MjA5MjM5MDY4NH0.pihYj_B6zp3p5SowTkUPK4YQp3c615FHNwU5wXENA2c';
 // ────────────────────────────────────────────────────────────
 
@@ -15,27 +15,21 @@ async function getSubscription() {
   if (!user) { window.location.href = './login.html'; return null; }
   const { data, error } = await _sb.from('subscriptions')
     .select('*').eq('user_id', user.id).single();
-  if (error) { console.error(error); return null; }
+  if (error) { console.error('[Sub]', error); return null; }
   return data;
 }
 
-// ✅ NOVO: cria registro de trial para usuário recém-cadastrado
 async function createTrialSubscription(userId) {
   const trialEnd = new Date();
-  trialEnd.setDate(trialEnd.getDate() + 7); // 7 dias de trial
-
+  trialEnd.setDate(trialEnd.getDate() + 7);
   const { data, error } = await _sb.from('subscriptions').insert({
     user_id: userId,
     status: 'trial',
     trial_ends_at: trialEnd.toISOString(),
     current_period_ends_at: trialEnd.toISOString(),
   }).select().single();
-
-  if (error) {
-    console.error('[Subscription] Erro ao criar trial:', error);
-    return null;
-  }
-  return data;
+  if (error) console.error('[Trial]', error);
+  return data || null;
 }
 
 async function requireAccess() {
@@ -110,7 +104,7 @@ window.SubscriptionService = {
   supabase: _sb,
   getUser,
   getSubscription,
-  createTrialSubscription, // ✅ exposto para o login.html usar
+  createTrialSubscription,
   requireAccess,
   registerPaymentIntent,
   signOut

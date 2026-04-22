@@ -37,6 +37,26 @@
       }
     },
     {
+      "src": "/login.html",
+      "dest": "/login.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      }
+    },
+    {
+      "src": "/paywall.html",
+      "dest": "/paywall.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin"
+      }
+    },
+    {
       "src": "/mathem.html",
       "dest": "/mathem.html",
       "headers": {
@@ -47,8 +67,12 @@
       }
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "src": "/subscription.js",
+      "dest": "/subscription.js",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate",
+        "Content-Type": "application/javascript; charset=utf-8"
+      }
     }
   ],
   "headers": [

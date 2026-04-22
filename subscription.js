@@ -1,5 +1,5 @@
 // ── CONFIG ──────────────────────────────────────────────────
-const SUPABASE_URL      = 'https://ewglvgxmqwjeuxcqesws.supabase.co'; // ✅ corrigido (faltava 'j')
+const SUPABASE_URL      = 'https://bttkwnnwmcuthcmdzdrh.supabase.co'; // ✅ corrigido (faltava 'j')
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0dGt3bm53bWN1dGhjbWR6ZHJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MTQ2ODQsImV4cCI6MjA5MjM5MDY4NH0.pihYj_B6zp3p5SowTkUPK4YQp3c615FHNwU5wXENA2c';
 // ────────────────────────────────────────────────────────────
 

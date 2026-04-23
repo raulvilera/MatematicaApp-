@@ -10,8 +10,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
-
-<script src="./subscription.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{min-height:100vh;display:flex;align-items:center;justify-content:center;
@@ -59,7 +57,6 @@ input:focus{border-color:rgba(255,82,82,0.7);background:rgba(255,82,82,0.08);}
 .msg.success{background:rgba(34,201,122,0.12);color:#6EE7B7;border:1px solid rgba(34,201,122,0.25);}
 .forgot{text-align:center;margin-top:0.9rem;}
 .forgot a{color:rgba(255,180,180,0.7);font-size:0.78rem;font-weight:700;text-decoration:none;cursor:pointer;}
-.forgot a:hover{color:#FF8A80;}
 </style>
 </head>
 <body>
@@ -72,132 +69,157 @@ input:focus{border-color:rgba(255,82,82,0.7);background:rgba(255,82,82,0.08);}
     <button class="tab" onclick="switchTab('register')">Criar conta</button>
   </div>
   <div id="formLogin">
-    <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com"></div>
-    <div class="field"><label>Senha</label><input type="password" id="loginPassword" placeholder="........"></div>
+    <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="field"><label>Senha</label><input type="password" id="loginPassword" placeholder="........" autocomplete="current-password"></div>
     <button class="btn" id="btnLogin" onclick="doLogin()">Entrar</button>
     <div class="forgot"><a onclick="doForgot()">Esqueci minha senha</a></div>
   </div>
   <div id="formRegister" style="display:none;">
     <div class="trial-badge">
       <span class="icon">&#127873;</span>
-      <p><strong>7 dias gratis</strong> sem cobrar nada agora.<br>Depois: R$21,99/mes ou R$250,00/ano.</p>
+      <p><strong>7 dias grátis</strong> sem cobrar nada agora.<br>Depois: R$21,99/mês ou R$250,00/ano.</p>
     </div>
-    <div class="field"><label>Nome completo</label><input type="text" id="regName" placeholder="Seu nome"></div>
-    <div class="field"><label>E-mail</label><input type="email" id="regEmail" placeholder="seu@email.com"></div>
-    <div class="field"><label>Senha (min. 6 caracteres)</label><input type="password" id="regPassword" placeholder="........"></div>
-    <button class="btn" id="btnRegister" onclick="doRegister()">Criar conta gratis</button>
+    <div class="field"><label>Nome completo</label><input type="text" id="regName" placeholder="Seu nome" autocomplete="name"></div>
+    <div class="field"><label>E-mail</label><input type="email" id="regEmail" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="field"><label>Senha (mín. 6 caracteres)</label><input type="password" id="regPassword" placeholder="........" autocomplete="new-password"></div>
+    <button class="btn" id="btnRegister" onclick="doRegister()">Criar conta grátis</button>
   </div>
   <div class="msg" id="msg"></div>
 </div>
-<script>
-var syms=['pi','E','V','S','x','2','inf','D','a','b'];
-var c=document.getElementById('pts');
-for(var i=0;i<30;i++){
-  var el=document.createElement('span');
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+         onAuthStateChanged, sendPasswordResetEmail, updateProfile }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDJ4ZxM-1DmDrUj3yIar4C_tPqS3Gp1S1Q",
+  authDomain: "matematica-app-a59ef.firebaseapp.com",
+  projectId: "matematica-app-a59ef",
+  storageBucket: "matematica-app-a59ef.firebasestorage.app",
+  messagingSenderId: "1080081552143",
+  appId: "1:1080081552143:web:2316e6b57bc1097f25a47a"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Partículas
+const syms=['π','E','∑','∫','x²','√','∞','Δ','α','β'];
+const c=document.getElementById('pts');
+for(let i=0;i<30;i++){
+  const el=document.createElement('span');
   el.className='particle';
   el.textContent=syms[Math.floor(Math.random()*syms.length)];
-  el.style.cssText='left:'+Math.random()*100+'%;font-size:'+(12+Math.random()*20)+'px;animation-duration:'+(8+Math.random()*12)+'s;animation-delay:-'+(Math.random()*14)+'s;';
+  el.style.cssText=`left:${Math.random()*100}%;font-size:${12+Math.random()*20}px;animation-duration:${8+Math.random()*12}s;animation-delay:-${Math.random()*14}s;`;
   c.appendChild(el);
 }
-function switchTab(tab){
-  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',(i===0&&tab==='login')||(i===1&&tab==='register'));});
-  document.getElementById('formLogin').style.display=tab==='login'?'':'none';
-  document.getElementById('formRegister').style.display=tab==='register'?'':'none';
+
+// Verificar se já está logado
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+  try {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (!snap.exists()) return;
+    const sub = snap.data().subscription;
+    const now = new Date();
+    const trialOk = sub.status === 'trial' && now < new Date(sub.trialEndsAt);
+    const activeOk = sub.status === 'active' && now < new Date(sub.currentPeriodEnd);
+    if (trialOk || activeOk) window.location.href = './mathem.html';
+  } catch(e) {}
+});
+
+window.switchTab = function(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
+  document.getElementById('formLogin').style.display = tab==='login' ? '' : 'none';
+  document.getElementById('formRegister').style.display = tab==='register' ? '' : 'none';
   showMsg('','');
+};
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.style.display = text ? 'block' : 'none';
+  el.className = 'msg ' + type;
+  el.textContent = text;
 }
-function showMsg(text,type){
-  var el=document.getElementById('msg');
-  el.style.display=text?'block':'none';
-  el.className='msg '+type;
-  el.textContent=text;
+
+function parseError(e) {
+  const codes = {
+    'auth/email-already-in-use': 'Este e-mail já está cadastrado. Faça login.',
+    'auth/weak-password': 'Senha muito fraca. Use ao menos 6 caracteres.',
+    'auth/invalid-email': 'E-mail inválido.',
+    'auth/user-not-found': 'E-mail ou senha incorretos.',
+    'auth/wrong-password': 'E-mail ou senha incorretos.',
+    'auth/invalid-credential': 'E-mail ou senha incorretos.',
+    'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos.',
+    'auth/network-request-failed': 'Erro de conexão. Verifique sua internet.'
+  };
+  return codes[e.code] || e.message || 'Erro desconhecido.';
 }
-function _parseError(err){
-  if(!err) return 'Erro desconhecido.';
-  // Tenta extrair message de instâncias de classe (AuthApiError, etc.)
-  var msg = err.message
-    || err.msg
-    || err.error_description
-    || err.error;
-  // Se ainda vazio, força serialização incluindo propriedades do prototype
-  if(!msg){
-    try { msg = JSON.stringify(err, Object.getOwnPropertyNames(err)); } catch(e){}
+
+window.doLogin = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showMsg('Preencha e-mail e senha.', 'error'); return; }
+  const btn = document.getElementById('btnLogin');
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    window.location.href = './mathem.html';
+  } catch(e) {
+    showMsg(parseError(e), 'error');
+    btn.disabled = false; btn.textContent = 'Entrar';
   }
-  // Se ainda vazio ou apenas "{}", tenta toString
-  if(!msg || msg === '{}'){
-    var ts = (typeof err.toString === 'function') ? err.toString() : '';
-    if(ts && ts !== '[object Object]') msg = ts;
+};
+
+window.doRegister = async function() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  if (!name || !email || !password) { showMsg('Preencha todos os campos.', 'error'); return; }
+  if (password.length < 6) { showMsg('Senha deve ter ao menos 6 caracteres.', 'error'); return; }
+  const btn = document.getElementById('btnRegister');
+  btn.disabled = true; btn.textContent = 'Criando conta...';
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
+    const trialEnd = new Date();
+    trialEnd.setDate(trialEnd.getDate() + 7);
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      name, email,
+      createdAt: new Date().toISOString(),
+      subscription: {
+        status: 'trial',
+        plan: null,
+        trialEndsAt: trialEnd.toISOString(),
+        currentPeriodStart: null,
+        currentPeriodEnd: null,
+        cancelledAt: null
+      },
+      updatedAt: new Date().toISOString()
+    });
+    showMsg('Conta criada! Seu período gratuito de 7 dias começa agora. ✅', 'success');
+    setTimeout(() => window.location.href = './mathem.html', 2000);
+  } catch(e) {
+    showMsg(parseError(e), 'error');
+    btn.disabled = false; btn.textContent = 'Criar conta grátis';
   }
-  if(!msg || msg === '{}') msg = 'Erro desconhecido. Tente novamente.';
-  // Traduz mensagens comuns do Supabase
-  var ml = msg.toLowerCase();
-  if(ml.includes('already registered') || ml.includes('already been registered'))
-    return 'Este e-mail já está cadastrado. Faça login.';
-  if(ml.includes('rate limit') || ml.includes('too many requests'))
-    return 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
-  if(ml.includes('invalid email') || ml.includes('unable to validate email'))
-    return 'E-mail inválido. Verifique e tente novamente.';
-  if(ml.includes('password') && ml.includes('short'))
-    return 'Senha muito curta. Use ao menos 6 caracteres.';
-  if(ml.includes('signup') && ml.includes('disabled'))
-    return 'Cadastro temporariamente desativado. Tente mais tarde.';
-  if(ml.includes('network') || ml.includes('fetch'))
-    return 'Erro de conexão. Verifique sua internet e tente novamente.';
-  return msg;
-}
-async function doLogin(){
-  var email=document.getElementById('loginEmail').value.trim();
-  var password=document.getElementById('loginPassword').value;
-  if(!email||!password){showMsg('Preencha e-mail e senha.','error');return;}
-  var btn=document.getElementById('btnLogin');
-  btn.disabled=true;btn.textContent='Entrando...';
-  var result=await SubscriptionService.supabase.auth.signInWithPassword({email, password});
-  if(result.error){showMsg('E-mail ou senha incorretos.','error');btn.disabled=false;btn.textContent='Entrar';return;}
-  var ok=await SubscriptionService.requireAccess();
-  if(ok) window.location.href='./mathem.html';
-}
-async function doRegister(){
-  var name=document.getElementById('regName').value.trim();
-  var email=document.getElementById('regEmail').value.trim();
-  var password=document.getElementById('regPassword').value;
-  if(!name||!email||!password){showMsg('Preencha todos os campos.','error');return;}
-  if(password.length<6){showMsg('Senha deve ter ao menos 6 caracteres.','error');return;}
-  var btn=document.getElementById('btnRegister');
-  btn.disabled=true;btn.textContent='Criando conta...';
-  var result=await SubscriptionService.supabase.auth.signUp({email, password, options:{data:{full_name:name}}});
-  if(result.error){
-    showMsg(_parseError(result.error),'error');
-    btn.disabled=false;btn.textContent='Criar conta gratis';
-    return;
+};
+
+window.doForgot = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!email) { showMsg('Digite seu e-mail no campo acima primeiro.', 'error'); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showMsg('Link de redefinição enviado para seu e-mail!', 'success');
+  } catch(e) {
+    showMsg(parseError(e), 'error');
   }
-  // Supabase retorna user=null quando email já existe e confirmação está desativada
-  var userId=result.data&&result.data.user&&result.data.user.id;
-  if(!userId){
-    showMsg('Este e-mail já está cadastrado. Faça login.','error');
-    btn.disabled=false;btn.textContent='Criar conta gratis';
-    return;
-  }
-  // Cria registro de trial automaticamente
-  await SubscriptionService.createTrialSubscription(userId);
-  showMsg('Conta criada! Seu período gratuito de 7 dias começa agora. ✅','success');
-  setTimeout(function(){window.location.href='./mathem.html';},2000);
-}
-async function doForgot(){
-  var email=document.getElementById('loginEmail').value.trim();
-  if(!email){showMsg('Digite seu e-mail no campo acima primeiro.','error');return;}
-  var result=await SubscriptionService.supabase.auth.resetPasswordForEmail(email);
-  if(result.error){showMsg('Erro ao enviar e-mail.','error');return;}
-  showMsg('Link de redefinição enviado para seu e-mail!','success');
-}
-(async function(){
-  var user=await SubscriptionService.getUser();
-  if(!user) return;
-  var sub=await SubscriptionService.getSubscription();
-  if(!sub) return;
-  var now=new Date();
-  var trialOk=sub.status==='trial'&&now<new Date(sub.trial_ends_at);
-  var activeOk=sub.status==='active'&&now<new Date(sub.current_period_ends_at);
-  if(trialOk||activeOk) window.location.href='./mathem.html';
-})();
+};
 </script>
 </body>
 </html>

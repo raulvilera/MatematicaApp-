@@ -23,7 +23,7 @@ const _sb = {
   auth: {
     async signUp({ email, password, options }) {
       try {
-        const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+        const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 8000); const res = await fetch(`${SUPABASE_URL}/auth/v1/signup`, { signal: ctrl.signal }); const res2 = res; //, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -46,8 +46,11 @@ const _sb = {
 
     async signInWithPassword({ email, password }) {
       try {
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), 8000);
         const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
           method: 'POST',
+          signal: ctrl.signal,
           headers: {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_ANON_KEY,
@@ -55,8 +58,9 @@ const _sb = {
           },
           body: JSON.stringify({ email, password })
         });
+        clearTimeout(timer);
         const data = await res.json();
-        if (!res.ok) return { data: null, error: data };
+        if (!res.ok) return { data: null, error: { message: data.msg || data.message || data.error_description || JSON.stringify(data) } };
         localStorage.setItem('sb_session', JSON.stringify(data));
         _sb._session = data;
         return { data: { user: data.user, session: data }, error: null };

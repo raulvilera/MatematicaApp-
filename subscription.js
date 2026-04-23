@@ -1,101 +1,142 @@
-// ── CONFIG ──────────────────────────────────────────────────
-// Usa proxy Vercel para evitar bloqueio CORS do Supabase
-const AUTH_PROXY = '/api/auth';
-// ────────────────────────────────────────────────────────────
+// ── Firebase Config ──────────────────────────────────────────
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+         signOut as fbSignOut, onAuthStateChanged, sendPasswordResetEmail,
+         updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const _sb = {
-  auth: {
-    async signUp({ email, password, options }) {
-      try {
-        const res = await fetch(AUTH_PROXY, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'signup', email, password, data: options?.data || {} })
-        });
-        const data = await res.json();
-        if (!res.ok) return { data: null, error: { message: data.msg || data.message || data.error_description || JSON.stringify(data) } };
-        if (data.access_token) localStorage.setItem('sb_session', JSON.stringify(data));
-        return { data: { user: data.user || data }, error: null };
-      } catch(e) {
-        return { data: null, error: { message: e.message } };
-      }
-    },
-
-    async signInWithPassword({ email, password }) {
-      try {
-        const res = await fetch(AUTH_PROXY, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'login', email, password })
-        });
-        const data = await res.json();
-        if (!res.ok) return { data: null, error: { message: data.msg || data.message || data.error_description || JSON.stringify(data) } };
-        localStorage.setItem('sb_session', JSON.stringify(data));
-        return { data: { user: data.user, session: data }, error: null };
-      } catch(e) {
-        return { data: null, error: { message: e.message } };
-      }
-    },
-
-    async getUser() {
-      try {
-        const session = JSON.parse(localStorage.getItem('sb_session') || 'null');
-        if (!session) return { data: { user: null } };
-        const res = await fetch(AUTH_PROXY, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'user', access_token: session.access_token })
-        });
-        if (!res.ok) return { data: { user: null } };
-        const user = await res.json();
-        return { data: { user } };
-      } catch(e) {
-        return { data: { user: null } };
-      }
-    },
-
-    async resetPasswordForEmail(email) {
-      try {
-        const res = await fetch(AUTH_PROXY, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'recover', email })
-        });
-        return res.ok ? { error: null } : { error: await res.json() };
-      } catch(e) {
-        return { error: { message: e.message } };
-      }
-    },
-
-    async signOut() {
-      localStorage.removeItem('sb_session');
-    }
-  }
+const firebaseConfig = {
+  apiKey: "AIzaSyDJ4ZxM-1DmDrUj3yIar4C_tPqS3Gp1S1Q",
+  authDomain: "matematica-app-a59ef.firebaseapp.com",
+  projectId: "matematica-app-a59ef",
+  storageBucket: "matematica-app-a59ef.firebasestorage.app",
+  messagingSenderId: "1080081552143",
+  appId: "1:1080081552143:web:2316e6b57bc1097f25a47a",
+  measurementId: "G-4FG0XMPKP2"
 };
 
-async function getUser() {
-  const { data: { user } } = await _sb.auth.getUser();
-  return user;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ── Funções de Autenticação ──────────────────────────────────
+
+async function signUp(name, email, password) {
+  const cred = await createUserWithEmailAndPassword(auth, email, password);
+  await updateProfile(cred.user, { displayName: name });
+  
+  const trialEnd = new Date();
+  trialEnd.setDate(trialEnd.getDate() + 7);
+  
+  await setDoc(doc(db, 'users', cred.user.uid), {
+    name,
+    email,
+    createdAt: new Date().toISOString(),
+    subscription: {
+      status: 'trial',
+      plan: null,
+      trialEndsAt: trialEnd.toISOString(),
+      currentPeriodStart: null,
+      currentPeriodEnd: null,
+      cancelledAt: null
+    },
+    updatedAt: new Date().toISOString()
+  });
+  
+  return cred.user;
 }
+
+async function signIn(email, password) {
+  const cred = await signInWithEmailAndPassword(auth, email, password);
+  return cred.user;
+}
+
+async function signOut() {
+  await fbSignOut(auth);
+  window.location.href = './login.html';
+}
+
+async function resetPassword(email) {
+  await sendPasswordResetEmail(auth, email);
+}
+
+async function getUser() {
+  return new Promise((resolve) => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      unsub();
+      resolve(user);
+    });
+  });
+}
+
+// ── Funções de Assinatura ────────────────────────────────────
 
 async function getSubscription() {
   const user = await getUser();
-  if (!user) { window.location.href = './login.html'; return null; }
-  // Por enquanto retorna trial ativo para todos os usuários logados
-  // TODO: implementar tabela subscriptions
-  return { status: 'trial', trial_ends_at: new Date(Date.now() + 7*86400000).toISOString(), user_id: user.id };
-}
-
-async function createTrialSubscription(userId) {
-  // Trial criado localmente por enquanto
-  return { status: 'trial', user_id: userId };
+  if (!user) return null;
+  const snap = await getDoc(doc(db, 'users', user.uid));
+  if (!snap.exists()) return null;
+  return snap.data().subscription;
 }
 
 async function requireAccess() {
   const user = await getUser();
-  if (!user) return false;
-  _showTrialBanner(7);
-  return true;
+  if (!user) { window.location.href = './login.html'; return false; }
+  
+  const sub = await getSubscription();
+  if (!sub) { window.location.href = './login.html'; return false; }
+  
+  const now = new Date();
+  
+  if (sub.status === 'trial') {
+    const trialEnd = new Date(sub.trialEndsAt);
+    if (now < trialEnd) {
+      const days = Math.ceil((trialEnd - now) / 86400000);
+      _showTrialBanner(days);
+      return true;
+    }
+    window.location.href = './paywall.html?reason=trial_expired';
+    return false;
+  }
+  
+  if (sub.status === 'active') {
+    const periodEnd = new Date(sub.currentPeriodEnd);
+    if (now < periodEnd) return true;
+    // Atualizar para expirado
+    await updateDoc(doc(db, 'users', user.uid), {
+      'subscription.status': 'expired',
+      updatedAt: new Date().toISOString()
+    });
+    window.location.href = './paywall.html?reason=expired';
+    return false;
+  }
+  
+  window.location.href = './paywall.html?reason=no_access';
+  return false;
+}
+
+async function createPayment(plan) {
+  const user = await getUser();
+  if (!user) throw new Error('Não autenticado');
+  
+  const token = await user.getIdToken();
+  
+  const res = await fetch('/api/create-payment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ plan })
+  });
+  
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.error || 'Erro ao criar pagamento');
+  }
+  
+  return res.json();
 }
 
 function _showTrialBanner(days) {
@@ -108,7 +149,7 @@ function _showTrialBanner(days) {
     text-align:center;padding:0.55rem 1rem;font-family:'Nunito',sans-serif;
     font-weight:800;font-size:0.82rem;display:flex;align-items:center;
     justify-content:center;gap:0.8rem;box-shadow:0 -4px 20px rgba(0,0,0,0.4);">
-    <span>Período gratuito: <strong>${days} ${plural} restante${days > 1 ? 's' : ''}</strong></span>
+    <span>Trial: <strong>${days} ${plural} restante${days > 1 ? 's' : ''}</strong></span>
     <a href="./paywall.html" style="background:white;color:#B71C1C;padding:0.3rem 0.85rem;
       border-radius:99px;font-size:0.78rem;font-weight:900;text-decoration:none;">Assinar agora</a>
     <button onclick="this.parentElement.parentElement.remove()"
@@ -117,21 +158,7 @@ function _showTrialBanner(days) {
   document.body.appendChild(div);
 }
 
-async function registerPaymentIntent(plan) {
-  return { data: null, error: 'Pagamento não implementado' };
-}
-
-async function signOut() {
-  await _sb.auth.signOut();
-  window.location.href = './login.html';
-}
-
 window.SubscriptionService = {
-  supabase: _sb,
-  getUser,
-  getSubscription,
-  createTrialSubscription,
-  requireAccess,
-  registerPaymentIntent,
-  signOut
+  auth, db, signUp, signIn, signOut, resetPassword,
+  getUser, getSubscription, requireAccess, createPayment
 };

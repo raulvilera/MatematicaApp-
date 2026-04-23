@@ -1,9 +1,9 @@
 // ── CONFIG ──────────────────────────────────────────────────
-const SUPABASE_URL      = 'https://bttkwnnwmcuthcmdzdrh.supabase.co'; // ✅ corrigido (faltava 'j')
-const SUPABASE_KEY = 'sb_publishable_FFW0rCWnVBnDOGTGmZgYXQ_uHOkZZpl';
+const SUPABASE_URL      = 'https://vyzvmokencerestsrrtm.supabase.co'; // ✅ corrigido (faltava 'j')
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5enZtb2tlbmNlcmVzdHNycnRtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4OTczMzUsImV4cCI6MjA5MjQ3MzMzNX0.EhjCtoEcomTG1W3rakn2iqU0o5MJ4rlSh-HilGpJYxc';
 // ────────────────────────────────────────────────────────────
 
-const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 async function getUser() {
   const { data: { user } } = await _sb.auth.getUser();

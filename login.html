@@ -124,13 +124,40 @@ onAuthStateChanged(auth, async (user) => {
   if (!user) return;
   try {
     const snap = await getDoc(doc(db, 'users', user.uid));
-    if (!snap.exists()) return;
+    if (!snap.exists()) {
+      // Documento não existe ainda - cria trial e redireciona
+      const trialEnd = new Date();
+      trialEnd.setDate(trialEnd.getDate() + 7);
+      await setDoc(doc(db, 'users', user.uid), {
+        name: user.displayName || '',
+        email: user.email,
+        createdAt: new Date().toISOString(),
+        subscription: {
+          status: 'trial',
+          plan: null,
+          trialEndsAt: trialEnd.toISOString(),
+          currentPeriodStart: null,
+          currentPeriodEnd: null,
+          cancelledAt: null
+        },
+        updatedAt: new Date().toISOString()
+      });
+      window.location.href = './mathem.html';
+      return;
+    }
     const sub = snap.data().subscription;
     const now = new Date();
     const trialOk = sub.status === 'trial' && now < new Date(sub.trialEndsAt);
     const activeOk = sub.status === 'active' && now < new Date(sub.currentPeriodEnd);
     if (trialOk || activeOk) window.location.href = './mathem.html';
-  } catch(e) {}
+    else if (sub.status === 'expired' || sub.status === 'cancelled') {
+      window.location.href = './paywall.html?reason=expired';
+    }
+  } catch(e) {
+    console.error('Auth check error:', e);
+    // Em caso de erro, redireciona para mathem e deixa a página verificar
+    window.location.href = './mathem.html';
+  }
 });
 
 window.switchTab = function(tab) {

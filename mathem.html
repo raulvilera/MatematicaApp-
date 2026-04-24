@@ -1,188 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+<script>
+// Força limpeza de Service Worker e cache antigo
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => reg.unregister());
+  });
+  caches.keys().then(keys => {
+    keys.forEach(key => caches.delete(key));
+  });
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module">
-// ── Firebase Config ──────────────────────────────────────────
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-         signOut as fbSignOut, onAuthStateChanged, sendPasswordResetEmail,
-         updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp }
+import { getAuth, onAuthStateChanged, signOut as fbSignOut }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyDJ4ZxM-1DmDrUj3yIar4C_tPqS3Gp1S1Q",
   authDomain: "matematica-app-a59ef.firebaseapp.com",
   projectId: "matematica-app-a59ef",
   storageBucket: "matematica-app-a59ef.firebasestorage.app",
   messagingSenderId: "1080081552143",
-  appId: "1:1080081552143:web:2316e6b57bc1097f25a47a",
-  measurementId: "G-4FG0XMPKP2"
-};
-
-const app = initializeApp(firebaseConfig);
+  appId: "1:1080081552143:web:2316e6b57bc1097f25a47a"
+});
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ── Funções de Autenticação ──────────────────────────────────
-
-async function signUp(name, email, password) {
-  const cred = await createUserWithEmailAndPassword(auth, email, password);
-  await updateProfile(cred.user, { displayName: name });
-
-  const trialEnd = new Date();
-  trialEnd.setDate(trialEnd.getDate() + 7);
-
-  await setDoc(doc(db, 'users', cred.user.uid), {
-    name,
-    email,
-    createdAt: new Date().toISOString(),
-    subscription: {
-      status: 'trial',
-      plan: null,
-      trialEndsAt: trialEnd.toISOString(),
-      currentPeriodStart: null,
-      currentPeriodEnd: null,
-      cancelledAt: null
-    },
-    updatedAt: new Date().toISOString()
-  });
-
-  return cred.user;
-}
-
-async function signIn(email, password) {
-  const cred = await signInWithEmailAndPassword(auth, email, password);
-  return cred.user;
-}
-
-async function signOut() {
-  await fbSignOut(auth);
-  window.location.href = './login.html';
-}
-
-async function resetPassword(email) {
-  await sendPasswordResetEmail(auth, email);
-}
-
-// ── getUser com espera correta pelo Firebase ─────────────────
-// onAuthStateChanged pode demorar para resolver o estado real.
-// Aguardamos até 8s antes de desistir e retornar null.
-async function getUser() {
-  return new Promise((resolve) => {
-    let resolved = false;
-    const timer = setTimeout(() => {
-      if (!resolved) { resolved = true; unsub(); resolve(null); }
-    }, 8000);
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (!resolved) {
-        resolved = true;
-        clearTimeout(timer);
-        unsub();
-        resolve(user);
-      }
-    });
-  });
-}
-
-// ── Funções de Assinatura ────────────────────────────────────
-
-async function getSubscription() {
-  const user = await getUser();
-  if (!user) return null;
-  const snap = await getDoc(doc(db, 'users', user.uid));
-  if (!snap.exists()) return null;
-  return snap.data().subscription;
-}
-
-async function requireAccess() {
-  const user = await getUser();
+// Verifica acesso UMA vez após auth resolver
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = './login.html';
-    return false;
+    return;
   }
 
-  const snap = await getDoc(doc(db, 'users', user.uid));
-
-  // Documento não existe: usuário novo — cria trial e libera acesso
-  if (!snap.exists()) {
-    const trialEnd = new Date();
-    trialEnd.setDate(trialEnd.getDate() + 7);
-    await setDoc(doc(db, 'users', user.uid), {
-      name: user.displayName || '',
-      email: user.email,
-      createdAt: new Date().toISOString(),
-      subscription: {
-        status: 'trial',
-        plan: null,
-        trialEndsAt: trialEnd.toISOString(),
-        currentPeriodStart: null,
-        currentPeriodEnd: null,
-        cancelledAt: null
-      },
-      updatedAt: new Date().toISOString()
-    });
-    _showTrialBanner(7);
-    return true;
-  }
-
-  const sub = snap.data().subscription;
-  if (!sub) {
-    window.location.href = './paywall.html?reason=no_access';
-    return false;
-  }
-
-  const now = new Date();
-
-  if (sub.status === 'trial') {
-    const trialEnd = new Date(sub.trialEndsAt);
-    if (now < trialEnd) {
-      const days = Math.ceil((trialEnd - now) / 86400000);
-      _showTrialBanner(days);
-      return true;
+  try {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (!snap.exists()) {
+      // Novo usuário — libera acesso direto
+      window.SubscriptionService = { auth, signOut: async () => { await fbSignOut(auth); window.location.href = './login.html'; } };
+      return;
     }
-    window.location.href = './paywall.html?reason=trial_expired';
-    return false;
+    const sub = snap.data().subscription;
+    const now = new Date();
+
+    if (sub.status === 'trial' && now < new Date(sub.trialEndsAt)) {
+      const days = Math.ceil((new Date(sub.trialEndsAt) - now) / 86400000);
+      _showTrialBanner(days);
+      window.SubscriptionService = { auth, signOut: async () => { await fbSignOut(auth); window.location.href = './login.html'; } };
+      return;
+    }
+    if (sub.status === 'active' && now < new Date(sub.currentPeriodEnd)) {
+      window.SubscriptionService = { auth, signOut: async () => { await fbSignOut(auth); window.location.href = './login.html'; } };
+      return;
+    }
+    // Expirado
+    window.location.href = './paywall.html?reason=' + (sub.status === 'trial' ? 'trial_expired' : 'expired');
+  } catch(e) {
+    console.error('Erro ao verificar acesso:', e);
+    // Em caso de erro no Firestore, deixa entrar para não bloquear o usuário
+    window.SubscriptionService = { auth, signOut: async () => { await fbSignOut(auth); window.location.href = './login.html'; } };
   }
-
-  if (sub.status === 'active') {
-    const periodEnd = new Date(sub.currentPeriodEnd);
-    if (now < periodEnd) return true;
-    await updateDoc(doc(db, 'users', user.uid), {
-      'subscription.status': 'expired',
-      updatedAt: new Date().toISOString()
-    });
-    window.location.href = './paywall.html?reason=expired';
-    return false;
-  }
-
-  window.location.href = './paywall.html?reason=no_access';
-  return false;
-}
-
-async function createPayment(plan) {
-  const user = await getUser();
-  if (!user) throw new Error('Não autenticado');
-
-  const token = await user.getIdToken();
-
-  const res = await fetch('/api/create-payment', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ plan })
-  });
-
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error || 'Erro ao criar pagamento');
-  }
-
-  return res.json();
-}
+});
 
 function _showTrialBanner(days) {
   if (document.getElementById('_trial_banner')) return;
@@ -202,16 +85,6 @@ function _showTrialBanner(days) {
   </div>`;
   document.body.appendChild(div);
 }
-
-window.SubscriptionService = {
-  auth, db, signUp, signIn, signOut, resetPassword,
-  getUser, getSubscription, requireAccess, createPayment
-};
-
-// ── Guard de acesso ──────────────────────────────────────────
-document.documentElement.style.visibility = "hidden";
-const _ok = await requireAccess();
-if (_ok) document.documentElement.style.visibility = "visible";
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -597,15 +470,6 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .plano-titulo-h{font-size:clamp(0.82rem,2.5vw,1rem);font-weight:700;color:#fff;
   margin-bottom:0.15rem;line-height:1.3;}
 .plano-periodo{font-size:0.68rem;color:rgba(255,255,255,0.55);}
-/* Campos editáveis no cabeçalho do plano */
-.plano-header-input{background:transparent;border:none;outline:none;font:inherit;
-  color:inherit;width:100%;padding:0;margin:0;resize:none;cursor:default;}
-.plano-header-input::placeholder{opacity:0.45;}
-.plano-edit-mode .plano-header-input{
-  border-bottom:1px dashed rgba(255,255,255,0.35);cursor:text;
-  background:rgba(255,255,255,0.06);border-radius:3px;padding:1px 3px;}
-.plano-header-row{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;}
-.plano-header-sep{color:rgba(255,255,255,0.3);font-size:0.65rem;}
 .plano-modal-body{padding:0;max-height:55vh;overflow-y:auto;}
 .plano-modal-body::-webkit-scrollbar{width:3px;}
 .plano-modal-body::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:2px;}
@@ -657,6 +521,15 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
   .plano-modal-footer{flex-direction:column;}
   .plano-footer-actions{width:100%;justify-content:stretch;}
   .plano-btn{flex:1;justify-content:center;}}
+
+/* ── Bimestre Buttons ── */
+.bimestre-bar{display:flex;gap:0.5rem;flex-wrap:wrap;margin:0.6rem 0 0.8rem 0;}
+.bim-btn{padding:0.38rem 0.9rem;border-radius:99px;border:1.5px solid rgba(255,82,82,0.3);
+  background:rgba(255,82,82,0.07);color:rgba(255,205,210,0.7);
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;cursor:pointer;transition:0.2s;}
+.bim-btn:hover{background:rgba(255,82,82,0.18);color:white;border-color:rgba(255,82,82,0.6);}
+.bim-btn.active{background:linear-gradient(135deg,#C0392B,#FF5252);color:white;
+  border-color:transparent;box-shadow:0 4px 12px rgba(180,0,0,0.35);}
 </style>
 </head>
 <body>
@@ -773,6 +646,13 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
     <div class="temas-grid" id="temasPillsHome"></div>
   </div>
   <div class="section-title">Aprendizagens Essenciais</div>
+  <div class="bimestre-bar" id="bimestreBar" style="display:none">
+    <button class="bim-btn active" onclick="filtrarBimestre(0,this)">📚 Todos</button>
+    <button class="bim-btn" onclick="filtrarBimestre(1,this)">1º Bimestre</button>
+    <button class="bim-btn" onclick="filtrarBimestre(2,this)">2º Bimestre</button>
+    <button class="bim-btn" onclick="filtrarBimestre(3,this)">3º Bimestre</button>
+    <button class="bim-btn" onclick="filtrarBimestre(4,this)">4º Bimestre</button>
+  </div>
   <div class="ae-grid" id="aeGrid"></div>
   <div id="planoPanel" class="plano-panel">
     <div class="panel-header">
@@ -790,6 +670,13 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
     <div class="temas-grid" id="temasPillsSim"></div>
   </div>
   <div class="section-title">Simuladores Interativos</div>
+  <div class="bimestre-bar" id="bimestreBarSim" style="display:none">
+    <button class="bim-btn active" onclick="filtrarBimestre(0,this)">📚 Todos</button>
+    <button class="bim-btn" onclick="filtrarBimestre(1,this)">1º Bimestre</button>
+    <button class="bim-btn" onclick="filtrarBimestre(2,this)">2º Bimestre</button>
+    <button class="bim-btn" onclick="filtrarBimestre(3,this)">3º Bimestre</button>
+    <button class="bim-btn" onclick="filtrarBimestre(4,this)">4º Bimestre</button>
+  </div>
   <div class="ae-grid" id="simGrid"></div>
 </div>
 
@@ -849,28 +736,14 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 <div class="plano-overlay" id="planoOverlay">
   <div class="plano-modal" id="planoModalEl">
     <div class="plano-modal-header">
-      <div class="plano-escola">
-        <input class="plano-header-input" id="pf_escola" type="text"
-          placeholder="Nome da escola" readonly
-          value="EE Wanda Mascagni de Sá"
-          style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6);">
-      </div>
+      <div class="plano-escola">EE Wanda Mascagni de Sá</div>
       <div class="plano-titulo-h" id="planoModalTitulo">Plano de Aula</div>
-      <div class="plano-periodo" style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
-        <span style="color:rgba(255,255,255,0.4);font-size:0.68rem;white-space:nowrap;">Período:</span>
-        <input class="plano-header-input" id="pf_periodo" type="text"
-          placeholder="dd/mm a dd/mm/aaaa" readonly
-          style="font-size:0.68rem;color:rgba(255,255,255,0.75);flex:1;min-width:100px;">
-        <span style="color:rgba(255,255,255,0.3);font-size:0.68rem;">·</span>
-        <input class="plano-header-input" id="pf_turma_header" type="text"
-          placeholder="Turma" readonly
-          style="font-size:0.68rem;color:rgba(255,255,255,0.75);width:80px;">
-      </div>
+      <div class="plano-periodo" id="planoModalPeriodo"></div>
     </div>
     <div class="plano-modal-body">
       <table class="plano-table">
         <tr><td>Professor(a)</td>
-          <td><textarea class="plano-field-edit" id="pf_professor" rows="1"></textarea></td></tr>
+          <td><textarea class="plano-field-edit" id="pf_professor" rows="1">Prof. Raul Pereira Vilera Junior</textarea></td></tr>
         <tr><td>Turma</td>
           <td><textarea class="plano-field-edit" id="pf_turma" rows="1"></textarea></td></tr>
         <tr><td>Objetivos de Aprendizagem</td>
@@ -939,247 +812,260 @@ function getAppBaseUrl() {
    BANCO CURRICULAR COMPLETO
    ==================================================== */
 
-const ef6_aes = [
-  {code:'EF06MA07',title:'Frações como resultado de divisão',sim:'fracao',tag:'num',desc:'Fração como divisão: numerador ÷ denominador. Representação na reta numérica.'},
-  {code:'EF06MA08',title:'Fração de uma quantidade',sim:'fracao',tag:'num',desc:'Estratégias para calcular a fração de uma quantidade. Resolução de problemas.'},
-  {code:'EF06MA09',title:'Comparação de frações com a reta numérica',sim:'reta',tag:'num',desc:'Comparação de frações usando a reta numérica como referência visual.'},
-  {code:'EF06MA10',title:'Frações equivalentes',sim:'fracao',tag:'num',desc:'Obtenção de frações equivalentes por multiplicação e divisão.'},
-  {code:'EF06MA11',title:'Simplificação de frações',sim:'fracao',tag:'num',desc:'Estratégias de simplificação usando o MDC. Frações irredutíveis.'},
-  {code:'EF06MA12',title:'Adição e subtração de frações',sim:'fracao',tag:'num',desc:'Adição e subtração com frações de denominadores iguais e diferentes.'},
-  {code:'EF06MA13',title:'Forma mista',sim:'fracao',tag:'num',desc:'Representação mista (número inteiro + fração). Conversão entre formas.'},
-  {code:'EF06MA14',title:'Multiplicação e divisão de frações',sim:'fracao',tag:'num',desc:'Multiplicação e divisão com frações. Estratégias de simplificação cruzada.'},
-  {code:'EF06MA19',title:'Giros e ângulos',sim:'angulos',tag:'geo',desc:'Conceito de ângulo como giro. Ângulos retos, agudos, obtusos e rasos.'},
-  {code:'EF06MA20',title:'Reconhecimento e classificação de polígonos',sim:'poligonos',tag:'geo',desc:'Classificação de polígonos pelo número de lados, ângulos e tipos.'},
-  {code:'EF06MA21',title:'Reconhecimento e classificação de triângulos',sim:'triangulos',tag:'geo',desc:'Classificação quanto aos lados (equilátero, isósceles, escaleno) e ângulos.'},
-  {code:'EF06MA22',title:'Características dos quadriláteros',sim:'quadrilateros',tag:'geo',desc:'Quadrado, retângulo, losango, paralelogramo, trapézio — propriedades.'},
-];
+// ── Currículo Paulista / BNCC — organizado por bimestre ──────
+const CURRICULO = {
+  // ─────────────── ENSINO FUNDAMENTAL ───────────────
+  ef6: {
+    label: '6º Ano',
+    bimestres: [
+      { num:1, sims:['operacoes','reta','multiplos','fracao'], temas:[
+        {code:'EF06MA01',title:'Sistema de numeração decimal',sim:'reta',tag:'num',desc:'Identificar, comparar e ordenar números naturais e racionais com representação decimal finita.'},
+        {code:'EF06MA03',title:'Operações com números naturais',sim:'operacoes',tag:'num',desc:'Adição, subtração, multiplicação, divisão e potenciação com números naturais.'},
+        {code:'EF06MA06',title:'Múltiplos, divisores e números primos',sim:'multiplos',tag:'num',desc:'Resolver problemas com múltiplos e divisores. Reconhecer números primos e compostos.'},
+        {code:'EF06MA14a',title:'Propriedades da igualdade',sim:'operacoes',tag:'alg',desc:'Relação de igualdade matemática. Determinar valores desconhecidos na resolução de problemas.'},
+      ]},
+      { num:2, sims:['fracao','reta','quadrilateros','operacoes'], temas:[
+        {code:'EF06MA07',title:'Frações como resultado de divisão',sim:'fracao',tag:'num',desc:'Fração como divisão: numerador ÷ denominador. Representação na reta numérica.'},
+        {code:'EF06MA08',title:'Fração de uma quantidade',sim:'fracao',tag:'num',desc:'Estratégias para calcular a fração de uma quantidade. Resolução de problemas.'},
+        {code:'EF06MA09',title:'Frações equivalentes e comparação',sim:'fracao',tag:'num',desc:'Comparação de frações usando a reta numérica como referência visual.'},
+        {code:'EF06MA10',title:'Frações equivalentes',sim:'fracao',tag:'num',desc:'Obtenção de frações equivalentes por multiplicação e divisão.'},
+        {code:'EF06MA11',title:'Simplificação de frações',sim:'fracao',tag:'num',desc:'Estratégias de simplificação usando o MDC. Frações irredutíveis.'},
+        {code:'EF06MA12',title:'Adição e subtração de frações',sim:'fracao',tag:'num',desc:'Adição e subtração com frações de denominadores iguais e diferentes.'},
+        {code:'EF06MA20',title:'Classificação de quadriláteros',sim:'quadrilateros',tag:'geo',desc:'Características dos quadriláteros: lados, ângulos, paralelismo e perpendicularismo.'},
+      ]},
+      { num:3, sims:['fracao','angulos','triangulos','operacoes'], temas:[
+        {code:'EF06MA13',title:'Forma mista',sim:'fracao',tag:'num',desc:'Representação mista (número inteiro + fração). Conversão entre formas.'},
+        {code:'EF06MA14b',title:'Multiplicação e divisão de frações',sim:'fracao',tag:'num',desc:'Multiplicação e divisão com frações. Estratégias de simplificação cruzada.'},
+        {code:'EF06MA19',title:'Giros e ângulos',sim:'angulos',tag:'geo',desc:'Conceito de ângulo como giro. Ângulos retos, agudos, obtusos e rasos.'},
+        {code:'EF06MA21',title:'Classificação de triângulos',sim:'triangulos',tag:'geo',desc:'Classificação quanto aos lados (equilátero, isósceles, escaleno) e ângulos.'},
+      ]},
+      { num:4, sims:['quadrilateros','operacoes','geometria3d','graficos'], temas:[
+        {code:'EF06MA22',title:'Características dos quadriláteros',sim:'quadrilateros',tag:'geo',desc:'Quadrado, retângulo, losango, paralelogramo, trapézio — propriedades.'},
+        {code:'EF06MA24',title:'Grandezas e medidas',sim:'operacoes',tag:'geo',desc:'Comprimento, massa, tempo, temperatura, área, capacidade e volume.'},
+        {code:'EF06MA31',title:'Leitura e interpretação de gráficos',sim:'graficos',tag:'est',desc:'Identificar variáveis e frequências em tabelas e gráficos de colunas e barras.'},
+      ]},
+    ]
+  },
+  ef7: {
+    label: '7º Ano',
+    bimestres: [
+      { num:1, sims:['decimal','reta','operacoes','potencia'], temas:[
+        {code:'EF07MA01',title:'Frações e números decimais',sim:'decimal',tag:'num',desc:'Relações entre frações e decimais. Conversão e representação na reta.'},
+        {code:'EF07MA02',title:'Números racionais na reta numérica',sim:'reta',tag:'num',desc:'Posicionamento de racionais positivos e negativos na reta numérica.'},
+        {code:'EF07MA03',title:'Adição e subtração de racionais decimais',sim:'operacoes',tag:'num',desc:'Estratégias de adição e subtração com números racionais na forma decimal.'},
+      ]},
+      { num:2, sims:['potencia','operacoes','analitica','geometria3d'], temas:[
+        {code:'EF07MA04',title:'Multiplicação e potenciação de racionais',sim:'potencia',tag:'num',desc:'Multiplicação e potenciação de números racionais. Propriedades.'},
+        {code:'EF07MA05',title:'Divisão de números racionais',sim:'operacoes',tag:'num',desc:'Divisão de racionais decimais. Resolução de problemas aplicados.'},
+        {code:'EF07MA15',title:'Polígonos no plano cartesiano',sim:'analitica',tag:'geo',desc:'Classificação de polígonos e representação no plano cartesiano.'},
+        {code:'EF07MA16',title:'Pontos no plano cartesiano',sim:'analitica',tag:'geo',desc:'Identificação e marcação de pontos nos quatro quadrantes.'},
+        {code:'EF07MA17',title:'Simétricos no plano cartesiano',sim:'analitica',tag:'geo',desc:'Reflexão de figuras em relação aos eixos. Simetria axial.'},
+      ]},
+      { num:3, sims:['geometria3d','pitagoras','operacoes','graficos'], temas:[
+        {code:'EF07MA30',title:'Explorando áreas na malha',sim:'geometria3d',tag:'geo',desc:'Cálculo de áreas por contagem de quadradinhos na malha quadriculada.'},
+        {code:'EF07MA31',title:'Área de retângulos e quadrados',sim:'geometria3d',tag:'geo',desc:'Fórmula A = b × h. Resolução de problemas com retângulos e quadrados.'},
+        {code:'EF07MA32',title:'Área de triângulos',sim:'pitagoras',tag:'geo',desc:'Fórmula A = (b × h) / 2. Altura e base de triângulos variados.'},
+      ]},
+      { num:4, sims:['geometria3d','operacoes','graficos','decimal'], temas:[
+        {code:'EF07MA33',title:'Área por decomposição',sim:'geometria3d',tag:'geo',desc:'Cálculo de área de figuras compostas por decomposição em formas simples.'},
+        {code:'EF07MA34',title:'Porcentagem e noções de probabilidade',sim:'operacoes',tag:'num',desc:'Cálculo de porcentagem. Noções básicas de probabilidade e frequência relativa.'},
+        {code:'EF07MA35',title:'Leitura e interpretação de dados',sim:'graficos',tag:'est',desc:'Organização de dados em tabelas e gráficos. Média aritmética.'},
+      ]},
+    ]
+  },
+  ef8: {
+    label: '8º Ano',
+    bimestres: [
+      { num:1, sims:['afim','operacoes','potencia','sistema'], temas:[
+        {code:'EF08MA01',title:'Introdução ao cálculo algébrico',sim:'afim',tag:'alg',desc:'Uso de letras para representar números. Introdução à linguagem algébrica.'},
+        {code:'EF08MA02',title:'Valor numérico de expressões algébricas',sim:'afim',tag:'alg',desc:'Substituição de variáveis e cálculo do valor numérico de expressões.'},
+        {code:'EF08MA03',title:'Simplificação de expressões algébricas',sim:'afim',tag:'alg',desc:'Redução de termos semelhantes. Simplificação com monômios e polinômios.'},
+      ]},
+      { num:2, sims:['sistema','afim','analitica','operacoes'], temas:[
+        {code:'EF08MA06',title:'Relação de igualdade e equações do 1º grau',sim:'sistema',tag:'alg',desc:'Conceito de equação. Estratégias de resolução de equações do 1º grau.'},
+        {code:'EF08MA07',title:'Modelagem com equações do 1º grau',sim:'afim',tag:'alg',desc:'Tradução de problemas em equações. Resolução e interpretação.'},
+        {code:'EF08MA08',title:'Equações do 1º grau com duas incógnitas',sim:'sistema',tag:'alg',desc:'Equações com duas variáveis. Representação no plano cartesiano.'},
+      ]},
+      { num:3, sims:['sistema','afim','operacoes','analitica'], temas:[
+        {code:'EF08MA09',title:'Sistemas de equações do 1º grau',sim:'sistema',tag:'alg',desc:'Conceito e representação de sistemas lineares 2×2.'},
+        {code:'EF08MA10',title:'Resolução algébrica de sistemas',sim:'sistema',tag:'alg',desc:'Métodos de substituição e adição para resolução de sistemas.'},
+        {code:'EF08MA11',title:'Modelagem com sistemas de equações',sim:'sistema',tag:'alg',desc:'Problemas cotidianos modelados por sistemas de equações.'},
+      ]},
+      { num:4, sims:['semelhanca','pitagoras','geometria3d','graficos'], temas:[
+        {code:'EF08MA14',title:'Teorema de Tales',sim:'semelhanca',tag:'geo',desc:'Feixes de retas paralelas cortadas por transversais. Proporcionalidade.'},
+        {code:'EF08MA15',title:'Semelhança de triângulos',sim:'semelhanca',tag:'geo',desc:'Critérios de semelhança AA, LAL, LLL. Razão de semelhança.'},
+        {code:'EF08MA16',title:'Polígonos semelhantes e aplicações',sim:'semelhanca',tag:'geo',desc:'Razão de semelhança entre polígonos. Escala, mapas e projetos.'},
+      ]},
+    ]
+  },
+  ef9: {
+    label: '9º Ano',
+    bimestres: [
+      { num:1, sims:['semelhanca','pitagoras','geometria3d','analitica'], temas:[
+        {code:'EF09MA01',title:'Semelhança de triângulos retângulos',sim:'semelhanca',tag:'geo',desc:'Critérios de semelhança. Razão de semelhança e proporcionalidade.'},
+        {code:'EF09MA02',title:'Relações métricas no triângulo retângulo',sim:'pitagoras',tag:'geo',desc:'Altura, projeções, relações métricas. Teorema de Pitágoras como caso especial.'},
+        {code:'EF09MA14',title:'Teorema de Pitágoras',sim:'pitagoras',tag:'geo',desc:'Demonstração e aplicação. a²+b²=c². Problemas de modelagem geométrica.'},
+      ]},
+      { num:2, sims:['decimal','reta','potencia','operacoes'], temas:[
+        {code:'EF09MA03',title:'Números racionais infinitos e dízimas',sim:'decimal',tag:'num',desc:'Dízimas periódicas e não periódicas. Fração geratriz de dízima periódica.'},
+        {code:'EF09MA04',title:'Números irracionais',sim:'reta',tag:'num',desc:'Conceito de irracional. √2, π, φ. Localização na reta numérica.'},
+        {code:'EF09MA05',title:'Conjunto dos números reais',sim:'decimal',tag:'num',desc:'Relação ℕ⊂ℤ⊂ℚ⊂ℝ. Operações com reais. Potenciação e radiciação.'},
+        {code:'EF09MA06',title:'Operações com números reais',sim:'potencia',tag:'num',desc:'Adição, subtração, multiplicação e divisão com números reais.'},
+        {code:'EF09MA07',title:'Expressões algébricas com números reais',sim:'afim',tag:'alg',desc:'Valor numérico de expressões algébricas envolvendo números reais e radicais.'},
+      ]},
+      { num:3, sims:['afim','quadratica','analitica','graficos'], temas:[
+        {code:'EF09MA08',title:'Introdução às funções',sim:'afim',tag:'alg',desc:'Conceito de função. Domínio, contradomínio e imagem. Diagrama e tabela.'},
+        {code:'EF09MA09',title:'Função afim',sim:'afim',tag:'alg',desc:'f(x) = ax + b. Gráfico, coeficientes, crescimento e decrescimento.'},
+        {code:'EF09MA10',title:'Função quadrática',sim:'quadratica',tag:'alg',desc:'f(x) = ax² + bx + c. Parábola, vértice e raízes.'},
+      ]},
+      { num:4, sims:['pitagoras','trigonometria','operacoes','graficos'], temas:[
+        {code:'EF09MA11',title:'Noções de trigonometria',sim:'pitagoras',tag:'geo',desc:'Razões trigonométricas no triângulo retângulo: seno, cosseno e tangente.'},
+        {code:'EF09MA12',title:'Aplicações de trigonometria',sim:'trigonometria',tag:'geo',desc:'Resolução de problemas usando razões trigonométricas.'},
+        {code:'EF09MA13',title:'Probabilidade e estatística',sim:'graficos',tag:'est',desc:'Probabilidade de eventos. Média, mediana e moda. Gráficos e tabelas.'},
+      ]},
+    ]
+  },
 
-const ef7_aes = [
-  {code:'EF07MA01',title:'Frações e números decimais',sim:'decimal',tag:'num',desc:'Relações entre frações e decimais. Conversão e representação na reta.'},
-  {code:'EF07MA02',title:'Números racionais na reta numérica',sim:'reta',tag:'num',desc:'Posicionamento de racionais positivos e negativos na reta numérica.'},
-  {code:'EF07MA03',title:'Adição e subtração de racionais decimais',sim:'operacoes',tag:'num',desc:'Estratégias de adição e subtração com números racionais na forma decimal.'},
-  {code:'EF07MA04',title:'Multiplicação e potenciação de racionais',sim:'potencia',tag:'num',desc:'Multiplicação e potenciação de números racionais. Propriedades.'},
-  {code:'EF07MA05',title:'Divisão de números racionais',sim:'operacoes',tag:'num',desc:'Divisão de racionais decimais. Resolução de problemas aplicados.'},
-  {code:'EF07MA15',title:'Polígonos no plano cartesiano',sim:'analitica',tag:'geo',desc:'Classificação de polígonos e representação no plano cartesiano.'},
-  {code:'EF07MA16',title:'Pontos no plano cartesiano',sim:'analitica',tag:'geo',desc:'Identificação e marcação de pontos nos quatro quadrantes.'},
-  {code:'EF07MA17',title:'Simétricos no plano cartesiano',sim:'analitica',tag:'geo',desc:'Reflexão de figuras em relação aos eixos. Simetria axial.'},
-  {code:'EF07MA30',title:'Explorando áreas na malha',sim:'geometria3d',tag:'geo',desc:'Cálculo de áreas por contagem de quadradinhos na malha quadriculada.'},
-  {code:'EF07MA31',title:'Área de retângulos e quadrados',sim:'geometria3d',tag:'geo',desc:'Fórmula A = b × h. Resolução de problemas com retângulos e quadrados.'},
-  {code:'EF07MA32',title:'Área de triângulos',sim:'pitagoras',tag:'geo',desc:'Fórmula A = (b × h) / 2. Altura e base de triângulos variados.'},
-  {code:'EF07MA33',title:'Área por decomposição',sim:'geometria3d',tag:'geo',desc:'Cálculo de área de figuras compostas por decomposição em formas simples.'},
-];
+  // ─────────────── ENSINO MÉDIO ───────────────
+  em1: {
+    label: '1ª EM',
+    bimestres: [
+      { num:1, sims:['sistema','afim','operacoes','analitica'], temas:[
+        {code:'EM1-A01',title:'Retomando equações do 1º grau',sim:'sistema',tag:'alg',desc:'Revisão de equações lineares: isolamento da incógnita, verificação da solução e propriedades da igualdade.'},
+        {code:'EM1-A02',title:'Modelagem algébrica – Parte 1',sim:'afim',tag:'alg',desc:'Tradução de problemas em equações do 1º grau. Estratégias de resolução e interpretação do resultado.'},
+        {code:'EM1-A03',title:'Modelagem algébrica – Parte 2',sim:'afim',tag:'alg',desc:'Problemas de modelagem envolvendo consecutivos, idades, misturas e geometria.'},
+        {code:'EM1-A04',title:'Revisão: problemas com equações do 1º grau',sim:'sistema',tag:'alg',desc:'Consolidação da resolução de problemas usando equações lineares com uma incógnita.'},
+        {code:'EM1-A05',title:'Grandezas de espécies diferentes',sim:'afim',tag:'alg',desc:'Conceito de grandeza. Grandezas direta e inversamente proporcionais. Regra de três simples.'},
+        {code:'EM1-A06',title:'Problemas com grandezas proporcionais',sim:'afim',tag:'alg',desc:'Resolução de problemas usando proporcionalidade direta e inversa em contextos reais.'},
+        {code:'EM1-A07',title:'Equações do 1º grau e relação entre grandezas',sim:'afim',tag:'alg',desc:'Integração entre equações lineares e proporcionalidade. Tabelas e gráficos.'},
+        {code:'EM1-A08',title:'Verificação: equações do 1º grau',sim:'sistema',tag:'alg',desc:'Avaliação formativa sobre equações, modelagem e grandezas proporcionais.'},
+      ]},
+      { num:2, sims:['afim','analitica','graficos','sistema'], temas:[
+        {code:'EM1-A09',title:'Explorando a relação entre grandezas',sim:'afim',tag:'alg',desc:'Dependência funcional. Identificação de relações de entrada e saída entre grandezas.'},
+        {code:'EM1-A10',title:'Relação entre grandezas: representação algébrica',sim:'afim',tag:'alg',desc:'Expressão algébrica de uma função. Domínio, contradomínio e imagem.'},
+        {code:'EM1-A11',title:'Relação entre grandezas: representação gráfica',sim:'afim',tag:'alg',desc:'Gráfico cartesiano de funções. Leitura e interpretação de informações gráficas.'},
+        {code:'EM1-A12',title:'Revisão: conceito de função',sim:'afim',tag:'alg',desc:'Retomada dos conceitos de função, diagrama de setas, tabela e gráfico.'},
+        {code:'EM1-A13',title:'O conceito de função',sim:'afim',tag:'alg',desc:'Definição formal de função. Noção de função como correspondência unívoca.'},
+        {code:'EM1-A14',title:'Representação de funções',sim:'afim',tag:'alg',desc:'Múltiplas representações: tabela, diagrama, expressão algébrica e gráfico.'},
+        {code:'EM1-A15',title:'Função como relação de dependência',sim:'afim',tag:'alg',desc:'Variável dependente e independente. Aplicações em ciências e cotidiano.'},
+        {code:'EM1-A16',title:'Verificação: conceito de função',sim:'afim',tag:'alg',desc:'Avaliação formativa sobre domínio, imagem e formas de representação de funções.'},
+      ]},
+      { num:3, sims:['afim','analitica','graficos','sistema'], temas:[
+        {code:'EM1-A17',title:'Explorando o conceito de função afim',sim:'afim',tag:'alg',desc:'Investigação dos padrões de funções lineares e afim por meio de tabelas e gráficos.'},
+        {code:'EM1-A18',title:'Função afim',sim:'afim',tag:'alg',desc:'f(x) = ax + b. Coeficientes angular e linear. Crescimento, decrescimento e constância.'},
+        {code:'EM1-A19',title:'Representações da função afim',sim:'afim',tag:'alg',desc:'Tabela, gráfico e lei de formação da função afim. Identificação de coeficientes.'},
+        {code:'EM1-A20',title:'Revisão: função afim e gráfico',sim:'afim',tag:'alg',desc:'Gráfico da reta: inclinação, intercepto e cruzamento com os eixos.'},
+        {code:'EM1-A21',title:'Lei de formação e gráfico da função afim',sim:'afim',tag:'alg',desc:'Construção do gráfico a partir da lei. Zero da função e posição relativa das retas.'},
+        {code:'EM1-A22',title:'Proporcionalidade e função linear',sim:'afim',tag:'alg',desc:'Função linear como caso particular da afim (b=0). Proporcionalidade direta.'},
+        {code:'EM1-A23',title:'Função afim: resolução de problemas',sim:'afim',tag:'alg',desc:'Modelagem e resolução de problemas cotidianos com função afim.'},
+        {code:'EM1-A24',title:'Verificação: função afim',sim:'afim',tag:'alg',desc:'Avaliação formativa sobre lei de formação, gráfico e aplicações da função afim.'},
+      ]},
+      { num:4, sims:['afim','sistema','quadratica','graficos'], temas:[
+        {code:'EM1-A25',title:'Revisão: equações do 1º grau – problemas',sim:'sistema',tag:'alg',desc:'Retomada aprofundada de equações lineares com problemas de maior complexidade.'},
+        {code:'EM1-A26',title:'Revisão: conceito de função',sim:'afim',tag:'alg',desc:'Consolidação dos conceitos de função: domínio, imagem e representações.'},
+        {code:'EM1-A27',title:'Revisão: função afim',sim:'afim',tag:'alg',desc:'Síntese dos conceitos da função afim: coeficientes, gráfico e zeros.'},
+        {code:'EM1-A28',title:'Revisão final: função afim',sim:'afim',tag:'alg',desc:'Revisão geral integrando equações, grandezas, funções e função afim com aplicações.'},
+      ]},
+    ]
+  },
+  em2: {
+    label: '2ª EM',
+    bimestres: [
+      { num:1, sims:['exponencial','graficos_exp','exponencial_aplic','sistema'], temas:[
+        {code:'EM2-A01',title:'Explorando equações exponenciais',sim:'exponencial',tag:'alg',desc:'Reconhecimento e resolução de equações exponenciais simples. Propriedades das potências.'},
+        {code:'EM2-A02',title:'Função exponencial',sim:'exponencial',tag:'alg',desc:'f(x) = aˣ, a > 0, a ≠ 1. Domínio, imagem, crescimento e decrescimento.'},
+        {code:'EM2-A03',title:'Modelagem com função exponencial',sim:'exponencial_aplic',tag:'alg',desc:'Juros compostos, crescimento populacional, meia-vida. Modelos exponenciais reais.'},
+        {code:'EM2-A04',title:'Revisão: função exponencial',sim:'exponencial',tag:'alg',desc:'Consolidação dos conceitos da função exponencial e suas propriedades gráficas.'},
+        {code:'EM2-A05',title:'Gráfico da função exponencial',sim:'graficos_exp',tag:'alg',desc:'Construção e análise do gráfico de f(x)=aˣ. Assíntota horizontal e comportamento.'},
+        {code:'EM2-A06',title:'Análise de gráficos exponenciais',sim:'graficos_exp',tag:'alg',desc:'Comparação de crescimento/decrescimento, valores notáveis e leitura de gráficos.'},
+        {code:'EM2-A07',title:'Problemas com funções exponenciais',sim:'exponencial',tag:'alg',desc:'Equações exponenciais em contextos: finanças, ciências naturais e tecnologia.'},
+        {code:'EM2-A08',title:'Verificação: funções exponenciais',sim:'exponencial',tag:'alg',desc:'Avaliação formativa sobre equações, gráfico e aplicações da função exponencial.'},
+      ]},
+      { num:2, sims:['logaritmo','eq_logaritmica','logaritmo_aplic','exponencial'], temas:[
+        {code:'EM2-A09',title:'Explorando logaritmos',sim:'logaritmo',tag:'alg',desc:'Logaritmo como operação inversa da potenciação. log_a(b) = x ↔ aˣ = b.'},
+        {code:'EM2-A10',title:'Propriedades dos logaritmos – Parte 1',sim:'logaritmo',tag:'alg',desc:'log(M·N), log(M/N), log(Mⁿ). Demonstração e aplicação das propriedades.'},
+        {code:'EM2-A11',title:'Propriedades dos logaritmos – Parte 2',sim:'logaritmo',tag:'alg',desc:'Mudança de base, logaritmo de 1, logaritmo da base. Cologaritmo.'},
+        {code:'EM2-A12',title:'Revisão: propriedades dos logaritmos',sim:'logaritmo',tag:'alg',desc:'Consolidação e prática das propriedades dos logaritmos em expressões e equações.'},
+        {code:'EM2-A13',title:'Equações logarítmicas – Parte 1',sim:'eq_logaritmica',tag:'alg',desc:'Equações da forma log_a(x) = b. Estratégias de resolução e restrições.'},
+        {code:'EM2-A14',title:'Equações logarítmicas – Parte 2',sim:'eq_logaritmica',tag:'alg',desc:'Equações logarítmicas mais complexas. Uso de propriedades para simplificação.'},
+        {code:'EM2-A15',title:'Aplicações de logaritmos',sim:'logaritmo_aplic',tag:'alg',desc:'Escala Richter, decibéis (dB), pH. Logaritmo decimal e natural nas ciências.'},
+        {code:'EM2-A16',title:'Problemas com logaritmos',sim:'logaritmo',tag:'alg',desc:'Problemas contextualizados envolvendo logaritmos e equações logarítmicas.'},
+      ]},
+      { num:3, sims:['funcao_log','graficos_log','exp_log_dual','eq_logaritmica'], temas:[
+        {code:'EM2-A17',title:'Relação exponencial e logarítmica',sim:'exp_log_dual',tag:'alg',desc:'Relação de dualidade entre funções exponencial e logarítmica. Resolução integrada.'},
+        {code:'EM2-A18',title:'Função logarítmica',sim:'funcao_log',tag:'alg',desc:'f(x) = log_a(x). Domínio, imagem, crescimento e decrescimento. Gráfico.'},
+        {code:'EM2-A19',title:'Modelagem com função logarítmica',sim:'funcao_log',tag:'alg',desc:'Aplicações da função logarítmica: tempo de descarga, escalas científicas.'},
+        {code:'EM2-A20',title:'Revisão: equações logarítmicas',sim:'eq_logaritmica',tag:'alg',desc:'Retomada aprofundada de equações logarítmicas com maior grau de dificuldade.'},
+        {code:'EM2-A21',title:'Gráfico da função logarítmica',sim:'graficos_log',tag:'alg',desc:'Construção do gráfico de f(x)=log_a(x). Assíntota vertical, zeros e intersecções.'},
+        {code:'EM2-A22',title:'Análise de gráficos logarítmicos',sim:'graficos_log',tag:'alg',desc:'Comparação de bases, simetria com a exponencial e leitura de informações gráficas.'},
+        {code:'EM2-A23',title:'Função logarítmica: problemas',sim:'funcao_log',tag:'alg',desc:'Problemas que exigem a função logarítmica: tempo, concentração e intensidade.'},
+        {code:'EM2-A24',title:'Verificação: função logarítmica',sim:'funcao_log',tag:'alg',desc:'Avaliação formativa sobre gráfico, domínio e aplicações da função logarítmica.'},
+      ]},
+      { num:4, sims:['exponencial','logaritmo','funcao_log','exp_log_dual'], temas:[
+        {code:'EM2-A25',title:'Revisão: função exponencial',sim:'exponencial',tag:'alg',desc:'Síntese dos conceitos da função exponencial para nivelamento pré-simulado.'},
+        {code:'EM2-A26',title:'Revisão: logaritmos',sim:'logaritmo',tag:'alg',desc:'Revisão das propriedades, equações e cálculos com logaritmos.'},
+        {code:'EM2-A27',title:'Revisão: função logarítmica',sim:'funcao_log',tag:'alg',desc:'Revisão do gráfico, domínio, crescimento e aplicações da função logarítmica.'},
+        {code:'EM2-A28',title:'Revisão final: exponencial e logarítmica',sim:'exp_log_dual',tag:'alg',desc:'Revisão integrada de exponencial e logarítmica com problemas nível ENEM/vestibular.'},
+      ]},
+    ]
+  },
+  em3: {
+    label: '3ª EM',
+    bimestres: [
+      { num:1, sims:['combinatoria','permutacao','arranjo','combinacao'], temas:[
+        {code:'EM3-A01',title:'Princípio multiplicativo da contagem',sim:'combinatoria',tag:'alg',desc:'Princípio fundamental da contagem. Diagrama de árvore e tabela de possibilidades.'},
+        {code:'EM3-A02',title:'Permutações simples',sim:'permutacao',tag:'alg',desc:'Permutação simples Pn = n!. Fatorial e aplicações em arranjos sem repetição.'},
+        {code:'EM3-A03',title:'Arranjos simples',sim:'arranjo',tag:'alg',desc:'Arranjo simples A(n,p) = n!/(n-p)!. Diferença entre arranjo e combinação.'},
+        {code:'EM3-A04',title:'Revisão: problemas de contagem',sim:'combinatoria',tag:'alg',desc:'Consolidação do princípio multiplicativo, permutações e arranjos simples.'},
+        {code:'EM3-A05',title:'Combinações simples',sim:'combinacao',tag:'alg',desc:'Combinação C(n,p) = n!/(p!(n-p)!). Identidade de Pascal e triângulo de Pascal.'},
+        {code:'EM3-A06',title:'Permutação, arranjo e combinação',sim:'combinatoria',tag:'alg',desc:'Comparação e critérios de escolha entre P, A e C. Resolução integrada.'},
+        {code:'EM3-A07',title:'Problemas de análise combinatória',sim:'combinatoria',tag:'alg',desc:'Problemas de maior complexidade envolvendo contagem com e sem restrições.'},
+        {code:'EM3-A08',title:'Verificação: análise combinatória',sim:'combinatoria',tag:'alg',desc:'Avaliação formativa sobre P, A e C com problemas contextualizados.'},
+      ]},
+      { num:2, sims:['probabilidade','espaco_amostral','prob_dados','prob_propriedades'], temas:[
+        {code:'EM3-A09',title:'Noções de probabilidade',sim:'probabilidade',tag:'est',desc:'Experimento aleatório, espaço amostral e evento. Definição clássica de probabilidade.'},
+        {code:'EM3-A10',title:'Experimentos e espaço amostral',sim:'espaco_amostral',tag:'est',desc:'Construção de espaços amostrais. Eventos simples, compostos, complementares.'},
+        {code:'EM3-A11',title:'Cálculo de probabilidade – Parte 1',sim:'probabilidade',tag:'est',desc:'P(A) = n(A)/n(Ω). Frequência relativa e probabilidade teórica.'},
+        {code:'EM3-A12',title:'Revisão: conceito de probabilidade',sim:'probabilidade',tag:'est',desc:'Revisão do espaço amostral, eventos e cálculo básico de probabilidade.'},
+        {code:'EM3-A13',title:'Cálculo de probabilidade – Parte 2',sim:'prob_dados',tag:'est',desc:'Problemas com dados, cartas, urnas e extração.'},
+        {code:'EM3-A14',title:'Probabilidade geométrica',sim:'prob_geometrica',tag:'est',desc:'Problemas com geometria probabilística.'},
+        {code:'EM3-A15',title:'Propriedades das probabilidades',sim:'prob_propriedades',tag:'est',desc:'0 ≤ P(A) ≤ 1. P(Ω)=1, P(∅)=0. Complementar P(Ā)=1−P(A).'},
+        {code:'EM3-A16',title:'Problemas de probabilidade',sim:'probabilidade',tag:'est',desc:'Problemas contextualizados de probabilidade com combinatória simples.'},
+      ]},
+      { num:3, sims:['prob_adicao','prob_condicional','prob_multiplicacao','prob_comb'], temas:[
+        {code:'EM3-A17',title:'Probabilidade e análise combinatória',sim:'prob_comb',tag:'est',desc:'Espaço amostral construído com técnicas de contagem. Problemas integrados.'},
+        {code:'EM3-A18',title:'Adição de probabilidades – Parte 1',sim:'prob_adicao',tag:'est',desc:'P(A∪B) = P(A)+P(B)−P(A∩B). Eventos mutuamente exclusivos.'},
+        {code:'EM3-A19',title:'Adição de probabilidades – Parte 2',sim:'prob_adicao',tag:'est',desc:'Problemas com adição de probabilidades. Diagramas de Venn.'},
+        {code:'EM3-A20',title:'Revisão: eventos e probabilidades',sim:'probabilidade',tag:'est',desc:'Revisão de espaço amostral, eventos e operações com probabilidades.'},
+        {code:'EM3-A21',title:'Probabilidade condicional',sim:'prob_condicional',tag:'est',desc:'P(A|B) = P(A∩B)/P(B). Conceito de dependência entre eventos.'},
+        {code:'EM3-A22',title:'Multiplicação de probabilidades',sim:'prob_multiplicacao',tag:'est',desc:'P(A∩B) = P(A)·P(B|A). Eventos dependentes e independentes.'},
+        {code:'EM3-A23',title:'Problemas com probabilidades',sim:'probabilidade',tag:'est',desc:'Problemas complexos combinando adição, multiplicação e probabilidade condicional.'},
+        {code:'EM3-A24',title:'Verificação: cálculo de probabilidades',sim:'probabilidade',tag:'est',desc:'Avaliação formativa sobre todos os conceitos de probabilidade estudados.'},
+      ]},
+      { num:4, sims:['combinatoria','probabilidade','prob_condicional','prob_comb'], temas:[
+        {code:'EM3-A25',title:'Revisão: análise combinatória',sim:'combinatoria',tag:'alg',desc:'Revisão aprofundada de P, A e C com questões de ENEM e vestibulares.'},
+        {code:'EM3-A26',title:'Revisão: probabilidade – Parte 1',sim:'probabilidade',tag:'est',desc:'Revisão de probabilidade clássica, frequência relativa e propriedades.'},
+        {code:'EM3-A27',title:'Revisão: probabilidade – Parte 2',sim:'prob_condicional',tag:'est',desc:'Revisão de probabilidade condicional, multiplicação e eventos independentes.'},
+        {code:'EM3-A28',title:'Revisão final: combinatória e probabilidade',sim:'prob_comb',tag:'est',desc:'Revisão integrada: análise combinatória e probabilidade com simulados estilo ENEM.'},
+      ]},
+    ]
+  },
+};
 
-const ef8_aes = [
-  {code:'EF08MA01',title:'Introdução ao cálculo algébrico',sim:'afim',tag:'alg',desc:'Uso de letras para representar números. Introdução à linguagem algébrica.'},
-  {code:'EF08MA02',title:'Valor numérico de expressões algébricas',sim:'afim',tag:'alg',desc:'Substituição de variáveis e cálculo do valor numérico de expressões.'},
-  {code:'EF08MA03',title:'Simplificação de expressões algébricas',sim:'afim',tag:'alg',desc:'Redução de termos semelhantes. Simplificação com monômios e polinômios.'},
-  {code:'EF08MA06',title:'Relação de igualdade e equações do 1º grau',sim:'sistema',tag:'alg',desc:'Conceito de equação. Estratégias de resolução de equações do 1º grau.'},
-  {code:'EF08MA07',title:'Modelagem com equações do 1º grau',sim:'afim',tag:'alg',desc:'Tradução de problemas em equações. Resolução e interpretação.'},
-  {code:'EF08MA08',title:'Equações do 1º grau com duas incógnitas',sim:'sistema',tag:'alg',desc:'Equações com duas variáveis. Representação no plano cartesiano.'},
-  {code:'EF08MA09',title:'Sistemas de equações do 1º grau',sim:'sistema',tag:'alg',desc:'Conceito e representação de sistemas lineares 2×2.'},
-  {code:'EF08MA10',title:'Resolução algébrica de sistemas',sim:'sistema',tag:'alg',desc:'Métodos de substituição e adição para resolução de sistemas.'},
-  {code:'EF08MA11',title:'Modelagem com sistemas de equações',sim:'sistema',tag:'alg',desc:'Problemas cotidianos modelados por sistemas de equações.'},
-];
-
-const ef9_aes = [
-  {code:'EF09MA01',title:'Semelhança de triângulos retângulos',sim:'semelhanca',tag:'geo',desc:'Critérios de semelhança. Razão de semelhança e proporcionalidade.'},
-  {code:'EF09MA02',title:'Relações métricas no triângulo retângulo',sim:'pitagoras',tag:'geo',desc:'Altura, projeções, relações métricas. Teorema de Pitágoras como caso especial.'},
-  {code:'EF09MA14',title:'Teorema de Pitágoras',sim:'pitagoras',tag:'geo',desc:'Demonstração e aplicação. a²+b²=c². Problemas de modelagem geométrica.'},
-  {code:'EF09MA03',title:'Números racionais infinitos e dízimas',sim:'decimal',tag:'num',desc:'Dízimas periódicas e não periódicas. Fração geratriz de dízima periódica.'},
-  {code:'EF09MA04',title:'Números irracionais',sim:'reta',tag:'num',desc:'Conceito de irracional. √2, π, φ. Localização na reta numérica.'},
-  {code:'EF09MA05',title:'Conjunto dos números reais',sim:'decimal',tag:'num',desc:'Relação ℕ⊂ℤ⊂ℚ⊂ℝ. Operações com reais. Potenciação e radiciação.'},
-  {code:'EF09MA06',title:'Operações com números reais',sim:'potencia',tag:'num',desc:'Adição, subtração, multiplicação e divisão com números reais.'},
-  {code:'EF09MA07',title:'Expressões algébricas com números reais',sim:'afim',tag:'alg',desc:'Valor numérico de expressões algébricas envolvendo números reais e radicais.'},
-];
-
-/* ── 1ª SÉRIE EM — 28 aulas (Base Nacional / BNCC) ── */
-const em1_aes = [
-  {code:'EM1-A01',title:'Retomando equações do 1º grau',sim:'sistema',tag:'alg',
-   desc:'Revisão de equações lineares: isolamento da incógnita, verificação da solução e propriedades da igualdade.'},
-  {code:'EM1-A02',title:'Modelagem algébrica – Parte 1',sim:'afim',tag:'alg',
-   desc:'Tradução de problemas em equações do 1º grau. Estratégias de resolução e interpretação do resultado.'},
-  {code:'EM1-A03',title:'Modelagem algébrica – Parte 2',sim:'afim',tag:'alg',
-   desc:'Problemas de modelagem envolvendo consecutivos, idades, misturas e geometria.'},
-  {code:'EM1-A04',title:'Revisão: problemas com equações do 1º grau',sim:'sistema',tag:'alg',
-   desc:'Consolidação da resolução de problemas usando equações lineares com uma incógnita.'},
-  {code:'EM1-A05',title:'Grandezas de espécies diferentes',sim:'afim',tag:'alg',
-   desc:'Conceito de grandeza. Grandezas direta e inversamente proporcionais. Regra de três simples.'},
-  {code:'EM1-A06',title:'Problemas com grandezas de espécies diferentes',sim:'afim',tag:'alg',
-   desc:'Resolução de problemas usando proporcionalidade direta e inversa em contextos reais.'},
-  {code:'EM1-A07',title:'Equações do 1º grau e relação entre grandezas',sim:'afim',tag:'alg',
-   desc:'Integração entre equações lineares e proporcionalidade. Tabelas e gráficos.'},
-  {code:'EM1-A08',title:'Verificação: equações do 1º grau',sim:'sistema',tag:'alg',
-   desc:'Avaliação formativa sobre equações, modelagem e grandezas proporcionais.'},
-  {code:'EM1-A09',title:'Explorando a relação entre grandezas',sim:'afim',tag:'alg',
-   desc:'Dependência funcional. Identificação de relações de entrada e saída entre grandezas.'},
-  {code:'EM1-A10',title:'Relação entre grandezas: representação algébrica',sim:'afim',tag:'alg',
-   desc:'Expressão algébrica de uma função. Domínio, contradomínio e imagem.'},
-  {code:'EM1-A11',title:'Relação entre grandezas: representação gráfica',sim:'afim',tag:'alg',
-   desc:'Gráfico cartesiano de funções. Leitura e interpretação de informações gráficas.'},
-  {code:'EM1-A12',title:'Revisão: conceito de função',sim:'afim',tag:'alg',
-   desc:'Retomada dos conceitos de função, diagrama de setas, tabela e gráfico.'},
-  {code:'EM1-A13',title:'Relação entre grandezas: o conceito de função',sim:'afim',tag:'alg',
-   desc:'Definição formal de função. Noção de função como correspondência unívoca.'},
-  {code:'EM1-A14',title:'Representação de funções',sim:'afim',tag:'alg',
-   desc:'Múltiplas representações: tabela, diagrama, expressão algébrica e gráfico.'},
-  {code:'EM1-A15',title:'Função como relação de dependência entre grandezas',sim:'afim',tag:'alg',
-   desc:'Variável dependente e independente. Aplicações em ciências e cotidiano.'},
-  {code:'EM1-A16',title:'Verificação: conceito de função',sim:'afim',tag:'alg',
-   desc:'Avaliação formativa sobre domínio, imagem e formas de representação de funções.'},
-  {code:'EM1-A17',title:'Explorando o conceito de função afim',sim:'afim',tag:'alg',
-   desc:'Investigação dos padrões de funções lineares e afim por meio de tabelas e gráficos.'},
-  {code:'EM1-A18',title:'Função afim',sim:'afim',tag:'alg',
-   desc:'f(x) = ax + b. Coeficientes angular e linear. Crescimento, decrescimento e constância.'},
-  {code:'EM1-A19',title:'Representações da função afim',sim:'afim',tag:'alg',
-   desc:'Tabela, gráfico e lei de formação da função afim. Identificação de coeficientes.'},
-  {code:'EM1-A20',title:'Revisão: função afim e representação gráfica',sim:'afim',tag:'alg',
-   desc:'Gráfico da reta: inclinação, intercepto e cruzamento com os eixos.'},
-  {code:'EM1-A21',title:'Lei de formação e gráfico da função afim',sim:'afim',tag:'alg',
-   desc:'Construção do gráfico a partir da lei. Zero da função e posição relativa das retas.'},
-  {code:'EM1-A22',title:'Proporcionalidade e função linear',sim:'afim',tag:'alg',
-   desc:'Função linear como caso particular da afim (b=0). Proporcionalidade direta.'},
-  {code:'EM1-A23',title:'Função afim: resolução de problemas',sim:'afim',tag:'alg',
-   desc:'Modelagem e resolução de problemas cotidianos com função afim.'},
-  {code:'EM1-A24',title:'Verificação: função afim',sim:'afim',tag:'alg',
-   desc:'Avaliação formativa sobre lei de formação, gráfico e aplicações da função afim.'},
-  {code:'EM1-A25',title:'Revisão: equações do 1º grau – problemas',sim:'sistema',tag:'alg',
-   desc:'Retomada aprofundada de equações lineares com problemas de maior complexidade.'},
-  {code:'EM1-A26',title:'Revisão: conceito de função',sim:'afim',tag:'alg',
-   desc:'Consolidação dos conceitos de função: domínio, imagem e representações.'},
-  {code:'EM1-A27',title:'Revisão: função afim',sim:'afim',tag:'alg',
-   desc:'Síntese dos conceitos da função afim: coeficientes, gráfico e zeros.'},
-  {code:'EM1-A28',title:'Revisão final: função afim – conceitos e aplicações',sim:'afim',tag:'alg',
-   desc:'Revisão geral integrando equações, grandezas, funções e função afim com aplicações.'},
-];
-
-/* ── 2ª SÉRIE EM — 28 aulas (Base Nacional / BNCC) ── */
-const em2_aes = [
-  {code:'EM2-A01',title:'Explorando equações exponenciais',sim:'exponencial',tag:'alg',
-   desc:'Reconhecimento e resolução de equações exponenciais simples. Propriedades das potências.'},
-  {code:'EM2-A02',title:'Função exponencial',sim:'exponencial',tag:'alg',
-   desc:'f(x) = aˣ, a > 0, a ≠ 1. Domínio, imagem, crescimento e decrescimento.'},
-  {code:'EM2-A03',title:'Modelagem algébrica com função exponencial',sim:'exponencial_aplic',tag:'alg',
-   desc:'Juros compostos, crescimento populacional, meia-vida. Modelos exponenciais reais.'},
-  {code:'EM2-A04',title:'Revisão: função exponencial',sim:'exponencial',tag:'alg',
-   desc:'Consolidação dos conceitos da função exponencial e suas propriedades gráficas.'},
-  {code:'EM2-A05',title:'Gráfico da função exponencial',sim:'graficos_exp',tag:'alg',
-   desc:'Construção e análise do gráfico de f(x)=aˣ. Assíntota horizontal e comportamento.'},
-  {code:'EM2-A06',title:'Análise de gráficos de funções exponenciais',sim:'graficos_exp',tag:'alg',
-   desc:'Comparação de crescimento/decrescimento, valores notáveis e leitura de gráficos.'},
-  {code:'EM2-A07',title:'Resolução de problemas com funções exponenciais',sim:'exponencial',tag:'alg',
-   desc:'Equações exponenciais em contextos: finanças, ciências naturais e tecnologia.'},
-  {code:'EM2-A08',title:'Verificação: funções exponenciais',sim:'exponencial',tag:'alg',
-   desc:'Avaliação formativa sobre equações, gráfico e aplicações da função exponencial.'},
-  {code:'EM2-A09',title:'Explorando logaritmos',sim:'logaritmo',tag:'alg',
-   desc:'Logaritmo como operação inversa da potenciação. log_a(b) = x ↔ aˣ = b.'},
-  {code:'EM2-A10',title:'Propriedades dos logaritmos – Parte 1',sim:'logaritmo',tag:'alg',
-   desc:'log(M·N), log(M/N), log(Mⁿ). Demonstração e aplicação das propriedades.'},
-  {code:'EM2-A11',title:'Propriedades dos logaritmos – Parte 2',sim:'logaritmo',tag:'alg',
-   desc:'Mudança de base, logaritmo de 1, logaritmo da base. Cologaritmo.'},
-  {code:'EM2-A12',title:'Revisão: propriedades operatórias dos logaritmos',sim:'logaritmo',tag:'alg',
-   desc:'Consolidação e prática das propriedades dos logaritmos em expressões e equações.'},
-  {code:'EM2-A13',title:'Equações logarítmicas – Parte 1',sim:'eq_logaritmica',tag:'alg',
-   desc:'Equações da forma log_a(x) = b. Estratégias de resolução e restrições.'},
-  {code:'EM2-A14',title:'Equações logarítmicas – Parte 2',sim:'eq_logaritmica',tag:'alg',
-   desc:'Equações logarítmicas mais complexas. Uso de propriedades para simplificação.'},
-  {code:'EM2-A15',title:'Aplicações de logaritmos',sim:'logaritmo_aplic',tag:'alg',
-   desc:'Escala Richter, decibéis (dB), pH. Logaritmo decimal e natural nas ciências.'},
-  {code:'EM2-A16',title:'Resolução de problemas com logaritmos',sim:'logaritmo',tag:'alg',
-   desc:'Problemas contextualizados envolvendo logaritmos e equações logarítmicas.'},
-  {code:'EM2-A17',title:'Explorando equações exponenciais e logarítmicas',sim:'exp_log_dual',tag:'alg',
-   desc:'Relação de dualidade entre funções exponencial e logarítmica. Resolução integrada.'},
-  {code:'EM2-A18',title:'Função logarítmica',sim:'funcao_log',tag:'alg',
-   desc:'f(x) = log_a(x). Domínio, imagem, crescimento e decrescimento. Gráfico.'},
-  {code:'EM2-A19',title:'Modelagem com função logarítmica',sim:'funcao_log',tag:'alg',
-   desc:'Aplicações da função logarítmica: tempo de descarga, escalas científicas.'},
-  {code:'EM2-A20',title:'Revisão: equações logarítmicas – problemas',sim:'eq_logaritmica',tag:'alg',
-   desc:'Retomada aprofundada de equações logarítmicas com maior grau de dificuldade.'},
-  {code:'EM2-A21',title:'Gráfico da função logarítmica',sim:'graficos_log',tag:'alg',
-   desc:'Construção do gráfico de f(x)=log_a(x). Assíntota vertical, zeros e intersecções.'},
-  {code:'EM2-A22',title:'Análise de gráficos de funções logarítmicas',sim:'graficos_log',tag:'alg',
-   desc:'Comparação de bases, simetria com a exponencial e leitura de informações gráficas.'},
-  {code:'EM2-A23',title:'Função logarítmica – resolução de problemas',sim:'funcao_log',tag:'alg',
-   desc:'Problemas que exigem a função logarítmica: tempo, concentração e intensidade.'},
-  {code:'EM2-A24',title:'Verificação: função logarítmica',sim:'funcao_log',tag:'alg',
-   desc:'Avaliação formativa sobre gráfico, domínio e aplicações da função logarítmica.'},
-  {code:'EM2-A25',title:'Revisão: função exponencial',sim:'exponencial',tag:'alg',
-   desc:'Síntese dos conceitos da função exponencial para nivelamento pré-simulado.'},
-  {code:'EM2-A26',title:'Revisão: logaritmos',sim:'logaritmo',tag:'alg',
-   desc:'Revisão das propriedades, equações e cálculos com logaritmos.'},
-  {code:'EM2-A27',title:'Revisão: função logarítmica',sim:'funcao_log',tag:'alg',
-   desc:'Revisão do gráfico, domínio, crescimento e aplicações da função logarítmica.'},
-  {code:'EM2-A28',title:'Revisão final: função logarítmica',sim:'exp_log_dual',tag:'alg',
-   desc:'Revisão integrada de exponencial e logarítmica com problemas nível ENEM/vestibular.'},
-];
-
-/* ── 3ª SÉRIE EM — 28 aulas (Base Nacional / BNCC) ── */
-const em3_aes = [
-  {code:'EM3-A01',title:'Princípio multiplicativo da contagem',sim:'combinatoria',tag:'alg',
-   desc:'Princípio fundamental da contagem. Diagrama de árvore e tabela de possibilidades.'},
-  {code:'EM3-A02',title:'Cálculo do número de permutações simples',sim:'permutacao',tag:'alg',
-   desc:'Permutação simples Pn = n!. Fatorial e aplicações em arranjos sem repetição.'},
-  {code:'EM3-A03',title:'Cálculo do número de arranjos simples',sim:'arranjo',tag:'alg',
-   desc:'Arranjo simples A(n,p) = n!/(n-p)!. Diferença entre arranjo e combinação.'},
-  {code:'EM3-A04',title:'Revisão: problemas de contagem',sim:'combinatoria',tag:'alg',
-   desc:'Consolidação do princípio multiplicativo, permutações e arranjos simples.'},
-  {code:'EM3-A05',title:'Cálculo do número de combinações simples',sim:'combinacao',tag:'alg',
-   desc:'Combinação C(n,p) = n!/(p!(n-p)!). Identidade de Pascal e triângulo de Pascal.'},
-  {code:'EM3-A06',title:'Permutação, arranjo e combinação simples',sim:'combinatoria',tag:'alg',
-   desc:'Comparação e critérios de escolha entre P, A e C. Resolução integrada.'},
-  {code:'EM3-A07',title:'Resolução de problemas de análise combinatória',sim:'combinatoria',tag:'alg',
-   desc:'Problemas de maior complexidade envolvendo contagem com e sem restrições.'},
-  {code:'EM3-A08',title:'Verificação: análise combinatória',sim:'combinatoria',tag:'alg',
-   desc:'Avaliação formativa sobre P, A e C com problemas contextualizados.'},
-  {code:'EM3-A09',title:'Noções de probabilidade',sim:'probabilidade',tag:'est',
-   desc:'Experimento aleatório, espaço amostral e evento. Definição clássica de probabilidade.'},
-  {code:'EM3-A10',title:'Experimentos, espaço amostral e eventos',sim:'espaco_amostral',tag:'est',
-   desc:'Construção de espaços amostrais. Eventos simples, compostos, complementares.'},
-  {code:'EM3-A11',title:'Cálculo da probabilidade de um evento – Parte 1',sim:'probabilidade',tag:'est',
-   desc:'P(A) = n(A)/n(Ω). Frequência relativa e probabilidade teórica. Experimentos simples.'},
-  {code:'EM3-A12',title:'Revisão: conceito de probabilidade',sim:'probabilidade',tag:'est',
-   desc:'Revisão do espaço amostral, eventos e cálculo básico de probabilidade.'},
-  {code:'EM3-A13',title:'Cálculo da probabilidade de um evento – Parte 2',sim:'prob_dados',tag:'est',
-   desc:'Problemas com dados, cartas, urnas e extração. Listagem organizada do espaço amostral.'},
-  {code:'EM3-A14',title:'Cálculo de probabilidade de um evento – Parte 3',sim:'prob_geometrica',tag:'est',
-   desc:'Problemas com geometria probabilística. Probabilidade geométrica.'},
-  {code:'EM3-A15',title:'Características do cálculo de probabilidades',sim:'prob_propriedades',tag:'est',
-   desc:'Propriedades: 0 ≤ P(A) ≤ 1. P(Ω)=1, P(∅)=0. Complementar P(Ā)=1−P(A).'},
-  {code:'EM3-A16',title:'Resolução de problemas de probabilidade',sim:'probabilidade',tag:'est',
-   desc:'Problemas contextualizados de probabilidade com combinatória simples.'},
-  {code:'EM3-A17',title:'Probabilidade e análise combinatória',sim:'prob_comb',tag:'est',
-   desc:'Espaço amostral construído com técnicas de contagem. Problemas integrados.'},
-  {code:'EM3-A18',title:'Adição de probabilidades – Parte 1',sim:'prob_adicao',tag:'est',
-   desc:'P(A∪B) = P(A)+P(B)−P(A∩B). Eventos mutuamente exclusivos.'},
-  {code:'EM3-A19',title:'Adição de probabilidades – Parte 2',sim:'prob_adicao',tag:'est',
-   desc:'Problemas com adição de probabilidades. Diagramas de Venn.'},
-  {code:'EM3-A20',title:'Revisão: eventos e probabilidades',sim:'probabilidade',tag:'est',
-   desc:'Revisão de espaço amostral, eventos e operações com probabilidades.'},
-  {code:'EM3-A21',title:'Probabilidade condicional',sim:'prob_condicional',tag:'est',
-   desc:'P(A|B) = P(A∩B)/P(B). Conceito de dependência entre eventos.'},
-  {code:'EM3-A22',title:'Multiplicação de probabilidades',sim:'prob_multiplicacao',tag:'est',
-   desc:'P(A∩B) = P(A)·P(B|A). Eventos dependentes e independentes.'},
-  {code:'EM3-A23',title:'Resolução de problemas envolvendo probabilidades',sim:'probabilidade',tag:'est',
-   desc:'Problemas complexos combinando adição, multiplicação e probabilidade condicional.'},
-  {code:'EM3-A24',title:'Verificação: cálculo de probabilidades',sim:'probabilidade',tag:'est',
-   desc:'Avaliação formativa sobre todos os conceitos de probabilidade estudados.'},
-  {code:'EM3-A25',title:'Revisão: análise combinatória',sim:'combinatoria',tag:'alg',
-   desc:'Revisão aprofundada de P, A e C com questões de ENEM e vestibulares.'},
-  {code:'EM3-A26',title:'Revisão: cálculo de probabilidades – Parte 1',sim:'probabilidade',tag:'est',
-   desc:'Revisão de probabilidade clássica, frequência relativa e propriedades.'},
-  {code:'EM3-A27',title:'Revisão: cálculo de probabilidades – Parte 2',sim:'prob_condicional',tag:'est',
-   desc:'Revisão de probabilidade condicional, multiplicação e eventos independentes.'},
-  {code:'EM3-A28',title:'Revisão: probabilidade de eventos independentes',sim:'prob_comb',tag:'est',
-   desc:'Revisão integrada: análise combinatória e probabilidade com simulados estilo ENEM.'},
-];
+// ── Achatar para compatibilidade com código legado ────────────
+const ef6_aes = CURRICULO.ef6.bimestres.flatMap(b => b.temas);
+const ef7_aes = CURRICULO.ef7.bimestres.flatMap(b => b.temas);
+const ef8_aes = CURRICULO.ef8.bimestres.flatMap(b => b.temas);
+const ef9_aes = CURRICULO.ef9.bimestres.flatMap(b => b.temas);
 
 const seriesData = {
   ef6:{name:'6º Ano — EF',aes:ef6_aes,simuladores:['fracao','reta','multiplos','poligonos','triangulos','quadrilateros','angulos','decimal','operacoes','geometria3d'],arenaChallenges:gerarQ(6),quizBank:gerarQ(6)},
   ef7:{name:'7º Ano — EF',aes:ef7_aes,simuladores:['decimal','reta','operacoes','analitica','potencia','pitagoras','sistema','fracao','graficos','geometria3d'],arenaChallenges:gerarQ(7),quizBank:gerarQ(7)},
   ef8:{name:'8º Ano — EF',aes:ef8_aes,simuladores:['afim','sistema','analitica','operacoes','exponencial','pitagoras','quadratica','fracao','graficos','potencia'],arenaChallenges:gerarQ(8),quizBank:gerarQ(8)},
   ef9:{name:'9º Ano — EF',aes:ef9_aes,simuladores:['pitagoras','semelhanca','decimal','reta','afim','potencia','analitica','exponencial','sistema','graficos'],arenaChallenges:gerarQ(9),quizBank:gerarQ(9)},
-  em1:{name:'1ª EM',aes:em1_aes,simuladores:['afim','sistema','exponencial','quadratica','progressao','pitagoras','ciclo','graficos','analitica','trigonometria'],arenaChallenges:gerarQ_em1(),quizBank:gerarQ_em1()},
-  em2:{name:'2ª EM',aes:em2_aes,simuladores:['exponencial','logaritmo','funcao_log','graficos_exp','graficos_log','exp_log_dual','eq_logaritmica','logaritmo_aplic','exponencial_aplic','sistema'],arenaChallenges:gerarQ_em2(),quizBank:gerarQ_em2()},
-  em3:{name:'3ª EM',aes:em3_aes,simuladores:['combinatoria','permutacao','arranjo','combinacao','probabilidade','espaco_amostral','prob_dados','prob_geometrica','prob_adicao','prob_condicional'],arenaChallenges:gerarQ_em3(),quizBank:gerarQ_em3()},
+  em1:{name:'1ª EM',aes:CURRICULO.em1.bimestres.flatMap(b=>b.temas),simuladores:['afim','sistema','exponencial','quadratica','progressao','pitagoras','ciclo','graficos','analitica','trigonometria'],arenaChallenges:gerarQ_em1(),quizBank:gerarQ_em1()},
+  em2:{name:'2ª EM',aes:CURRICULO.em2.bimestres.flatMap(b=>b.temas),simuladores:['exponencial','logaritmo','funcao_log','graficos_exp','graficos_log','exp_log_dual','eq_logaritmica','logaritmo_aplic','exponencial_aplic','sistema'],arenaChallenges:gerarQ_em2(),quizBank:gerarQ_em2()},
+  em3:{name:'3ª EM',aes:CURRICULO.em3.bimestres.flatMap(b=>b.temas),simuladores:['combinatoria','permutacao','arranjo','combinacao','probabilidade','espaco_amostral','prob_dados','prob_geometrica','prob_adicao','prob_condicional'],arenaChallenges:gerarQ_em3(),quizBank:gerarQ_em3()},
 };
 
 /* ── Quiz / Arena — 1ª EM: Equações, Funções e Função Afim ── */
@@ -5049,10 +4935,28 @@ function getTemasUnicos(){
   return Object.entries(tags).map(([tag, label]) => ({tag, label}));
 }
 
+let currentBimestre = 0;
+
+function filtrarBimestre(num, btn){
+  currentBimestre = num;
+  document.querySelectorAll('.bim-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderAEs();
+  if(typeof renderSimuladores === 'function') renderSimuladores();
+}
+
 function renderTemasPills(){
   const container1 = document.getElementById('temasContainerHome');
   const container2 = document.getElementById('temasContainerSim');
   const temas = getTemasUnicos();
+  // Mostra bimestre bar apenas para EF (6-9 ano)
+  const bar = document.getElementById('bimestreBar');
+  const allKeys = ['ef6','ef7','ef8','ef9','em1','em2','em3'];
+  if(bar) bar.style.display = allKeys.includes(currentSerie) ? 'flex' : 'none';
+  currentBimestre = 0;
+  document.querySelectorAll('.bim-btn').forEach(b => b.classList.remove('active'));
+  const allBtn = document.querySelector('.bim-btn');
+  if(allBtn) allBtn.classList.add('active');
   if (!currentSerie || temas.length < 2){
     if (container1) container1.style.display = 'none';
     if (container2) container2.style.display = 'none';
@@ -5074,7 +4978,14 @@ function filtrarTema(tag, btn){
 function renderAEs(){
   if (!currentSerie) return;
   const data = seriesData[currentSerie];
-  const aes = currentTemaFilter ? data.aes.filter(ae => ae.tag === currentTemaFilter) : data.aes;
+  let aes = data.aes;
+  // Filtrar por bimestre (EF e EM)
+  const currKey = currentSerie; // ef6,ef7,ef8,ef9,em1,em2,em3
+  if (currentBimestre > 0 && CURRICULO[currKey]) {
+    const bim = CURRICULO[currKey].bimestres.find(b => b.num === currentBimestre);
+    if (bim) aes = bim.temas;
+  }
+  aes = currentTemaFilter ? aes.filter(ae => ae.tag === currentTemaFilter) : aes;
   const tagColors = {num:'ae-tag num',geo:'ae-tag geo',alg:'ae-tag alg',est:'ae-tag est'};
   const tagLabels = {num:'Números',geo:'Geometria',alg:'Álgebra',est:'Estatística'};
   document.getElementById('aeGrid').innerHTML = aes.map(ae => `
@@ -5095,7 +5006,23 @@ function renderAEs(){
 function renderSimuladores(){
   if (!currentSerie) return;
   const data = seriesData[currentSerie];
-  document.getElementById('simGrid').innerHTML = data.simuladores.map(tipo => `
+  // Filtrar simuladores por bimestre se aplicável
+  let simList = data.simuladores;
+  if (currentBimestre > 0 && CURRICULO[currentSerie]) {
+    const bim = CURRICULO[currentSerie].bimestres.find(b => b.num === currentBimestre);
+    if (bim && bim.sims) simList = bim.sims;
+  }
+  // Mostrar/esconder bimestre bar na aba simuladores
+  const barSim = document.getElementById('bimestreBarSim');
+  if (barSim) {
+    const hasB = CURRICULO[currentSerie] !== undefined;
+    barSim.style.display = hasB ? 'flex' : 'none';
+    barSim.querySelectorAll('.bim-btn').forEach(b => b.classList.remove('active'));
+    const activeIdx = currentBimestre;
+    const btns = barSim.querySelectorAll('.bim-btn');
+    if(btns[activeIdx]) btns[activeIdx].classList.add('active');
+  }
+  document.getElementById('simGrid').innerHTML = simList.map(tipo => `
     <div class="ae-card">
       <div class="ae-title">${nomesSim[tipo]||tipo}</div>
       <div class="ae-desc">${(simImgDB[tipo]||simImgDB.geometria3d).caption}</div>
@@ -5266,8 +5193,7 @@ function abrirPlanoModal(code, title, sim, desc){
     : `16/${mm} a ${ultimoDia}/${mm}/${ano}`;
 
   document.getElementById('planoModalTitulo').textContent = `Plano de Aula Quinzenal — ${title}`;
-  document.getElementById('pf_periodo').value = quinzena;
-  document.getElementById('pf_turma_header').value = sd.name;
+  document.getElementById('planoModalPeriodo').textContent = `Período: ${quinzena} · ${sd.name}`;
   document.getElementById('pf_turma').value = sd.name;
   document.getElementById('pf_objetivos').value =
     `Desenvolver a habilidade ${code}: ${desc}\nCompreender os conceitos de "${title}" por meio de situações-problema e simulações interativas.`;
@@ -5286,11 +5212,6 @@ function abrirPlanoModal(code, title, sim, desc){
   document.querySelectorAll('.plano-field-edit').forEach(el => { el.readOnly = true; el.style.cursor = 'default'; });
   document.getElementById('planoOverlay').classList.add('active');
   document.body.style.overflow = 'hidden';
-  // Sincroniza turma header <-> turma tabela
-  const thInput = document.getElementById('pf_turma_header');
-  const tbInput = document.getElementById('pf_turma');
-  thInput.oninput = () => { tbInput.value = thInput.value; };
-  tbInput.oninput = () => { thInput.value = tbInput.value; };
 }
 
 function fecharPlanoModal(){
@@ -5304,7 +5225,7 @@ function toggleEditarPlano(){
   const badge = document.getElementById('planoEditBadge');
   const info = document.getElementById('planoFooterInfo');
   const editando = modal.classList.toggle('plano-edit-mode');
-  document.querySelectorAll('.plano-field-edit, .plano-header-input').forEach(el => { el.readOnly = !editando; el.style.cursor = editando ? 'text' : 'default'; });
+  document.querySelectorAll('.plano-field-edit').forEach(el => { el.readOnly = !editando; el.style.cursor = editando ? 'text' : 'default'; });
   if (editando) {
     btn.textContent = '✅ Concluir';
     badge.style.display = 'inline-flex';
@@ -5319,8 +5240,7 @@ function toggleEditarPlano(){
 
 function baixarPlano(){
   const titulo = document.getElementById('planoModalTitulo').textContent;
-  const escola = document.getElementById('pf_escola').value || '';
-  const periodo = 'Período: ' + (document.getElementById('pf_periodo').value || '') + ' · ' + (document.getElementById('pf_turma_header').value || '');
+  const periodo = document.getElementById('planoModalPeriodo').textContent;
   const campos = {
     'PROFESSOR(A)': document.getElementById('pf_professor').value,
     'TURMA': document.getElementById('pf_turma').value,
@@ -5342,7 +5262,7 @@ td{border:1px solid #C5D3E8;padding:8px 10px;vertical-align:top;font-size:10pt;l
 td:first-child{background:#E8F0FB;font-weight:bold;color:#1E3A8A;width:160px;font-size:9pt;text-transform:uppercase;}
 .rod{margin-top:20px;text-align:center;font-size:8pt;color:#888;border-top:1px solid #ddd;padding-top:8px;}
 @media print{body{margin:0;}}</style></head><body>
-<div class="cab"><div class="escola">${escola}</div>
+<div class="cab"><div class="escola">EE Wanda Mascagni de Sá</div>
 <div style="font-size:12pt;font-weight:bold;margin:4px 0;">${titulo}</div>
 <div style="font-size:10pt;color:#555;">${periodo}</div></div>
 <table>${Object.entries(campos).map(([k,v])=>`<tr><td>${k}</td><td>${v.replace(/\n/g,'<br>')}</td></tr>`).join('')}</table>

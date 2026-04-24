@@ -4,8 +4,8 @@
    Network-First para HTML de navegação (evita loop de splash).
    ============================================================ */
 
-const CACHE_NAME = 'matematica-app-v4';
-const CACHE_VERSION = 4;
+const CACHE_NAME = 'matematica-app-v5';
+const CACHE_VERSION = 5;
 
 const PRECACHE_ASSETS = [
   '/',

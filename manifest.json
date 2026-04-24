@@ -1,20 +1,42 @@
 {
-  "name": "Matemática@App",
-  "short_name": "Mate@App",
-  "description": "Simuladores interativos de matemática — Currículo Paulista EF/EM",
+  "name": "MatemáticaApp",
+  "short_name": "MatemáticaApp",
+  "description": "MatemáticaApp — Base Nacional BNCC · EF/EM",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#1a0000",
-  "theme_color": "#C0392B",
+  "background_color": "#000814",
+  "theme_color": "#0D47A1",
   "lang": "pt-BR",
-  "categories": ["education"],
+  "categories": [
+    "education"
+  ],
   "icons": [
-    {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
-    {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
-    {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "prefer_related_applications": false
 }

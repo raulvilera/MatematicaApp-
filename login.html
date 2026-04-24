@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Entrar - Matematica@App</title>
+<title>Entrar - MatemáticaApp</title>
 <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#C0392B">
+<meta name="theme-color" content="#0D47A1">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="./icon-192.png">
@@ -13,101 +13,101 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{min-height:100vh;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(160deg,#1a0000 0%,#5C0A0A 30%,#B71C1C 65%,#FF5252 100%);
+  background:linear-gradient(160deg,#000814 0%,#0D2137 30%,#0A1628 65%,#1976D2 100%);
   font-family:'Nunito',sans-serif;overflow:hidden;}
 .particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
-.particle{position:absolute;color:rgba(255,150,150,0.28);font-family:'JetBrains Mono',monospace;
+.particle{position:absolute;color:rgba(100,181,246,0.28);font-family:'JetBrains Mono',monospace;
   font-weight:900;user-select:none;animation:pfly linear infinite;}
 @keyframes pfly{0%{transform:translateY(110vh) rotate(0deg);opacity:0;}8%{opacity:1;}88%{opacity:.6;}100%{transform:translateY(-12vh) rotate(360deg);opacity:0;}}
 .card{position:relative;z-index:10;background:rgba(0,0,0,0.45);backdrop-filter:blur(20px);
-  border:1.5px solid rgba(255,82,82,0.35);border-radius:24px;padding:2.4rem 2rem;
+  border:1.5px solid rgba(13,71,161,0.35);border-radius:24px;padding:2.4rem 2rem;
   width:min(92vw,420px);box-shadow:0 32px 64px rgba(0,0,0,0.5);
   animation:cardIn 0.7s cubic-bezier(0.34,1.4,0.64,1) both;}
 @keyframes cardIn{from{opacity:0;transform:translateY(36px) scale(0.93);}to{opacity:1;transform:none;}}
 .logo{text-align:center;font-weight:900;font-size:1.8rem;margin-bottom:0.3rem;}
-.logo .mat{color:#fff;}.logo .at{color:#FF5252;font-family:'JetBrains Mono',monospace;}.logo .app{color:#FFCDD2;}
-.tagline{text-align:center;color:rgba(255,205,210,0.7);font-size:0.8rem;font-weight:700;
+.logo .mat{color:#fff;}.logo .at{color:#1976D2;font-family:'JetBrains Mono',monospace;}.logo .app{color:#BBDEFB;}
+.tagline{text-align:center;color:rgba(187,222,251,0.7);font-size:0.8rem;font-weight:700;
   letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.8rem;}
 .tabs{display:flex;background:rgba(255,255,255,0.06);border-radius:12px;padding:4px;margin-bottom:1.6rem;gap:4px;}
-.tab{flex:1;padding:0.5rem;border:none;background:transparent;color:rgba(255,205,210,0.6);
+.tab{flex:1;padding:0.5rem;border:none;background:transparent;color:rgba(187,222,251,0.6);
   font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;border-radius:9px;cursor:pointer;transition:0.2s;}
-.tab.active{background:rgba(255,82,82,0.3);color:white;}
+.tab.active{background:rgba(13,71,161,0.3);color:white;}
 .field{margin-bottom:1rem;}
-label{display:block;color:rgba(255,205,210,0.8);font-size:0.78rem;font-weight:800;
+label{display:block;color:rgba(187,222,251,0.8);font-size:0.78rem;font-weight:800;
   letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.4rem;}
 input{width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);
-  border:1.5px solid rgba(255,82,82,0.25);border-radius:12px;color:white;
+  border:1.5px solid rgba(13,71,161,0.25);border-radius:12px;color:white;
   font-family:'Nunito',sans-serif;font-size:0.95rem;outline:none;transition:0.2s;}
-input::placeholder{color:rgba(255,205,210,0.3);}
-input:focus{border-color:rgba(255,82,82,0.7);background:rgba(255,82,82,0.08);}
-.trial-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(255,82,82,0.12);
-  border:1px solid rgba(255,82,82,0.3);border-radius:12px;padding:0.7rem 1rem;margin-bottom:1.2rem;}
+input::placeholder{color:rgba(187,222,251,0.3);}
+input:focus{border-color:rgba(13,71,161,0.7);background:rgba(13,71,161,0.08);}
+.trial-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(13,71,161,0.12);
+  border:1px solid rgba(13,71,161,0.3);border-radius:12px;padding:0.7rem 1rem;margin-bottom:1.2rem;}
 .trial-badge .icon{font-size:1.4rem;}
-.trial-badge p{font-size:0.82rem;font-weight:700;color:rgba(255,205,210,0.9);line-height:1.4;}
-.trial-badge strong{color:#FF8A80;}
+.trial-badge p{font-size:0.82rem;font-weight:700;color:rgba(187,222,251,0.9);line-height:1.4;}
+.trial-badge strong{color:#90CAF9;}
 .btn{width:100%;padding:0.85rem;border:none;border-radius:14px;
-  background:linear-gradient(135deg,#C0392B,#FF5252);color:white;
+  background:linear-gradient(135deg,#0D47A1,#1976D2);color:white;
   font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;
-  transition:0.2s;box-shadow:0 8px 24px rgba(180,0,0,0.4);}
-.btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(180,0,0,0.5);}
+  transition:0.2s;box-shadow:0 8px 24px rgba(10,22,80,0.4);}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(10,22,80,0.5);}
 .btn:disabled{opacity:0.5;transform:none;cursor:not-allowed;}
 .msg{margin-top:0.9rem;padding:0.65rem 1rem;border-radius:10px;font-size:0.82rem;
   font-weight:700;text-align:center;display:none;}
-.msg.error{background:rgba(255,82,82,0.15);color:#FF8A80;border:1px solid rgba(255,82,82,0.3);}
+.msg.error{background:rgba(13,71,161,0.15);color:#90CAF9;border:1px solid rgba(13,71,161,0.3);}
 .msg.success{background:rgba(34,201,122,0.12);color:#6EE7B7;border:1px solid rgba(34,201,122,0.25);}
 .forgot{text-align:center;margin-top:0.9rem;}
-.forgot a{color:rgba(255,180,180,0.7);font-size:0.78rem;font-weight:700;text-decoration:none;cursor:pointer;}
+.forgot a{color:rgba(144,202,249,0.7);font-size:0.78rem;font-weight:700;text-decoration:none;cursor:pointer;}
 
 /* ── Modal Esqueci Senha ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
   z-index:100;display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity 0.3s;}
 .modal-overlay.open{opacity:1;pointer-events:all;}
-.modal-box{background:linear-gradient(160deg,#1a0000,#3D0A0A);
-  border:1.5px solid rgba(255,82,82,0.4);border-radius:24px;
+.modal-box{background:linear-gradient(160deg,#000814,#0A1628);
+  border:1.5px solid rgba(13,71,161,0.4);border-radius:24px;
   padding:2rem 1.8rem;width:min(90vw,400px);
   transform:translateY(30px) scale(0.95);transition:transform 0.35s cubic-bezier(0.34,1.4,0.64,1);
   box-shadow:0 32px 64px rgba(0,0,0,0.6);}
 .modal-overlay.open .modal-box{transform:none;}
 .modal-icon{font-size:3rem;text-align:center;margin-bottom:0.8rem;}
 .modal-title{text-align:center;font-size:1.25rem;font-weight:900;color:white;margin-bottom:0.4rem;}
-.modal-subtitle{text-align:center;color:rgba(255,205,210,0.7);font-size:0.82rem;
+.modal-subtitle{text-align:center;color:rgba(187,222,251,0.7);font-size:0.82rem;
   font-weight:700;line-height:1.6;margin-bottom:1.4rem;}
-.modal-subtitle strong{color:#FF8A80;}
-.modal-steps{background:rgba(255,82,82,0.08);border:1px solid rgba(255,82,82,0.2);
+.modal-subtitle strong{color:#90CAF9;}
+.modal-steps{background:rgba(13,71,161,0.08);border:1px solid rgba(13,71,161,0.2);
   border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.4rem;}
 .modal-step{display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.7rem;}
 .modal-step:last-child{margin-bottom:0;}
-.modal-step-num{min-width:24px;height:24px;background:rgba(255,82,82,0.3);
+.modal-step-num{min-width:24px;height:24px;background:rgba(13,71,161,0.3);
   border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:0.72rem;font-weight:900;color:#FF8A80;}
-.modal-step-text{font-size:0.8rem;font-weight:700;color:rgba(255,205,210,0.85);line-height:1.5;}
+  font-size:0.72rem;font-weight:900;color:#90CAF9;}
+.modal-step-text{font-size:0.8rem;font-weight:700;color:rgba(187,222,251,0.85);line-height:1.5;}
 .modal-input-wrap{margin-bottom:1rem;}
-.modal-input-wrap label{display:block;color:rgba(255,205,210,0.8);font-size:0.75rem;
+.modal-input-wrap label{display:block;color:rgba(187,222,251,0.8);font-size:0.75rem;
   font-weight:800;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.4rem;}
 .modal-input-wrap input{width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);
-  border:1.5px solid rgba(255,82,82,0.25);border-radius:12px;color:white;
+  border:1.5px solid rgba(13,71,161,0.25);border-radius:12px;color:white;
   font-family:'Nunito',sans-serif;font-size:0.95rem;outline:none;transition:0.2s;}
-.modal-input-wrap input:focus{border-color:rgba(255,82,82,0.7);background:rgba(255,82,82,0.08);}
-.modal-input-wrap input::placeholder{color:rgba(255,205,210,0.3);}
+.modal-input-wrap input:focus{border-color:rgba(13,71,161,0.7);background:rgba(13,71,161,0.08);}
+.modal-input-wrap input::placeholder{color:rgba(187,222,251,0.3);}
 .modal-btn{width:100%;padding:0.85rem;border:none;border-radius:14px;
-  background:linear-gradient(135deg,#C0392B,#FF5252);color:white;
+  background:linear-gradient(135deg,#0D47A1,#1976D2);color:white;
   font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;
-  transition:0.2s;box-shadow:0 8px 24px rgba(180,0,0,0.4);margin-bottom:0.8rem;}
+  transition:0.2s;box-shadow:0 8px 24px rgba(10,22,80,0.4);margin-bottom:0.8rem;}
 .modal-btn:hover{transform:translateY(-2px);}
 .modal-btn:disabled{opacity:0.5;transform:none;cursor:not-allowed;}
-.modal-cancel{width:100%;padding:0.6rem;border:1px solid rgba(255,82,82,0.25);
-  border-radius:12px;background:transparent;color:rgba(255,180,180,0.7);
+.modal-cancel{width:100%;padding:0.6rem;border:1px solid rgba(13,71,161,0.25);
+  border-radius:12px;background:transparent;color:rgba(144,202,249,0.7);
   font-family:'Nunito',sans-serif;font-weight:800;font-size:0.85rem;cursor:pointer;transition:0.2s;}
-.modal-cancel:hover{background:rgba(255,82,82,0.08);}
+.modal-cancel:hover{background:rgba(13,71,161,0.08);}
 .modal-msg{border-radius:10px;font-size:0.82rem;font-weight:700;text-align:center;
   padding:0.65rem 1rem;margin-bottom:0.8rem;display:none;}
-.modal-msg.error{background:rgba(255,82,82,0.15);color:#FF8A80;border:1px solid rgba(255,82,82,0.3);}
+.modal-msg.error{background:rgba(13,71,161,0.15);color:#90CAF9;border:1px solid rgba(13,71,161,0.3);}
 .modal-msg.success{background:rgba(34,201,122,0.12);color:#6EE7B7;border:1px solid rgba(34,201,122,0.25);}
 .modal-success-box{text-align:center;display:none;}
 .modal-success-box .s-icon{font-size:3.5rem;margin-bottom:0.8rem;}
 .modal-success-box .s-title{font-size:1.1rem;font-weight:900;color:#6EE7B7;margin-bottom:0.5rem;}
-.modal-success-box .s-text{font-size:0.82rem;font-weight:700;color:rgba(255,205,210,0.75);line-height:1.6;}
+.modal-success-box .s-text{font-size:0.82rem;font-weight:700;color:rgba(187,222,251,0.75);line-height:1.6;}
 </style>
 </head>
 <body>
@@ -143,8 +143,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
          onAuthStateChanged, sendPasswordResetEmail, updateProfile }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, setDoc }
-  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+// firestore não necessário nesta página
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJ4ZxM-1DmDrUj3yIar4C_tPqS3Gp1S1Q",
@@ -343,9 +342,9 @@ document.getElementById('forgotModal').addEventListener('click', function(e) {
       <div class="s-title">E-mail enviado com sucesso!</div>
       <div class="s-text">
         Verifique sua caixa de entrada.<br>
-        Às vezes o e-mail pode cair no <strong style="color:#FF8A80">spam</strong> —<br>
+        Às vezes o e-mail pode cair no <strong style="color:#90CAF9">spam</strong> —<br>
         não esqueça de checar por lá também!<br><br>
-        O link expira em <strong style="color:#FF8A80">24 horas.</strong>
+        O link expira em <strong style="color:#90CAF9">24 horas.</strong>
       </div>
       <br>
       <button class="modal-cancel" onclick="closeForgotModal()" style="margin-top:0.5rem;">Voltar ao login</button>

@@ -73,12 +73,12 @@ function _showTrialBanner(days) {
   const div = document.createElement('div');
   div.id = '_trial_banner';
   div.innerHTML = `<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;
-    background:linear-gradient(90deg,#B71C1C,#FF5252);color:white;
+    background:linear-gradient(90deg,#0A1628,#0D47A1);color:white;
     text-align:center;padding:0.55rem 1rem;font-family:'Nunito',sans-serif;
     font-weight:800;font-size:0.82rem;display:flex;align-items:center;
     justify-content:center;gap:0.8rem;box-shadow:0 -4px 20px rgba(0,0,0,0.4);">
     <span>Trial: <strong>${days} ${plural} restante${days > 1 ? 's' : ''}</strong></span>
-    <a href="./paywall.html" style="background:white;color:#B71C1C;padding:0.3rem 0.85rem;
+    <a href="./paywall.html" style="background:white;color:#0A1628;padding:0.3rem 0.85rem;
       border-radius:99px;font-size:0.78rem;font-weight:900;text-decoration:none;">Assinar agora</a>
     <button onclick="this.parentElement.parentElement.remove()"
       style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:1.2rem;cursor:pointer;">✕</button>
@@ -88,7 +88,7 @@ function _showTrialBanner(days) {
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Matemática·SP | Base Nacional · EF/EM</title>
+<title>MatemáticaApp | Base Nacional · EF/EM</title>
 
 <!-- ═══ PWA ═══ -->
 <link rel="manifest" href="/manifest.json">
@@ -524,12 +524,12 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 
 /* ── Bimestre Buttons ── */
 .bimestre-bar{display:flex;gap:0.5rem;flex-wrap:wrap;margin:0.6rem 0 0.8rem 0;}
-.bim-btn{padding:0.38rem 0.9rem;border-radius:99px;border:1.5px solid rgba(255,82,82,0.3);
-  background:rgba(255,82,82,0.07);color:rgba(255,205,210,0.7);
+.bim-btn{padding:0.38rem 0.9rem;border-radius:99px;border:1.5px solid rgba(13,71,161,0.3);
+  background:rgba(13,71,161,0.07);color:rgba(187,222,251,0.7);
   font-family:'Nunito',sans-serif;font-weight:800;font-size:0.78rem;cursor:pointer;transition:0.2s;}
-.bim-btn:hover{background:rgba(255,82,82,0.18);color:white;border-color:rgba(255,82,82,0.6);}
-.bim-btn.active{background:linear-gradient(135deg,#C0392B,#FF5252);color:white;
-  border-color:transparent;box-shadow:0 4px 12px rgba(180,0,0,0.35);}
+.bim-btn:hover{background:rgba(13,71,161,0.18);color:white;border-color:rgba(13,71,161,0.7);}
+.bim-btn.active{background:linear-gradient(135deg,#0D47A1,#1976D2);color:white;
+  border-color:transparent;box-shadow:0 4px 12px rgba(10,22,80,0.35);}
 </style>
 </head>
 <body>
@@ -546,9 +546,9 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
   <div class="user-stats">
     <div class="stat-badge">⭐ <span id="xpTotal">0</span> XP</div>
     <button onclick="window.SubscriptionService.signOut()" title="Sair" style="
-      background:rgba(255,82,82,0.15);
-      border:1px solid rgba(255,82,82,0.35);
-      color:#FF8A80;
+      background:rgba(13,71,161,0.15);
+      border:1px solid rgba(13,71,161,0.35);
+      color:#90CAF9;
       border-radius:8px;
       padding:0.3rem 0.6rem;
       font-size:0.72rem;
@@ -557,8 +557,8 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
       cursor:pointer;
       margin-left:0.4rem;
       transition:0.2s;
-    " onmouseover="this.style.background='rgba(255,82,82,0.3)'"
-       onmouseout="this.style.background='rgba(255,82,82,0.15)'">
+    " onmouseover="this.style.background='rgba(13,71,161,0.3)'"
+       onmouseout="this.style.background='rgba(13,71,161,0.15)'">
       Sair
     </button>
   </div>

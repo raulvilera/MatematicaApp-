@@ -1,9 +1,98 @@
-// ── Firebase Config ──────────────────────────────────────────
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrar - Matematica@App</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#C0392B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#1a0000 0%,#5C0A0A 30%,#B71C1C 65%,#FF5252 100%);
+  font-family:'Nunito',sans-serif;overflow:hidden;}
+.particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{position:absolute;color:rgba(255,150,150,0.28);font-family:'JetBrains Mono',monospace;
+  font-weight:900;user-select:none;animation:pfly linear infinite;}
+@keyframes pfly{0%{transform:translateY(110vh) rotate(0deg);opacity:0;}8%{opacity:1;}88%{opacity:.6;}100%{transform:translateY(-12vh) rotate(360deg);opacity:0;}}
+.card{position:relative;z-index:10;background:rgba(0,0,0,0.45);backdrop-filter:blur(20px);
+  border:1.5px solid rgba(255,82,82,0.35);border-radius:24px;padding:2.4rem 2rem;
+  width:min(92vw,420px);box-shadow:0 32px 64px rgba(0,0,0,0.5);
+  animation:cardIn 0.7s cubic-bezier(0.34,1.4,0.64,1) both;}
+@keyframes cardIn{from{opacity:0;transform:translateY(36px) scale(0.93);}to{opacity:1;transform:none;}}
+.logo{text-align:center;font-weight:900;font-size:1.8rem;margin-bottom:0.3rem;}
+.logo .mat{color:#fff;}.logo .at{color:#FF5252;font-family:'JetBrains Mono',monospace;}.logo .app{color:#FFCDD2;}
+.tagline{text-align:center;color:rgba(255,205,210,0.7);font-size:0.8rem;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.8rem;}
+.tabs{display:flex;background:rgba(255,255,255,0.06);border-radius:12px;padding:4px;margin-bottom:1.6rem;gap:4px;}
+.tab{flex:1;padding:0.5rem;border:none;background:transparent;color:rgba(255,205,210,0.6);
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;border-radius:9px;cursor:pointer;transition:0.2s;}
+.tab.active{background:rgba(255,82,82,0.3);color:white;}
+.field{margin-bottom:1rem;}
+label{display:block;color:rgba(255,205,210,0.8);font-size:0.78rem;font-weight:800;
+  letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.4rem;}
+input{width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);
+  border:1.5px solid rgba(255,82,82,0.25);border-radius:12px;color:white;
+  font-family:'Nunito',sans-serif;font-size:0.95rem;outline:none;transition:0.2s;}
+input::placeholder{color:rgba(255,205,210,0.3);}
+input:focus{border-color:rgba(255,82,82,0.7);background:rgba(255,82,82,0.08);}
+.trial-badge{display:flex;align-items:center;gap:0.5rem;background:rgba(255,82,82,0.12);
+  border:1px solid rgba(255,82,82,0.3);border-radius:12px;padding:0.7rem 1rem;margin-bottom:1.2rem;}
+.trial-badge .icon{font-size:1.4rem;}
+.trial-badge p{font-size:0.82rem;font-weight:700;color:rgba(255,205,210,0.9);line-height:1.4;}
+.trial-badge strong{color:#FF8A80;}
+.btn{width:100%;padding:0.85rem;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#C0392B,#FF5252);color:white;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;
+  transition:0.2s;box-shadow:0 8px 24px rgba(180,0,0,0.4);}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(180,0,0,0.5);}
+.btn:disabled{opacity:0.5;transform:none;cursor:not-allowed;}
+.msg{margin-top:0.9rem;padding:0.65rem 1rem;border-radius:10px;font-size:0.82rem;
+  font-weight:700;text-align:center;display:none;}
+.msg.error{background:rgba(255,82,82,0.15);color:#FF8A80;border:1px solid rgba(255,82,82,0.3);}
+.msg.success{background:rgba(34,201,122,0.12);color:#6EE7B7;border:1px solid rgba(34,201,122,0.25);}
+.forgot{text-align:center;margin-top:0.9rem;}
+.forgot a{color:rgba(255,180,180,0.7);font-size:0.78rem;font-weight:700;text-decoration:none;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="particles" id="pts"></div>
+<div class="card">
+  <div class="logo"><span class="mat">Matematica</span><span class="at">@</span><span class="app">App</span></div>
+  <div class="tagline">Base Nacional · EF/EM</div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('login')">Entrar</button>
+    <button class="tab" onclick="switchTab('register')">Criar conta</button>
+  </div>
+  <div id="formLogin">
+    <div class="field"><label>E-mail</label><input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="field"><label>Senha</label><input type="password" id="loginPassword" placeholder="........" autocomplete="current-password"></div>
+    <button class="btn" id="btnLogin" onclick="doLogin()">Entrar</button>
+    <div class="forgot"><a onclick="doForgot()">Esqueci minha senha</a></div>
+  </div>
+  <div id="formRegister" style="display:none;">
+    <div class="trial-badge">
+      <span class="icon">&#127873;</span>
+      <p><strong>7 dias grátis</strong> sem cobrar nada agora.<br>Depois: R$21,99/mês ou R$250,00/ano.</p>
+    </div>
+    <div class="field"><label>Nome completo</label><input type="text" id="regName" placeholder="Seu nome" autocomplete="name"></div>
+    <div class="field"><label>E-mail</label><input type="email" id="regEmail" placeholder="seu@email.com" autocomplete="email"></div>
+    <div class="field"><label>Senha (mín. 6 caracteres)</label><input type="password" id="regPassword" placeholder="........" autocomplete="new-password"></div>
+    <button class="btn" id="btnRegister" onclick="doRegister()">Criar conta grátis</button>
+  </div>
+  <div class="msg" id="msg"></div>
+</div>
+
+<script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-         signOut as fbSignOut, onAuthStateChanged, sendPasswordResetEmail,
-         updateProfile } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp }
+         onAuthStateChanged, sendPasswordResetEmail, updateProfile }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -12,101 +101,92 @@ const firebaseConfig = {
   projectId: "matematica-app-a59ef",
   storageBucket: "matematica-app-a59ef.firebasestorage.app",
   messagingSenderId: "1080081552143",
-  appId: "1:1080081552143:web:2316e6b57bc1097f25a47a",
-  measurementId: "G-4FG0XMPKP2"
+  appId: "1:1080081552143:web:2316e6b57bc1097f25a47a"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ── Funções de Autenticação ──────────────────────────────────
-
-async function signUp(name, email, password) {
-  const cred = await createUserWithEmailAndPassword(auth, email, password);
-  await updateProfile(cred.user, { displayName: name });
-
-  const trialEnd = new Date();
-  trialEnd.setDate(trialEnd.getDate() + 7);
-
-  await setDoc(doc(db, 'users', cred.user.uid), {
-    name,
-    email,
-    createdAt: new Date().toISOString(),
-    subscription: {
-      status: 'trial',
-      plan: null,
-      trialEndsAt: trialEnd.toISOString(),
-      currentPeriodStart: null,
-      currentPeriodEnd: null,
-      cancelledAt: null
-    },
-    updatedAt: new Date().toISOString()
-  });
-
-  return cred.user;
+// Partículas
+const syms=['π','E','∑','∫','x²','√','∞','Δ','α','β'];
+const c=document.getElementById('pts');
+for(let i=0;i<30;i++){
+  const el=document.createElement('span');
+  el.className='particle';
+  el.textContent=syms[Math.floor(Math.random()*syms.length)];
+  el.style.cssText=`left:${Math.random()*100}%;font-size:${12+Math.random()*20}px;animation-duration:${8+Math.random()*12}s;animation-delay:-${Math.random()*14}s;`;
+  c.appendChild(el);
 }
 
-async function signIn(email, password) {
-  const cred = await signInWithEmailAndPassword(auth, email, password);
-  return cred.user;
-}
-
-async function signOut() {
-  await fbSignOut(auth);
-  window.location.href = './login.html';
-}
-
-async function resetPassword(email) {
-  await sendPasswordResetEmail(auth, email);
-}
-
-// ── getUser com espera correta pelo Firebase ─────────────────
-// onAuthStateChanged pode demorar para resolver o estado real.
-// Aguardamos até 8s antes de desistir e retornar null.
-async function getUser() {
-  return new Promise((resolve) => {
-    let resolved = false;
-    const timer = setTimeout(() => {
-      if (!resolved) { resolved = true; unsub(); resolve(null); }
-    }, 8000);
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (!resolved) {
-        resolved = true;
-        clearTimeout(timer);
-        unsub();
-        resolve(user);
-      }
-    });
-  });
-}
-
-// ── Funções de Assinatura ────────────────────────────────────
-
-async function getSubscription() {
-  const user = await getUser();
-  if (!user) return null;
-  const snap = await getDoc(doc(db, 'users', user.uid));
-  if (!snap.exists()) return null;
-  return snap.data().subscription;
-}
-
-async function requireAccess() {
-  const user = await getUser();
-  if (!user) {
-    window.location.href = './login.html';
-    return false;
+// Se já está logado, vai para mathem.html
+// O requireAccess() em subscription.js decide acesso ou paywall
+let _redirecting = false;
+onAuthStateChanged(auth, (user) => {
+  if (user && !_redirecting) {
+    _redirecting = true;
+    window.location.href = './mathem.html';
   }
+});
 
-  const snap = await getDoc(doc(db, 'users', user.uid));
+window.switchTab = function(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
+  document.getElementById('formLogin').style.display = tab==='login' ? '' : 'none';
+  document.getElementById('formRegister').style.display = tab==='register' ? '' : 'none';
+  showMsg('','');
+};
 
-  // Documento não existe: usuário novo — cria trial e libera acesso
-  if (!snap.exists()) {
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.style.display = text ? 'block' : 'none';
+  el.className = 'msg ' + type;
+  el.textContent = text;
+}
+
+function parseError(e) {
+  const codes = {
+    'auth/email-already-in-use': 'Este e-mail já está cadastrado. Faça login.',
+    'auth/weak-password': 'Senha muito fraca. Use ao menos 6 caracteres.',
+    'auth/invalid-email': 'E-mail inválido.',
+    'auth/user-not-found': 'E-mail ou senha incorretos.',
+    'auth/wrong-password': 'E-mail ou senha incorretos.',
+    'auth/invalid-credential': 'E-mail ou senha incorretos.',
+    'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos.',
+    'auth/network-request-failed': 'Erro de conexão. Verifique sua internet.'
+  };
+  return codes[e.code] || e.message || 'Erro desconhecido.';
+}
+
+window.doLogin = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showMsg('Preencha e-mail e senha.', 'error'); return; }
+  const btn = document.getElementById('btnLogin');
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    window.location.href = './mathem.html';
+  } catch(e) {
+    showMsg(parseError(e), 'error');
+    btn.disabled = false; btn.textContent = 'Entrar';
+  }
+};
+
+window.doRegister = async function() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  if (!name || !email || !password) { showMsg('Preencha todos os campos.', 'error'); return; }
+  if (password.length < 6) { showMsg('Senha deve ter ao menos 6 caracteres.', 'error'); return; }
+  const btn = document.getElementById('btnRegister');
+  btn.disabled = true; btn.textContent = 'Criando conta...';
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(cred.user, { displayName: name });
     const trialEnd = new Date();
     trialEnd.setDate(trialEnd.getDate() + 7);
-    await setDoc(doc(db, 'users', user.uid), {
-      name: user.displayName || '',
-      email: user.email,
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      name, email,
       createdAt: new Date().toISOString(),
       subscription: {
         status: 'trial',
@@ -118,87 +198,24 @@ async function requireAccess() {
       },
       updatedAt: new Date().toISOString()
     });
-    _showTrialBanner(7);
-    return true;
+    showMsg('Conta criada! Seu período gratuito de 7 dias começa agora. ✅', 'success');
+    setTimeout(() => window.location.href = './mathem.html', 2000);
+  } catch(e) {
+    showMsg(parseError(e), 'error');
+    btn.disabled = false; btn.textContent = 'Criar conta grátis';
   }
-
-  const sub = snap.data().subscription;
-  if (!sub) {
-    window.location.href = './paywall.html?reason=no_access';
-    return false;
-  }
-
-  const now = new Date();
-
-  if (sub.status === 'trial') {
-    const trialEnd = new Date(sub.trialEndsAt);
-    if (now < trialEnd) {
-      const days = Math.ceil((trialEnd - now) / 86400000);
-      _showTrialBanner(days);
-      return true;
-    }
-    window.location.href = './paywall.html?reason=trial_expired';
-    return false;
-  }
-
-  if (sub.status === 'active') {
-    const periodEnd = new Date(sub.currentPeriodEnd);
-    if (now < periodEnd) return true;
-    await updateDoc(doc(db, 'users', user.uid), {
-      'subscription.status': 'expired',
-      updatedAt: new Date().toISOString()
-    });
-    window.location.href = './paywall.html?reason=expired';
-    return false;
-  }
-
-  window.location.href = './paywall.html?reason=no_access';
-  return false;
-}
-
-async function createPayment(plan) {
-  const user = await getUser();
-  if (!user) throw new Error('Não autenticado');
-
-  const token = await user.getIdToken();
-
-  const res = await fetch('/api/create-payment', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ plan })
-  });
-
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.error || 'Erro ao criar pagamento');
-  }
-
-  return res.json();
-}
-
-function _showTrialBanner(days) {
-  if (document.getElementById('_trial_banner')) return;
-  const plural = days === 1 ? 'dia' : 'dias';
-  const div = document.createElement('div');
-  div.id = '_trial_banner';
-  div.innerHTML = `<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;
-    background:linear-gradient(90deg,#B71C1C,#FF5252);color:white;
-    text-align:center;padding:0.55rem 1rem;font-family:'Nunito',sans-serif;
-    font-weight:800;font-size:0.82rem;display:flex;align-items:center;
-    justify-content:center;gap:0.8rem;box-shadow:0 -4px 20px rgba(0,0,0,0.4);">
-    <span>Trial: <strong>${days} ${plural} restante${days > 1 ? 's' : ''}</strong></span>
-    <a href="./paywall.html" style="background:white;color:#B71C1C;padding:0.3rem 0.85rem;
-      border-radius:99px;font-size:0.78rem;font-weight:900;text-decoration:none;">Assinar agora</a>
-    <button onclick="this.parentElement.parentElement.remove()"
-      style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:1.2rem;cursor:pointer;">✕</button>
-  </div>`;
-  document.body.appendChild(div);
-}
-
-window.SubscriptionService = {
-  auth, db, signUp, signIn, signOut, resetPassword,
-  getUser, getSubscription, requireAccess, createPayment
 };
+
+window.doForgot = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!email) { showMsg('Digite seu e-mail no campo acima primeiro.', 'error'); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    showMsg('Link de redefinição enviado para seu e-mail!', 'success');
+  } catch(e) {
+    showMsg(parseError(e), 'error');
+  }
+};
+</script>
+</body>
+</html>

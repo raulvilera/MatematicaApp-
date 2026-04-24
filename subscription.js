@@ -25,10 +25,10 @@ const db = getFirestore(app);
 async function signUp(name, email, password) {
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(cred.user, { displayName: name });
-  
+
   const trialEnd = new Date();
   trialEnd.setDate(trialEnd.getDate() + 7);
-  
+
   await setDoc(doc(db, 'users', cred.user.uid), {
     name,
     email,
@@ -43,7 +43,7 @@ async function signUp(name, email, password) {
     },
     updatedAt: new Date().toISOString()
   });
-  
+
   return cred.user;
 }
 
@@ -61,24 +61,18 @@ async function resetPassword(email) {
   await sendPasswordResetEmail(auth, email);
 }
 
+// ── getUser com espera correta pelo Firebase ─────────────────
+// onAuthStateChanged pode demorar para resolver o estado real.
+// Aguardamos até 8s antes de desistir e retornar null.
 async function getUser() {
-  // Se o Firebase já tem um currentUser confirmado, retorna imediatamente
-  if (auth.currentUser !== undefined) {
-    return new Promise((resolve) => {
-      const unsub = onAuthStateChanged(auth, (user) => {
-        unsub();
-        resolve(user);
-      });
-    });
-  }
-  // Caso contrário, aguarda até 5s pela inicialização do auth
   return new Promise((resolve) => {
+    let resolved = false;
     const timer = setTimeout(() => {
-      unsub();
-      resolve(null);
-    }, 5000);
+      if (!resolved) { resolved = true; unsub(); resolve(null); }
+    }, 8000);
     const unsub = onAuthStateChanged(auth, (user) => {
-      if (user !== undefined) {
+      if (!resolved) {
+        resolved = true;
         clearTimeout(timer);
         unsub();
         resolve(user);
@@ -99,13 +93,43 @@ async function getSubscription() {
 
 async function requireAccess() {
   const user = await getUser();
-  if (!user) { window.location.href = './login.html'; return false; }
-  
-  const sub = await getSubscription();
-  if (!sub) { window.location.href = './login.html'; return false; }
-  
+  if (!user) {
+    window.location.href = './login.html';
+    return false;
+  }
+
+  const snap = await getDoc(doc(db, 'users', user.uid));
+
+  // Documento não existe: usuário novo — cria trial e libera acesso
+  if (!snap.exists()) {
+    const trialEnd = new Date();
+    trialEnd.setDate(trialEnd.getDate() + 7);
+    await setDoc(doc(db, 'users', user.uid), {
+      name: user.displayName || '',
+      email: user.email,
+      createdAt: new Date().toISOString(),
+      subscription: {
+        status: 'trial',
+        plan: null,
+        trialEndsAt: trialEnd.toISOString(),
+        currentPeriodStart: null,
+        currentPeriodEnd: null,
+        cancelledAt: null
+      },
+      updatedAt: new Date().toISOString()
+    });
+    _showTrialBanner(7);
+    return true;
+  }
+
+  const sub = snap.data().subscription;
+  if (!sub) {
+    window.location.href = './paywall.html?reason=no_access';
+    return false;
+  }
+
   const now = new Date();
-  
+
   if (sub.status === 'trial') {
     const trialEnd = new Date(sub.trialEndsAt);
     if (now < trialEnd) {
@@ -116,11 +140,10 @@ async function requireAccess() {
     window.location.href = './paywall.html?reason=trial_expired';
     return false;
   }
-  
+
   if (sub.status === 'active') {
     const periodEnd = new Date(sub.currentPeriodEnd);
     if (now < periodEnd) return true;
-    // Atualizar para expirado
     await updateDoc(doc(db, 'users', user.uid), {
       'subscription.status': 'expired',
       updatedAt: new Date().toISOString()
@@ -128,7 +151,7 @@ async function requireAccess() {
     window.location.href = './paywall.html?reason=expired';
     return false;
   }
-  
+
   window.location.href = './paywall.html?reason=no_access';
   return false;
 }
@@ -136,9 +159,9 @@ async function requireAccess() {
 async function createPayment(plan) {
   const user = await getUser();
   if (!user) throw new Error('Não autenticado');
-  
+
   const token = await user.getIdToken();
-  
+
   const res = await fetch('/api/create-payment', {
     method: 'POST',
     headers: {
@@ -147,12 +170,12 @@ async function createPayment(plan) {
     },
     body: JSON.stringify({ plan })
   });
-  
+
   if (!res.ok) {
     const err = await res.json();
     throw new Error(err.error || 'Erro ao criar pagamento');
   }
-  
+
   return res.json();
 }
 

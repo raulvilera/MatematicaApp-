@@ -2,8 +2,12 @@
 <html lang="pt-br">
 <head>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./subscription.js"></script>
-<script>(async function(){document.documentElement.style.visibility="hidden";var ok=await SubscriptionService.requireAccess();if(ok)document.documentElement.style.visibility="visible";})();</script>
+<script type="module">
+  document.documentElement.style.visibility = "hidden";
+  await import('./subscription.js');
+  const ok = await window.SubscriptionService.requireAccess();
+  if (ok) document.documentElement.style.visibility = "visible";
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Matemática·SP | Base Nacional · EF/EM</title>

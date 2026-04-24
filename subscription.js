@@ -62,10 +62,27 @@ async function resetPassword(email) {
 }
 
 async function getUser() {
+  // Se o Firebase já tem um currentUser confirmado, retorna imediatamente
+  if (auth.currentUser !== undefined) {
+    return new Promise((resolve) => {
+      const unsub = onAuthStateChanged(auth, (user) => {
+        unsub();
+        resolve(user);
+      });
+    });
+  }
+  // Caso contrário, aguarda até 5s pela inicialização do auth
   return new Promise((resolve) => {
-    const unsub = onAuthStateChanged(auth, (user) => {
+    const timer = setTimeout(() => {
       unsub();
-      resolve(user);
+      resolve(null);
+    }, 5000);
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user !== undefined) {
+        clearTimeout(timer);
+        unsub();
+        resolve(user);
+      }
     });
   });
 }

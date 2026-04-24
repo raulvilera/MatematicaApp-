@@ -57,6 +57,57 @@ input:focus{border-color:rgba(255,82,82,0.7);background:rgba(255,82,82,0.08);}
 .msg.success{background:rgba(34,201,122,0.12);color:#6EE7B7;border:1px solid rgba(34,201,122,0.25);}
 .forgot{text-align:center;margin-top:0.9rem;}
 .forgot a{color:rgba(255,180,180,0.7);font-size:0.78rem;font-weight:700;text-decoration:none;cursor:pointer;}
+
+/* ── Modal Esqueci Senha ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+  z-index:100;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{background:linear-gradient(160deg,#1a0000,#3D0A0A);
+  border:1.5px solid rgba(255,82,82,0.4);border-radius:24px;
+  padding:2rem 1.8rem;width:min(90vw,400px);
+  transform:translateY(30px) scale(0.95);transition:transform 0.35s cubic-bezier(0.34,1.4,0.64,1);
+  box-shadow:0 32px 64px rgba(0,0,0,0.6);}
+.modal-overlay.open .modal-box{transform:none;}
+.modal-icon{font-size:3rem;text-align:center;margin-bottom:0.8rem;}
+.modal-title{text-align:center;font-size:1.25rem;font-weight:900;color:white;margin-bottom:0.4rem;}
+.modal-subtitle{text-align:center;color:rgba(255,205,210,0.7);font-size:0.82rem;
+  font-weight:700;line-height:1.6;margin-bottom:1.4rem;}
+.modal-subtitle strong{color:#FF8A80;}
+.modal-steps{background:rgba(255,82,82,0.08);border:1px solid rgba(255,82,82,0.2);
+  border-radius:14px;padding:1rem 1.2rem;margin-bottom:1.4rem;}
+.modal-step{display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.7rem;}
+.modal-step:last-child{margin-bottom:0;}
+.modal-step-num{min-width:24px;height:24px;background:rgba(255,82,82,0.3);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:0.72rem;font-weight:900;color:#FF8A80;}
+.modal-step-text{font-size:0.8rem;font-weight:700;color:rgba(255,205,210,0.85);line-height:1.5;}
+.modal-input-wrap{margin-bottom:1rem;}
+.modal-input-wrap label{display:block;color:rgba(255,205,210,0.8);font-size:0.75rem;
+  font-weight:800;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.4rem;}
+.modal-input-wrap input{width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);
+  border:1.5px solid rgba(255,82,82,0.25);border-radius:12px;color:white;
+  font-family:'Nunito',sans-serif;font-size:0.95rem;outline:none;transition:0.2s;}
+.modal-input-wrap input:focus{border-color:rgba(255,82,82,0.7);background:rgba(255,82,82,0.08);}
+.modal-input-wrap input::placeholder{color:rgba(255,205,210,0.3);}
+.modal-btn{width:100%;padding:0.85rem;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#C0392B,#FF5252);color:white;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;
+  transition:0.2s;box-shadow:0 8px 24px rgba(180,0,0,0.4);margin-bottom:0.8rem;}
+.modal-btn:hover{transform:translateY(-2px);}
+.modal-btn:disabled{opacity:0.5;transform:none;cursor:not-allowed;}
+.modal-cancel{width:100%;padding:0.6rem;border:1px solid rgba(255,82,82,0.25);
+  border-radius:12px;background:transparent;color:rgba(255,180,180,0.7);
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:0.85rem;cursor:pointer;transition:0.2s;}
+.modal-cancel:hover{background:rgba(255,82,82,0.08);}
+.modal-msg{border-radius:10px;font-size:0.82rem;font-weight:700;text-align:center;
+  padding:0.65rem 1rem;margin-bottom:0.8rem;display:none;}
+.modal-msg.error{background:rgba(255,82,82,0.15);color:#FF8A80;border:1px solid rgba(255,82,82,0.3);}
+.modal-msg.success{background:rgba(34,201,122,0.12);color:#6EE7B7;border:1px solid rgba(34,201,122,0.25);}
+.modal-success-box{text-align:center;display:none;}
+.modal-success-box .s-icon{font-size:3.5rem;margin-bottom:0.8rem;}
+.modal-success-box .s-title{font-size:1.1rem;font-weight:900;color:#6EE7B7;margin-bottom:0.5rem;}
+.modal-success-box .s-text{font-size:0.82rem;font-weight:700;color:rgba(255,205,210,0.75);line-height:1.6;}
 </style>
 </head>
 <body>
@@ -92,8 +143,7 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
          onAuthStateChanged, sendPasswordResetEmail, updateProfile }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc }
-  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+// firestore não necessário nesta página
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJ4ZxM-1DmDrUj3yIar4C_tPqS3Gp1S1Q",
@@ -206,16 +256,101 @@ window.doRegister = async function() {
   }
 };
 
-window.doForgot = async function() {
-  const email = document.getElementById('loginEmail').value.trim();
-  if (!email) { showMsg('Digite seu e-mail no campo acima primeiro.', 'error'); return; }
+window.doForgot = function() {
+  // Preenche o campo do modal com o email já digitado no login, se houver
+  const emailJaDigitado = document.getElementById('loginEmail').value.trim();
+  if (emailJaDigitado) document.getElementById('forgotEmail').value = emailJaDigitado;
+  document.getElementById('forgotModal').classList.add('open');
+};
+
+window.closeForgotModal = function() {
+  document.getElementById('forgotModal').classList.remove('open');
+  document.getElementById('forgotMsg').style.display = 'none';
+  document.getElementById('forgotForm').style.display = 'block';
+  document.getElementById('forgotSuccess').style.display = 'none';
+  document.getElementById('forgotBtn').disabled = false;
+  document.getElementById('forgotBtn').textContent = '📨 Enviar link de redefinição';
+};
+
+window.sendForgot = async function() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  const msgEl = document.getElementById('forgotMsg');
+  if (!email) {
+    msgEl.style.display = 'block';
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = 'Por favor, digite seu e-mail.';
+    return;
+  }
+  const btn = document.getElementById('forgotBtn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  msgEl.style.display = 'none';
   try {
     await sendPasswordResetEmail(auth, email);
-    showMsg('Link de redefinição enviado para seu e-mail!', 'success');
+    document.getElementById('forgotForm').style.display = 'none';
+    document.getElementById('forgotSuccess').style.display = 'block';
   } catch(e) {
-    showMsg(parseError(e), 'error');
+    msgEl.style.display = 'block';
+    msgEl.className = 'modal-msg error';
+    msgEl.textContent = parseError(e);
+    btn.disabled = false;
+    btn.textContent = '📨 Enviar link de redefinição';
   }
 };
+
+// Fecha modal ao clicar fora
+document.getElementById('forgotModal').addEventListener('click', function(e) {
+  if (e.target === this) closeForgotModal();
+});
 </script>
+
+<!-- ── Modal Esqueci Senha ── -->
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal-box">
+    <div id="forgotForm">
+      <div class="modal-icon">🔐</div>
+      <div class="modal-title">Redefinir senha</div>
+      <div class="modal-subtitle">
+        Sem problemas! Acontece com todo mundo. 😊<br>
+        Digite seu e-mail e te enviamos um link para<br>
+        <strong>criar uma nova senha em segundos.</strong>
+      </div>
+      <div class="modal-steps">
+        <div class="modal-step">
+          <div class="modal-step-num">1</div>
+          <div class="modal-step-text">Digite o e-mail cadastrado no campo abaixo</div>
+        </div>
+        <div class="modal-step">
+          <div class="modal-step-num">2</div>
+          <div class="modal-step-text">Verifique sua caixa de entrada (e o spam!)</div>
+        </div>
+        <div class="modal-step">
+          <div class="modal-step-num">3</div>
+          <div class="modal-step-text">Clique no link e escolha sua nova senha</div>
+        </div>
+      </div>
+      <div class="modal-input-wrap">
+        <label>Seu e-mail</label>
+        <input type="email" id="forgotEmail" placeholder="seu@email.com" autocomplete="email">
+      </div>
+      <div class="modal-msg" id="forgotMsg"></div>
+      <button class="modal-btn" id="forgotBtn" onclick="sendForgot()">📨 Enviar link de redefinição</button>
+      <button class="modal-cancel" onclick="closeForgotModal()">Cancelar</button>
+    </div>
+    <div class="modal-success-box" id="forgotSuccess">
+      <div class="s-icon">✉️</div>
+      <div class="s-title">E-mail enviado com sucesso!</div>
+      <div class="s-text">
+        Verifique sua caixa de entrada.<br>
+        Às vezes o e-mail pode cair no <strong style="color:#FF8A80">spam</strong> —<br>
+        não esqueça de checar por lá também!<br><br>
+        O link expira em <strong style="color:#FF8A80">24 horas.</strong>
+      </div>
+      <br>
+      <button class="modal-cancel" onclick="closeForgotModal()" style="margin-top:0.5rem;">Voltar ao login</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -736,14 +736,24 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 <div class="plano-overlay" id="planoOverlay">
   <div class="plano-modal" id="planoModalEl">
     <div class="plano-modal-header">
-      <div class="plano-escola">EE Wanda Mascagni de Sá</div>
+      <input id="pf_escola" type="text" placeholder="Nome da Escola"
+        style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.25);
+        outline:none;color:rgba(255,255,255,0.75);font-size:0.65rem;font-weight:700;
+        font-family:'Space Grotesk',sans-serif;width:100%;margin-bottom:4px;
+        letter-spacing:0.5px;padding:2px 0;text-transform:uppercase;"
+        oninput="localStorage.setItem('plano_escola',this.value)">
       <div class="plano-titulo-h" id="planoModalTitulo">Plano de Aula</div>
-      <div class="plano-periodo" id="planoModalPeriodo"></div>
+      <input id="pf_periodo" type="text" placeholder="Período (ex: 01/05 a 15/05/2026)"
+        style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,0.15);
+        outline:none;color:rgba(255,255,255,0.55);font-size:0.68rem;
+        font-family:'Space Grotesk',sans-serif;width:100%;margin-top:4px;
+        padding:2px 0;"
+        oninput="localStorage.setItem('plano_periodo',this.value)">
     </div>
     <div class="plano-modal-body">
       <table class="plano-table">
         <tr><td>Professor(a)</td>
-          <td><textarea class="plano-field-edit" id="pf_professor" rows="1">Prof. Raul Pereira Vilera Junior</textarea></td></tr>
+          <td><textarea class="plano-field-edit" id="pf_professor" rows="1" placeholder="Nome do(a) Professor(a)" oninput="localStorage.setItem('plano_professor',this.value)"></textarea></td></tr>
         <tr><td>Turma</td>
           <td><textarea class="plano-field-edit" id="pf_turma" rows="1"></textarea></td></tr>
         <tr><td>Objetivos de Aprendizagem</td>
@@ -6127,7 +6137,16 @@ function abrirPlanoModal(code, title, sim, desc){
     : `16/${mm} a ${ultimoDia}/${mm}/${ano}`;
 
   document.getElementById('planoModalTitulo').textContent = `Plano de Aula Quinzenal — ${title}`;
-  document.getElementById('planoModalPeriodo').textContent = `Período: ${quinzena} · ${sd.name}`;
+  // Escola: recupera do localStorage ou deixa em branco
+  const escolaSalva = localStorage.getItem('plano_escola') || '';
+  document.getElementById('pf_escola').value = escolaSalva;
+  // Período: sugere automaticamente mas permite edição
+  const periodoSugerido = `Período: ${quinzena} · ${sd.name}`;
+  const periodoSalvo = localStorage.getItem('plano_periodo') || periodoSugerido;
+  document.getElementById('pf_periodo').value = periodoSalvo;
+  // Professor: recupera do localStorage ou deixa em branco
+  const profSalvo = localStorage.getItem('plano_professor') || '';
+  document.getElementById('pf_professor').value = profSalvo;
   document.getElementById('pf_turma').value = sd.name;
   document.getElementById('pf_objetivos').value =
     `Desenvolver a habilidade ${code}: ${desc}\nCompreender os conceitos de "${title}" por meio de situações-problema e simulações interativas.`;
@@ -6160,6 +6179,11 @@ function toggleEditarPlano(){
   const info = document.getElementById('planoFooterInfo');
   const editando = modal.classList.toggle('plano-edit-mode');
   document.querySelectorAll('.plano-field-edit').forEach(el => { el.readOnly = !editando; el.style.cursor = editando ? 'text' : 'default'; });
+  // Os inputs do header (escola, período, professor) ficam sempre editáveis
+  ['pf_escola','pf_periodo'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el){ el.style.borderBottomColor = editando ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.25)'; }
+  });
   if (editando) {
     btn.textContent = '✅ Concluir';
     badge.style.display = 'inline-flex';
@@ -6174,7 +6198,7 @@ function toggleEditarPlano(){
 
 function baixarPlano(){
   const titulo = document.getElementById('planoModalTitulo').textContent;
-  const periodo = document.getElementById('planoModalPeriodo').textContent;
+  const periodo = document.getElementById('pf_periodo').value;
   const campos = {
     'PROFESSOR(A)': document.getElementById('pf_professor').value,
     'TURMA': document.getElementById('pf_turma').value,
@@ -6196,9 +6220,9 @@ td{border:1px solid #C5D3E8;padding:8px 10px;vertical-align:top;font-size:10pt;l
 td:first-child{background:#E8F0FB;font-weight:bold;color:#1E3A8A;width:160px;font-size:9pt;text-transform:uppercase;}
 .rod{margin-top:20px;text-align:center;font-size:8pt;color:#888;border-top:1px solid #ddd;padding-top:8px;}
 @media print{body{margin:0;}}</style></head><body>
-<div class="cab"><div class="escola">EE Wanda Mascagni de Sá</div>
+<div class="cab"><div class="escola">${document.getElementById('pf_escola').value || 'Escola'}</div>
 <div style="font-size:12pt;font-weight:bold;margin:4px 0;">${titulo}</div>
-<div style="font-size:10pt;color:#555;">${periodo}</div></div>
+<div style="font-size:10pt;color:#555;">${document.getElementById('pf_periodo').value || periodo}</div></div>
 <table>${Object.entries(campos).map(([k,v])=>`<tr><td>${k}</td><td>${v.replace(/\n/g,'<br>')}</td></tr>`).join('')}</table>
 <div class="rod">Matemática·SP — Plataforma de Matemática · Base Nacional / BNCC</div>
 <script>window.onload=()=>{window.print();}<\/script></body></html>`;

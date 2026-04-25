@@ -814,119 +814,410 @@ function getAppBaseUrl() {
 
 // ── Currículo Paulista / BNCC — organizado por bimestre ──────
 const CURRICULO = {
-  // ─────────────── ENSINO FUNDAMENTAL ───────────────
+  // ═══════════════════════════════════════════════════
+  //  6º ANO
+  // ═══════════════════════════════════════════════════
   ef6: {
     label: '6º Ano',
     bimestres: [
-      { num:1, sims:['operacoes','reta','multiplos','fracao'], temas:[
-        {code:'EF06MA01',title:'Sistema de numeração decimal',sim:'reta',tag:'num',desc:'Identificar, comparar e ordenar números naturais e racionais com representação decimal finita.'},
-        {code:'EF06MA03',title:'Operações com números naturais',sim:'operacoes',tag:'num',desc:'Adição, subtração, multiplicação, divisão e potenciação com números naturais.'},
-        {code:'EF06MA06',title:'Múltiplos, divisores e números primos',sim:'multiplos',tag:'num',desc:'Resolver problemas com múltiplos e divisores. Reconhecer números primos e compostos.'},
-        {code:'EF06MA14a',title:'Propriedades da igualdade',sim:'operacoes',tag:'alg',desc:'Relação de igualdade matemática. Determinar valores desconhecidos na resolução de problemas.'},
+      // ─── 1º Bimestre ─── Sistema de Numeração Decimal
+      { num:1, sims:['reta','operacoes'], temas:[
+        {code:'EF06MA01',title:'Números naturais no cotidiano',sim:'reta',tag:'num',
+         desc:'Classificar e representar números naturais. Identificar o valor posicional no sistema decimal.'},
+        {code:'EF06MA01',title:'Composição e decomposição de naturais – Parte 1',sim:'reta',tag:'num',
+         desc:'Compor e decompor números naturais usando o valor posicional. Estratégias aditivas e multiplicativas.'},
+        {code:'EF06MA01',title:'Composição e decomposição de naturais – Parte 2',sim:'operacoes',tag:'num',
+         desc:'Aprofundar decomposição em ordens e classes. Resolver situações que exigem flexibilidade numérica.'},
+        {code:'EF06MA01',title:'Problemas com o sistema de numeração decimal – Parte 1',sim:'operacoes',tag:'num',
+         desc:'Resolver problemas contextualizados envolvendo leitura, escrita e comparação no SND.'},
+        {code:'EF06MA01',title:'Revisão: leitura, composição e decomposição',sim:'reta',tag:'num',
+         desc:'Consolidar a leitura e escrita de números naturais de até 9 ordens. Reta numérica.'},
+        {code:'EF06MA01',title:'Comparação e ordenação de naturais – Parte 1',sim:'reta',tag:'num',
+         desc:'Comparar e ordenar números naturais usando a reta numérica e critérios posicionais.'},
+        {code:'EF06MA01',title:'Comparação e ordenação de naturais – Parte 2',sim:'reta',tag:'num',
+         desc:'Aprofundar a ordenação de números naturais em contextos do cotidiano e tabelas.'},
+        {code:'EF06MA01',title:'Problemas com o sistema de numeração decimal – Parte 2',sim:'operacoes',tag:'num',
+         desc:'Resolver problemas de maior complexidade envolvendo SND: arredondamento e estimativas.'},
+        {code:'EF06MA01',title:'Verificação: sistema de numeração decimal',sim:'operacoes',tag:'num',
+         desc:'Avaliação formativa: valor posicional, comparação, ordenação e representação de naturais.'},
+        {code:'EF06MA01',title:'Revisão: comparação e ordenação de naturais',sim:'reta',tag:'num',
+         desc:'Revisão integradora: reta numérica, comparação e ordenação de números naturais.'},
       ]},
-      { num:2, sims:['fracao','reta','quadrilateros','operacoes'], temas:[
-        {code:'EF06MA07',title:'Frações como resultado de divisão',sim:'fracao',tag:'num',desc:'Fração como divisão: numerador ÷ denominador. Representação na reta numérica.'},
-        {code:'EF06MA08',title:'Fração de uma quantidade',sim:'fracao',tag:'num',desc:'Estratégias para calcular a fração de uma quantidade. Resolução de problemas.'},
-        {code:'EF06MA09',title:'Frações equivalentes e comparação',sim:'fracao',tag:'num',desc:'Comparação de frações usando a reta numérica como referência visual.'},
-        {code:'EF06MA10',title:'Frações equivalentes',sim:'fracao',tag:'num',desc:'Obtenção de frações equivalentes por multiplicação e divisão.'},
-        {code:'EF06MA11',title:'Simplificação de frações',sim:'fracao',tag:'num',desc:'Estratégias de simplificação usando o MDC. Frações irredutíveis.'},
-        {code:'EF06MA12',title:'Adição e subtração de frações',sim:'fracao',tag:'num',desc:'Adição e subtração com frações de denominadores iguais e diferentes.'},
-        {code:'EF06MA20',title:'Classificação de quadriláteros',sim:'quadrilateros',tag:'geo',desc:'Características dos quadriláteros: lados, ângulos, paralelismo e perpendicularismo.'},
+      // ─── 2º Bimestre ─── Operações com Números Naturais
+      { num:2, sims:['operacoes','multiplos'], temas:[
+        {code:'EF06MA03',title:'Cálculos mentais com números naturais',sim:'operacoes',tag:'num',
+         desc:'Desenvolver estratégias de cálculo mental: arredondamento, compensação e propriedades das operações.'},
+        {code:'EF06MA03',title:'Procedimentos de adição com números naturais',sim:'operacoes',tag:'num',
+         desc:'Formalizar o algoritmo da adição. Resolver situações-problema de juntar e acrescentar.'},
+        {code:'EF06MA03',title:'Procedimentos de subtração com números naturais',sim:'operacoes',tag:'num',
+         desc:'Formalizar o algoritmo da subtração. Resolver problemas de retirar, comparar e completar.'},
+        {code:'EF06MA03',title:'Resolução de problemas de adição e subtração',sim:'operacoes',tag:'num',
+         desc:'Selecionar estratégias de adição e subtração para resolver problemas do cotidiano.'},
+        {code:'EF06MA03',title:'Revisão: adição e subtração com naturais',sim:'operacoes',tag:'num',
+         desc:'Consolidar os algoritmos de adição e subtração e suas aplicações em contextos reais.'},
+        {code:'EF06MA03',title:'Estratégias de multiplicação com naturais',sim:'operacoes',tag:'num',
+         desc:'Multiplicação como adição de parcelas iguais. Propriedades comutativa, associativa e distributiva.'},
+        {code:'EF06MA03',title:'Estratégias de divisão com naturais',sim:'operacoes',tag:'num',
+         desc:'Divisão exata e com resto. Relação entre divisão e multiplicação. Algoritmo da divisão.'},
+        {code:'EF06MA03',title:'Problemas com multiplicação e divisão de naturais',sim:'operacoes',tag:'num',
+         desc:'Resolver e elaborar problemas de multiplicação e divisão em contextos variados.'},
+        {code:'EF06MA03',title:'Verificação: operações com números naturais',sim:'operacoes',tag:'num',
+         desc:'Avaliação formativa sobre adição, subtração, multiplicação e divisão com naturais.'},
+        {code:'EF06MA03',title:'Revisão: multiplicação e divisão com naturais',sim:'operacoes',tag:'num',
+         desc:'Revisão integradora das quatro operações com ênfase na multiplicação e divisão.'},
       ]},
-      { num:3, sims:['fracao','angulos','triangulos','operacoes'], temas:[
-        {code:'EF06MA13',title:'Forma mista',sim:'fracao',tag:'num',desc:'Representação mista (número inteiro + fração). Conversão entre formas.'},
-        {code:'EF06MA14b',title:'Multiplicação e divisão de frações',sim:'fracao',tag:'num',desc:'Multiplicação e divisão com frações. Estratégias de simplificação cruzada.'},
-        {code:'EF06MA19',title:'Giros e ângulos',sim:'angulos',tag:'geo',desc:'Conceito de ângulo como giro. Ângulos retos, agudos, obtusos e rasos.'},
-        {code:'EF06MA21',title:'Classificação de triângulos',sim:'triangulos',tag:'geo',desc:'Classificação quanto aos lados (equilátero, isósceles, escaleno) e ângulos.'},
+      // ─── 3º Bimestre ─── Múltiplos, Divisores e Divisibilidade
+      { num:3, sims:['multiplos','operacoes'], temas:[
+        {code:'EF06MA05',title:'Padrões e regularidades com múltiplos',sim:'multiplos',tag:'num',
+         desc:'Identificar padrões em sequências de múltiplos. Construir e interpretar tabelas de múltiplos.'},
+        {code:'EF06MA05',title:'Explorando os múltiplos de um número natural',sim:'multiplos',tag:'num',
+         desc:'Reconhecer múltiplos de um número. Calcular o MMC usando listas de múltiplos.'},
+        {code:'EF06MA06',title:'Explorando os divisores de um número natural',sim:'multiplos',tag:'num',
+         desc:'Reconhecer divisores de um número. Calcular o MDC. Números primos e compostos.'},
+        {code:'EF06MA06',title:'Problemas com múltiplos e divisores – Parte 1',sim:'multiplos',tag:'num',
+         desc:'Resolver problemas contextualizados com MMC e MDC. Situações de agrupamento e divisão.'},
+        {code:'EF06MA06',title:'Revisão: múltiplos e divisores',sim:'multiplos',tag:'num',
+         desc:'Consolidar os conceitos de múltiplo, divisor, MMC e MDC com exercícios variados.'},
+        {code:'EF06MA06',title:'Critérios de divisibilidade – Parte 1',sim:'multiplos',tag:'num',
+         desc:'Critérios de divisibilidade por 2, 3, 4, 5 e 10. Verificação e aplicação em problemas.'},
+        {code:'EF06MA06',title:'Critérios de divisibilidade – Parte 2',sim:'multiplos',tag:'num',
+         desc:'Critérios de divisibilidade por 6, 8, 9 e 12. Decomposição em fatores primos.'},
+        {code:'EF06MA06',title:'Problemas com múltiplos e divisores – Parte 2',sim:'multiplos',tag:'num',
+         desc:'Resolver problemas de maior complexidade usando critérios de divisibilidade e fatoração.'},
+        {code:'EF06MA06',title:'Verificação: múltiplos e divisores',sim:'multiplos',tag:'num',
+         desc:'Avaliação formativa sobre múltiplos, divisores, MMC, MDC e critérios de divisibilidade.'},
+        {code:'EF06MA06',title:'Revisão: critérios de divisibilidade',sim:'multiplos',tag:'num',
+         desc:'Revisão integradora com ênfase nos critérios de divisibilidade e fatoração em primos.'},
       ]},
-      { num:4, sims:['quadrilateros','operacoes','geometria3d','graficos'], temas:[
-        {code:'EF06MA22',title:'Características dos quadriláteros',sim:'quadrilateros',tag:'geo',desc:'Quadrado, retângulo, losango, paralelogramo, trapézio — propriedades.'},
-        {code:'EF06MA24',title:'Grandezas e medidas',sim:'operacoes',tag:'geo',desc:'Comprimento, massa, tempo, temperatura, área, capacidade e volume.'},
-        {code:'EF06MA31',title:'Leitura e interpretação de gráficos',sim:'graficos',tag:'est',desc:'Identificar variáveis e frequências em tabelas e gráficos de colunas e barras.'},
-      ]},
-    ]
-  },
-  ef7: {
-    label: '7º Ano',
-    bimestres: [
-      { num:1, sims:['decimal','reta','operacoes','potencia'], temas:[
-        {code:'EF07MA01',title:'Frações e números decimais',sim:'decimal',tag:'num',desc:'Relações entre frações e decimais. Conversão e representação na reta.'},
-        {code:'EF07MA02',title:'Números racionais na reta numérica',sim:'reta',tag:'num',desc:'Posicionamento de racionais positivos e negativos na reta numérica.'},
-        {code:'EF07MA03',title:'Adição e subtração de racionais decimais',sim:'operacoes',tag:'num',desc:'Estratégias de adição e subtração com números racionais na forma decimal.'},
-      ]},
-      { num:2, sims:['potencia','operacoes','analitica','geometria3d'], temas:[
-        {code:'EF07MA04',title:'Multiplicação e potenciação de racionais',sim:'potencia',tag:'num',desc:'Multiplicação e potenciação de números racionais. Propriedades.'},
-        {code:'EF07MA05',title:'Divisão de números racionais',sim:'operacoes',tag:'num',desc:'Divisão de racionais decimais. Resolução de problemas aplicados.'},
-        {code:'EF07MA15',title:'Polígonos no plano cartesiano',sim:'analitica',tag:'geo',desc:'Classificação de polígonos e representação no plano cartesiano.'},
-        {code:'EF07MA16',title:'Pontos no plano cartesiano',sim:'analitica',tag:'geo',desc:'Identificação e marcação de pontos nos quatro quadrantes.'},
-        {code:'EF07MA17',title:'Simétricos no plano cartesiano',sim:'analitica',tag:'geo',desc:'Reflexão de figuras em relação aos eixos. Simetria axial.'},
-      ]},
-      { num:3, sims:['geometria3d','pitagoras','operacoes','graficos'], temas:[
-        {code:'EF07MA30',title:'Explorando áreas na malha',sim:'geometria3d',tag:'geo',desc:'Cálculo de áreas por contagem de quadradinhos na malha quadriculada.'},
-        {code:'EF07MA31',title:'Área de retângulos e quadrados',sim:'geometria3d',tag:'geo',desc:'Fórmula A = b × h. Resolução de problemas com retângulos e quadrados.'},
-        {code:'EF07MA32',title:'Área de triângulos',sim:'pitagoras',tag:'geo',desc:'Fórmula A = (b × h) / 2. Altura e base de triângulos variados.'},
-      ]},
-      { num:4, sims:['geometria3d','operacoes','graficos','decimal'], temas:[
-        {code:'EF07MA33',title:'Área por decomposição',sim:'geometria3d',tag:'geo',desc:'Cálculo de área de figuras compostas por decomposição em formas simples.'},
-        {code:'EF07MA34',title:'Porcentagem e noções de probabilidade',sim:'operacoes',tag:'num',desc:'Cálculo de porcentagem. Noções básicas de probabilidade e frequência relativa.'},
-        {code:'EF07MA35',title:'Leitura e interpretação de dados',sim:'graficos',tag:'est',desc:'Organização de dados em tabelas e gráficos. Média aritmética.'},
-      ]},
-    ]
-  },
-  ef8: {
-    label: '8º Ano',
-    bimestres: [
-      { num:1, sims:['afim','operacoes','potencia','sistema'], temas:[
-        {code:'EF08MA01',title:'Introdução ao cálculo algébrico',sim:'afim',tag:'alg',desc:'Uso de letras para representar números. Introdução à linguagem algébrica.'},
-        {code:'EF08MA02',title:'Valor numérico de expressões algébricas',sim:'afim',tag:'alg',desc:'Substituição de variáveis e cálculo do valor numérico de expressões.'},
-        {code:'EF08MA03',title:'Simplificação de expressões algébricas',sim:'afim',tag:'alg',desc:'Redução de termos semelhantes. Simplificação com monômios e polinômios.'},
-      ]},
-      { num:2, sims:['sistema','afim','analitica','operacoes'], temas:[
-        {code:'EF08MA06',title:'Relação de igualdade e equações do 1º grau',sim:'sistema',tag:'alg',desc:'Conceito de equação. Estratégias de resolução de equações do 1º grau.'},
-        {code:'EF08MA07',title:'Modelagem com equações do 1º grau',sim:'afim',tag:'alg',desc:'Tradução de problemas em equações. Resolução e interpretação.'},
-        {code:'EF08MA08',title:'Equações do 1º grau com duas incógnitas',sim:'sistema',tag:'alg',desc:'Equações com duas variáveis. Representação no plano cartesiano.'},
-      ]},
-      { num:3, sims:['sistema','afim','operacoes','analitica'], temas:[
-        {code:'EF08MA09',title:'Sistemas de equações do 1º grau',sim:'sistema',tag:'alg',desc:'Conceito e representação de sistemas lineares 2×2.'},
-        {code:'EF08MA10',title:'Resolução algébrica de sistemas',sim:'sistema',tag:'alg',desc:'Métodos de substituição e adição para resolução de sistemas.'},
-        {code:'EF08MA11',title:'Modelagem com sistemas de equações',sim:'sistema',tag:'alg',desc:'Problemas cotidianos modelados por sistemas de equações.'},
-      ]},
-      { num:4, sims:['semelhanca','pitagoras','geometria3d','graficos'], temas:[
-        {code:'EF08MA14',title:'Teorema de Tales',sim:'semelhanca',tag:'geo',desc:'Feixes de retas paralelas cortadas por transversais. Proporcionalidade.'},
-        {code:'EF08MA15',title:'Semelhança de triângulos',sim:'semelhanca',tag:'geo',desc:'Critérios de semelhança AA, LAL, LLL. Razão de semelhança.'},
-        {code:'EF08MA16',title:'Polígonos semelhantes e aplicações',sim:'semelhanca',tag:'geo',desc:'Razão de semelhança entre polígonos. Escala, mapas e projetos.'},
-      ]},
-    ]
-  },
-  ef9: {
-    label: '9º Ano',
-    bimestres: [
-      { num:1, sims:['semelhanca','pitagoras','geometria3d','analitica'], temas:[
-        {code:'EF09MA01',title:'Semelhança de triângulos retângulos',sim:'semelhanca',tag:'geo',desc:'Critérios de semelhança. Razão de semelhança e proporcionalidade.'},
-        {code:'EF09MA02',title:'Relações métricas no triângulo retângulo',sim:'pitagoras',tag:'geo',desc:'Altura, projeções, relações métricas. Teorema de Pitágoras como caso especial.'},
-        {code:'EF09MA14',title:'Teorema de Pitágoras',sim:'pitagoras',tag:'geo',desc:'Demonstração e aplicação. a²+b²=c². Problemas de modelagem geométrica.'},
-      ]},
-      { num:2, sims:['decimal','reta','potencia','operacoes'], temas:[
-        {code:'EF09MA03',title:'Números racionais infinitos e dízimas',sim:'decimal',tag:'num',desc:'Dízimas periódicas e não periódicas. Fração geratriz de dízima periódica.'},
-        {code:'EF09MA04',title:'Números irracionais',sim:'reta',tag:'num',desc:'Conceito de irracional. √2, π, φ. Localização na reta numérica.'},
-        {code:'EF09MA05',title:'Conjunto dos números reais',sim:'decimal',tag:'num',desc:'Relação ℕ⊂ℤ⊂ℚ⊂ℝ. Operações com reais. Potenciação e radiciação.'},
-        {code:'EF09MA06',title:'Operações com números reais',sim:'potencia',tag:'num',desc:'Adição, subtração, multiplicação e divisão com números reais.'},
-        {code:'EF09MA07',title:'Expressões algébricas com números reais',sim:'afim',tag:'alg',desc:'Valor numérico de expressões algébricas envolvendo números reais e radicais.'},
-      ]},
-      { num:3, sims:['afim','quadratica','analitica','graficos'], temas:[
-        {code:'EF09MA08',title:'Introdução às funções',sim:'afim',tag:'alg',desc:'Conceito de função. Domínio, contradomínio e imagem. Diagrama e tabela.'},
-        {code:'EF09MA09',title:'Função afim',sim:'afim',tag:'alg',desc:'f(x) = ax + b. Gráfico, coeficientes, crescimento e decrescimento.'},
-        {code:'EF09MA10',title:'Função quadrática',sim:'quadratica',tag:'alg',desc:'f(x) = ax² + bx + c. Parábola, vértice e raízes.'},
-      ]},
-      { num:4, sims:['pitagoras','trigonometria','operacoes','graficos'], temas:[
-        {code:'EF09MA11',title:'Noções de trigonometria',sim:'pitagoras',tag:'geo',desc:'Razões trigonométricas no triângulo retângulo: seno, cosseno e tangente.'},
-        {code:'EF09MA12',title:'Aplicações de trigonometria',sim:'trigonometria',tag:'geo',desc:'Resolução de problemas usando razões trigonométricas.'},
-        {code:'EF09MA13',title:'Probabilidade e estatística',sim:'graficos',tag:'est',desc:'Probabilidade de eventos. Média, mediana e moda. Gráficos e tabelas.'},
+      // ─── 4º Bimestre ─── Revisões Integradas
+      { num:4, sims:['reta','operacoes','multiplos'], temas:[
+        {code:'EF06MA01',title:'Revisão: sistema de numeração decimal',sim:'reta',tag:'num',
+         desc:'Retomada aprofundada do SND: valor posicional, leitura, escrita, comparação e ordenação.'},
+        {code:'EF06MA01',title:'Revisão: composição e decomposição de naturais',sim:'reta',tag:'num',
+         desc:'Recompor e decompor números em ordens e classes. Estratégias aditivas e multiplicativas.'},
+        {code:'EF06MA03',title:'Revisão: adição e subtração com naturais',sim:'operacoes',tag:'num',
+         desc:'Revisão de adição e subtração com resolução de problemas de maior complexidade.'},
+        {code:'EF06MA03',title:'Revisão: multiplicação com naturais',sim:'operacoes',tag:'num',
+         desc:'Revisão de multiplicação com naturais: propriedades e situações-problema variadas.'},
+        {code:'EF06MA03',title:'Revisão: divisão com naturais',sim:'operacoes',tag:'num',
+         desc:'Revisão de divisão exata e com resto, algoritmo e problemas de partilha.'},
+        {code:'EF06MA03',title:'Revisão: multiplicações e divisões para resolver problemas',sim:'operacoes',tag:'num',
+         desc:'Revisão de multiplicação e divisão integrando estratégias e propriedades das operações.'},
+        {code:'EF06MA06',title:'Revisão: múltiplos e divisores',sim:'multiplos',tag:'num',
+         desc:'Revisão de múltiplo, divisor, MMC e MDC com exercícios de aplicação crescente.'},
+        {code:'EF06MA06',title:'Revisão: critérios de divisibilidade',sim:'multiplos',tag:'num',
+         desc:'Revisão dos critérios de divisibilidade por 2, 3, 4, 5, 6, 8, 9 e 10.'},
+        {code:'EF06MA06',title:'Revisão: múltiplos e divisores para resolver problemas',sim:'multiplos',tag:'num',
+         desc:'Revisão integradora de MMC, MDC, critérios de divisibilidade e fatoração em primos.'},
+        {code:'EF06MA03',title:'Revisão: operações fundamentais com naturais',sim:'operacoes',tag:'num',
+         desc:'Revisão geral integrando SND, as quatro operações, múltiplos e divisores com problemas.'},
       ]},
     ]
   },
 
-  // ─────────────── ENSINO MÉDIO ───────────────
+  // ═══════════════════════════════════════════════════
+  //  7º ANO
+  // ═══════════════════════════════════════════════════
+  ef7: {
+    label: '7º Ano',
+    bimestres: [
+      // ─── 1º Bimestre ─── Operações com Naturais
+      { num:1, sims:['operacoes','reta'], temas:[
+        {code:'EF07MA01',title:'Adição e subtração com números naturais',sim:'operacoes',tag:'num',
+         desc:'Resolver problemas de adição e subtração com naturais em contextos cotidianos variados.'},
+        {code:'EF07MA01',title:'Multiplicação com naturais – Parte 1',sim:'operacoes',tag:'num',
+         desc:'Resolver problemas de multiplicação com naturais. Estratégias de cálculo e estimativas.'},
+        {code:'EF07MA01',title:'Multiplicação com naturais – Parte 2',sim:'operacoes',tag:'num',
+         desc:'Aprofundar a multiplicação com naturais. Problemas de proporcionalidade direta simples.'},
+        {code:'EF07MA01',title:'Problemas com operações fundamentais',sim:'operacoes',tag:'num',
+         desc:'Resolver problemas envolvendo as quatro operações com naturais de forma integrada.'},
+        {code:'EF07MA01',title:'Revisão: multiplicação e múltiplos de naturais',sim:'operacoes',tag:'num',
+         desc:'Revisão de multiplicação e múltiplos como base para os números inteiros e racionais.'},
+        {code:'EF07MA01',title:'Divisão com naturais – Parte 1',sim:'operacoes',tag:'num',
+         desc:'Resolver problemas de divisão exata e com resto. Relação entre divisão e subtração repetida.'},
+        {code:'EF07MA01',title:'Divisão com naturais – Parte 2',sim:'operacoes',tag:'num',
+         desc:'Divisão com quociente decimal. Problemas de repartição e partilha equitativa.'},
+        {code:'EF07MA01',title:'Problemas com multiplicação e divisão de naturais',sim:'operacoes',tag:'num',
+         desc:'Resolver e elaborar problemas integrando multiplicação e divisão com naturais.'},
+        {code:'EF07MA01',title:'Verificação: operações fundamentais',sim:'operacoes',tag:'num',
+         desc:'Avaliação formativa sobre as quatro operações com números naturais.'},
+        {code:'EF07MA01',title:'Revisão: divisão com números naturais',sim:'operacoes',tag:'num',
+         desc:'Revisão integradora de divisão com naturais: algoritmo, resto e problemas cotidianos.'},
+      ]},
+      // ─── 2º Bimestre ─── Números Inteiros
+      { num:2, sims:['reta','operacoes'], temas:[
+        {code:'EF07MA02',title:'Números inteiros no cotidiano',sim:'reta',tag:'num',
+         desc:'Reconhecer e usar inteiros em contextos reais: temperatura, saldo, altitude. Reta numérica.'},
+        {code:'EF07MA02',title:'Representação e comparação de inteiros',sim:'reta',tag:'num',
+         desc:'Representar inteiros na reta numérica. Comparar e ordenar números positivos e negativos.'},
+        {code:'EF07MA03',title:'Adição e subtração com inteiros',sim:'operacoes',tag:'num',
+         desc:'Calcular adição e subtração com inteiros. Regra dos sinais. Problemas contextualizados.'},
+        {code:'EF07MA03',title:'Problemas com adição e subtração de inteiros',sim:'operacoes',tag:'num',
+         desc:'Resolver situações-problema envolvendo adição e subtração de números inteiros.'},
+        {code:'EF07MA03',title:'Revisão: adição e subtração com inteiros',sim:'operacoes',tag:'num',
+         desc:'Consolidar adição e subtração de inteiros com exercícios variados e contextualizados.'},
+        {code:'EF07MA04',title:'Multiplicação com inteiros',sim:'operacoes',tag:'num',
+         desc:'Multiplicação de inteiros: regra dos sinais (+·+=+; +·−=−; −·−=+). Propriedades.'},
+        {code:'EF07MA04',title:'Divisão com inteiros',sim:'operacoes',tag:'num',
+         desc:'Divisão de inteiros: regra dos sinais. Relação entre multiplicação e divisão com inteiros.'},
+        {code:'EF07MA04',title:'Problemas com multiplicação e divisão de inteiros',sim:'operacoes',tag:'num',
+         desc:'Resolver problemas envolvendo multiplicação e divisão de números inteiros.'},
+        {code:'EF07MA04',title:'Verificação: operações com inteiros',sim:'operacoes',tag:'num',
+         desc:'Avaliação formativa sobre representação, comparação e operações com inteiros.'},
+        {code:'EF07MA04',title:'Revisão: multiplicação e divisão com inteiros',sim:'operacoes',tag:'num',
+         desc:'Revisão integradora das quatro operações com inteiros. Expressões numéricas com inteiros.'},
+      ]},
+      // ─── 3º Bimestre ─── Frações
+      { num:3, sims:['fracao_chocolate','fracao_pizza','fracao_bolo','fracao_torta'], temas:[
+        {code:'EF07MA06',title:'O que é uma fração?',sim:'fracao_chocolate',tag:'num',
+         desc:'Conceito de fração como parte de um todo e como quociente. Representação e nomenclatura.'},
+        {code:'EF07MA06',title:'Ampliação da compreensão sobre frações – Parte 1',sim:'fracao_pizza',tag:'num',
+         desc:'Frações equivalentes. Simplificação. Representação na reta numérica.'},
+        {code:'EF07MA06',title:'Ampliação da compreensão sobre frações – Parte 2',sim:'fracao_torta',tag:'num',
+         desc:'Comparação de frações. Número misto. Frações impróprias. Relação fração–decimal.'},
+        {code:'EF07MA07',title:'Resolução de problemas com frações',sim:'fracao_bolo',tag:'num',
+         desc:'Calcular a fração de uma quantidade. Resolver problemas com frações em contextos reais.'},
+        {code:'EF07MA07',title:'Revisão: adição e subtração de frações de mesmo denominador',sim:'fracao_torta',tag:'num',
+         desc:'Rever adição e subtração de frações com denominadores iguais. Problemas contextualizados.'},
+        {code:'EF07MA08',title:'Adição e subtração de frações com denominadores diferentes',sim:'fracao_pizza',tag:'num',
+         desc:'Calcular MMC para igualar denominadores. Resolver adição e subtração de frações quaisquer.'},
+        {code:'EF07MA09',title:'Multiplicação e divisão de frações',sim:'fracao_chocolate',tag:'num',
+         desc:'Multiplicação de frações: numerador×numerador, denominador×denominador. Divisão: inverso.'},
+        {code:'EF07MA09',title:'Problemas com operações com frações',sim:'fracao_bolo',tag:'num',
+         desc:'Resolver e elaborar problemas envolvendo as quatro operações com frações.'},
+        {code:'EF07MA09',title:'Verificação: operações com frações',sim:'fracao_torta',tag:'num',
+         desc:'Avaliação formativa sobre frações: equivalência, comparação e as quatro operações.'},
+        {code:'EF07MA09',title:'Revisão: multiplicação e divisão de frações',sim:'fracao_pizza',tag:'num',
+         desc:'Revisão integradora de multiplicação e divisão de frações com problemas aplicados.'},
+      ]},
+      // ─── 4º Bimestre ─── Revisões Integradas
+      { num:4, sims:['fracao_chocolate','fracao_pizza','fracao_bolo','fracao_torta','operacoes'], temas:[
+        {code:'EF07MA01',title:'Revisão: adição e subtração com números naturais',sim:'operacoes',tag:'num',
+         desc:'Retomada de adição e subtração com naturais em contextos de maior complexidade.'},
+        {code:'EF07MA01',title:'Revisão: multiplicação com naturais',sim:'operacoes',tag:'num',
+         desc:'Retomada da multiplicação com naturais. Estratégias e problemas de proporcionalidade.'},
+        {code:'EF07MA01',title:'Revisão: operações com números naturais',sim:'operacoes',tag:'num',
+         desc:'Retomada das quatro operações com naturais com problemas de complexidade crescente.'},
+        {code:'EF07MA02',title:'Revisão: números inteiros na reta numérica',sim:'operacoes',tag:'num',
+         desc:'Revisão da representação e comparação de inteiros positivos e negativos na reta.'},
+        {code:'EF07MA04',title:'Revisão: operações com números inteiros',sim:'operacoes',tag:'num',
+         desc:'Revisão de adição, subtração, multiplicação e divisão com inteiros. Expressões numéricas.'},
+        {code:'EF07MA06',title:'Revisão: conceito de fração',sim:'fracao_pizza',tag:'num',
+         desc:'Revisão de frações equivalentes, simplificação e representação na reta numérica.'},
+        {code:'EF07MA08',title:'Revisão: adição e subtração de frações',sim:'fracao_chocolate',tag:'num',
+         desc:'Revisão de adição e subtração com frações de denominadores iguais e diferentes.'},
+        {code:'EF07MA09',title:'Revisão: multiplicação e divisão de frações',sim:'fracao_bolo',tag:'num',
+         desc:'Revisão de multiplicação e divisão de frações com problemas integrados.'},
+        {code:'EF07MA09',title:'Revisão: operações fundamentais com frações',sim:'fracao_torta',tag:'num',
+         desc:'Revisão geral integrando naturais, inteiros e frações com problemas de contexto real.'},
+        {code:'EF07MA09',title:'Revisão final: naturais, inteiros e frações',sim:'fracao_pizza',tag:'num',
+         desc:'Revisão integradora de naturais, inteiros e frações preparando para o 8º ano.'},
+      ]},
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════
+  //  8º ANO
+  // ═══════════════════════════════════════════════════
+  ef8: {
+    label: '8º Ano',
+    bimestres: [
+      // ─── 1º Bimestre ─── Racionais
+      { num:1, sims:['fracao_bolo','fracao_chocolate','fracao_pizza','fracao_torta','operacoes','potencia'], temas:[
+        {code:'EF08MA01',title:'Números racionais no cotidiano',sim:'fracao_bolo',tag:'num',
+         desc:'Reconhecer racionais em situações cotidianas: porcentagem, escala, medidas, finanças.'},
+        {code:'EF08MA01',title:'Problemas com adição e subtração de racionais',sim:'fracao_pizza',tag:'num',
+         desc:'Resolver situações-problema com adição e subtração de decimais e frações.'},
+        {code:'EF08MA01',title:'Problemas com multiplicação e divisão de inteiros',sim:'operacoes',tag:'num',
+         desc:'Ampliar o trabalho com inteiros: multiplicação e divisão em contextos aplicados.'},
+        {code:'EF08MA01',title:'Problemas com as quatro operações com racionais',sim:'fracao_chocolate',tag:'num',
+         desc:'Resolver problemas integrando adição, subtração, multiplicação e divisão de racionais.'},
+        {code:'EF08MA01',title:'Revisão: adição e subtração com decimais',sim:'operacoes',tag:'num',
+         desc:'Consolidar adição e subtração com decimais. Alinhamento da vírgula e estimativas.'},
+        {code:'EF08MA02',title:'Problemas com multiplicação de racionais',sim:'fracao_torta',tag:'num',
+         desc:'Multiplicar racionais decimais e fracionários. Propriedades e problemas aplicados.'},
+        {code:'EF08MA02',title:'Problemas com multiplicação e divisão de racionais – Parte 1',sim:'fracao_bolo',tag:'num',
+         desc:'Resolver situações com multiplicação e divisão de racionais em frações e decimais.'},
+        {code:'EF08MA02',title:'Problemas com multiplicação e divisão de racionais – Parte 2',sim:'fracao_pizza',tag:'num',
+         desc:'Aprofundar multiplicação e divisão de racionais com problemas de escalas e contexto real.'},
+        {code:'EF08MA02',title:'Verificação: operações fundamentais com racionais',sim:'fracao_torta',tag:'num',
+         desc:'Avaliação formativa sobre as quatro operações com números racionais.'},
+        {code:'EF08MA02',title:'Revisão: multiplicação e divisão com fracionários',sim:'fracao_chocolate',tag:'num',
+         desc:'Revisão integradora de multiplicação e divisão com racionais: frações e decimais.'},
+      ]},
+      // ─── 2º Bimestre ─── Potenciação
+      { num:2, sims:['potencia','operacoes'], temas:[
+        {code:'EF08MA03',title:'Potências no cotidiano',sim:'potencia',tag:'num',
+         desc:'Reconhecer potências em situações reais: notação científica, área, volume, computação.'},
+        {code:'EF08MA03',title:'Potências com base racional e expoente natural',sim:'potencia',tag:'num',
+         desc:'Calcular potências com base racional e expoente natural. Potência de fração e decimal.'},
+        {code:'EF08MA03',title:'Propriedades das potências com expoente natural',sim:'potencia',tag:'num',
+         desc:'Produto e quociente de potências de mesma base. Potência de potência. Verificação.'},
+        {code:'EF08MA03',title:'Problemas com potências – Parte 1',sim:'potencia',tag:'num',
+         desc:'Resolver problemas contextualizados envolvendo potenciação com expoente natural.'},
+        {code:'EF08MA03',title:'Revisão: potenciação com números racionais',sim:'potencia',tag:'num',
+         desc:'Consolidar potenciação com base racional e suas propriedades. Exercícios variados.'},
+        {code:'EF08MA03',title:'Potências com base racional e expoente inteiro',sim:'potencia',tag:'num',
+         desc:'Estender a potenciação para expoentes inteiros negativos. Relação com fração e decimal.'},
+        {code:'EF08MA03',title:'Propriedades das potências com expoente inteiro',sim:'potencia',tag:'num',
+         desc:'Ampliar as propriedades para expoentes inteiros. Notação científica com expoente negativo.'},
+        {code:'EF08MA03',title:'Problemas com potências – Parte 2',sim:'potencia',tag:'num',
+         desc:'Resolver problemas com potências de expoente inteiro: notação científica e contextos reais.'},
+        {code:'EF08MA03',title:'Verificação: potenciação e suas propriedades',sim:'potencia',tag:'num',
+         desc:'Avaliação formativa sobre potenciação com expoentes naturais e inteiros.'},
+        {code:'EF08MA03',title:'Revisão: propriedades da potenciação',sim:'potencia',tag:'num',
+         desc:'Revisão integradora das propriedades da potenciação com racionais e inteiros.'},
+      ]},
+      // ─── 3º Bimestre ─── Radiciação
+      { num:3, sims:['potencia','pitagoras'], temas:[
+        {code:'EF08MA04',title:'Raízes quadradas no cotidiano',sim:'potencia',tag:'num',
+         desc:'Reconhecer raízes em situações reais: área de quadrado, Pitágoras, escalas.'},
+        {code:'EF08MA04',title:'Radiciação com números racionais',sim:'potencia',tag:'num',
+         desc:'Calcular raízes de números racionais. Raiz exata e não exata. Aproximações.'},
+        {code:'EF08MA04',title:'Raízes como potências de expoentes fracionários',sim:'potencia',tag:'num',
+         desc:'Relação entre raiz e potência fracionária: √a = a^(1/2). Generalização para ⁿ√.'},
+        {code:'EF08MA04',title:'Problemas com radiciação de racionais',sim:'potencia',tag:'num',
+         desc:'Resolver problemas contextualizados envolvendo raízes quadradas e cúbicas.'},
+        {code:'EF08MA04',title:'Revisão: radiciação',sim:'potencia',tag:'num',
+         desc:'Consolidar radiciação: raízes exatas, aproximadas e relação com potenciação.'},
+        {code:'EF08MA04',title:'Propriedades dos radicais',sim:'potencia',tag:'num',
+         desc:'Produto e quociente de radicais de mesmo índice. Simplificação de radicais.'},
+        {code:'EF08MA04',title:'Estratégias de cálculo para radiciação',sim:'potencia',tag:'num',
+         desc:'Racionalizar denominadores. Simplificar radicais. Calcular √ de produtos e quocientes.'},
+        {code:'EF08MA04',title:'Problemas com estratégias de cálculo em radiciação',sim:'pitagoras',tag:'num',
+         desc:'Resolver problemas geométricos e algébricos usando propriedades dos radicais.'},
+        {code:'EF08MA04',title:'Verificação: radiciação com racionais',sim:'potencia',tag:'num',
+         desc:'Avaliação formativa sobre radiciação: propriedades, cálculo e problemas aplicados.'},
+        {code:'EF08MA04',title:'Revisão: estratégias de cálculo em radiciação',sim:'potencia',tag:'num',
+         desc:'Revisão integradora de potenciação e radiciação com problemas de maior complexidade.'},
+      ]},
+      // ─── 4º Bimestre ─── Revisões Integradas
+      { num:4, sims:['potencia','operacoes','semelhanca'], temas:[
+        {code:'EF08MA01',title:'Revisão: operações com números racionais',sim:'operacoes',tag:'num',
+         desc:'Retomada das quatro operações com racionais em contextos de maior complexidade.'},
+        {code:'EF08MA02',title:'Revisão: multiplicação e divisão de racionais',sim:'operacoes',tag:'num',
+         desc:'Revisão aprofundada de multiplicação e divisão com racionais. Problemas integrados.'},
+        {code:'EF08MA03',title:'Revisão: potenciação com naturais',sim:'potencia',tag:'num',
+         desc:'Revisão de potências com expoente natural: bases racionais e propriedades.'},
+        {code:'EF08MA03',title:'Revisão: multiplicação e potenciação com racionais',sim:'potencia',tag:'num',
+         desc:'Revisão aprofundada de multiplicação e potenciação com racionais. Problemas integrados.'},
+        {code:'EF08MA04',title:'Revisão: radiciação com racionais',sim:'potencia',tag:'num',
+         desc:'Revisão de radiciação: raízes, propriedades e relação com potências fracionárias.'},
+        {code:'EF08MA03',title:'Revisão: potenciação e radiciação com racionais',sim:'potencia',tag:'num',
+         desc:'Revisão integrada de potenciação e radiciação com expressões e problemas contextuais.'},
+        {code:'EF08MA04',title:'Revisão: estratégias de cálculo em radiciação',sim:'potencia',tag:'num',
+         desc:'Revisão de racionalização, simplificação de radicais e cálculos com raízes.'},
+        {code:'EF08MA14',title:'Revisão: triângulos semelhantes',sim:'semelhanca',tag:'geo',
+         desc:'Introdução à semelhança de triângulos como conexão com Pitágoras e proporcionalidade.'},
+        {code:'EF08MA03',title:'Revisão: operações com racionais',sim:'operacoes',tag:'num',
+         desc:'Revisão geral de racionais, potenciação, radiciação e propriedades para o 9º ano.'},
+        {code:'EF08MA04',title:'Revisão final: potenciação, radiciação e semelhança',sim:'potencia',tag:'num',
+         desc:'Revisão integradora de todo o conteúdo do 8º ano com problemas nível de aprofundamento.'},
+      ]},
+    ]
+  },
+
+  // ═══════════════════════════════════════════════════
+  //  9º ANO
+  // ═══════════════════════════════════════════════════
+  ef9: {
+    label: '9º Ano',
+    bimestres: [
+      // ─── 1º Bimestre ─── Racionais e Potenciação
+      { num:1, sims:['decimal','potencia','operacoes'], temas:[
+        {code:'EF09MA03',title:'Reconhecimento e comparação de racionais',sim:'decimal',tag:'num',
+         desc:'Comparar e ordenar racionais em diferentes representações: fração, decimal e porcentagem.'},
+        {code:'EF09MA03',title:'Multiplicação com números racionais',sim:'operacoes',tag:'num',
+         desc:'Multiplicar racionais com frações e decimais em contextos de proporcionalidade e escala.'},
+        {code:'EF09MA05',title:'Potenciação com números racionais',sim:'potencia',tag:'num',
+         desc:'Retomar e aprofundar potenciação com base racional. Expoente natural e inteiro.'},
+        {code:'EF09MA05',title:'Problemas com potenciação de racionais',sim:'potencia',tag:'num',
+         desc:'Resolver problemas contextualizados com potências: notação científica, área, volume.'},
+        {code:'EF09MA05',title:'Revisão: multiplicação e potenciação com racionais',sim:'potencia',tag:'num',
+         desc:'Consolidar multiplicação e potenciação de racionais. Expressões e problemas integrados.'},
+        {code:'EF09MA05',title:'Propriedades de potenciação – Parte 1',sim:'potencia',tag:'num',
+         desc:'Produto de potências de mesma base. Potência de potência. Verificação e aplicações.'},
+        {code:'EF09MA05',title:'Propriedades da potenciação – Parte 2',sim:'potencia',tag:'num',
+         desc:'Quociente de potências de mesma base. Potência de produto e quociente. Expoente zero.'},
+        {code:'EF09MA05',title:'Problemas com propriedades da potenciação',sim:'potencia',tag:'num',
+         desc:'Aplicar as propriedades da potenciação na resolução de equações e problemas reais.'},
+        {code:'EF09MA05',title:'Verificação: potenciação com racionais',sim:'potencia',tag:'num',
+         desc:'Avaliação formativa sobre potenciação: cálculo, propriedades e aplicações.'},
+        {code:'EF09MA05',title:'Revisão: propriedades da potenciação',sim:'potencia',tag:'num',
+         desc:'Revisão integradora de potenciação com racionais e todas as suas propriedades.'},
+      ]},
+      // ─── 2º Bimestre ─── Radiciação
+      { num:2, sims:['potencia','pitagoras'], temas:[
+        {code:'EF09MA05',title:'Radiciação com números racionais',sim:'potencia',tag:'num',
+         desc:'Calcular raízes quadradas e cúbicas de racionais. Raízes exatas e aproximações.'},
+        {code:'EF09MA05',title:'Raízes como potências de expoentes fracionários',sim:'potencia',tag:'num',
+         desc:'Generalizar: ⁿ√a = a^(1/n). Operar com potências fracionárias.'},
+        {code:'EF09MA05',title:'Propriedades dos radicais',sim:'potencia',tag:'num',
+         desc:'Produto, quociente e potência de radicais. Simplificação e racionalização.'},
+        {code:'EF09MA05',title:'Problemas com radiciação de racionais',sim:'potencia',tag:'num',
+         desc:'Resolver problemas geométricos e científicos com raízes quadradas e cúbicas.'},
+        {code:'EF09MA05',title:'Revisão: radiciação e propriedades dos radicais',sim:'potencia',tag:'num',
+         desc:'Consolidar radiciação: propriedades, simplificação e relação com potenciação.'},
+        {code:'EF09MA05',title:'Estratégias de cálculo para radiciação – Parte 1',sim:'potencia',tag:'num',
+         desc:'Decompor radicandos em fatores primos. Simplificar radicais de forma eficiente.'},
+        {code:'EF09MA05',title:'Estratégias de cálculo para radiciação – Parte 2',sim:'potencia',tag:'num',
+         desc:'Racionalização de denominadores. Soma e subtração de radicais semelhantes.'},
+        {code:'EF09MA05',title:'Problemas com estratégias de cálculo em radiciação',sim:'pitagoras',tag:'num',
+         desc:'Aplicar estratégias de radiciação em problemas geométricos (Teorema de Pitágoras).'},
+        {code:'EF09MA05',title:'Verificação: radiciação com racionais',sim:'potencia',tag:'num',
+         desc:'Avaliação formativa sobre radiciação: propriedades, cálculos e problemas aplicados.'},
+        {code:'EF09MA05',title:'Revisão: estratégias de cálculo em radiciação',sim:'potencia',tag:'num',
+         desc:'Revisão integradora de radiciação e conexão com potenciação e geometria.'},
+      ]},
+      // ─── 3º Bimestre ─── Semelhança de Triângulos e Teorema de Tales
+      { num:3, sims:['semelhanca','pitagoras'], temas:[
+        {code:'EF09MA01',title:'Características dos triângulos',sim:'pitagoras',tag:'geo',
+         desc:'Classificar triângulos por lados e ângulos. Soma dos ângulos internos. Desigualdade triangular.'},
+        {code:'EF09MA01',title:'Explorando triângulos semelhantes',sim:'semelhanca',tag:'geo',
+         desc:'Reconhecer triângulos semelhantes. Razão de semelhança. Figuras proporcionais.'},
+        {code:'EF09MA01',title:'Critérios de semelhança de triângulos',sim:'semelhanca',tag:'geo',
+         desc:'Critérios AA, LAL e LLL para semelhança. Verificação e demonstração informal.'},
+        {code:'EF09MA01',title:'Problemas com semelhança de triângulos – Parte 1',sim:'semelhanca',tag:'geo',
+         desc:'Resolver problemas de altura, sombra e escala usando semelhança de triângulos.'},
+        {code:'EF09MA01',title:'Revisão: semelhança de triângulos – Parte 1',sim:'semelhanca',tag:'geo',
+         desc:'Consolidar critérios de semelhança e razão de semelhança com exercícios variados.'},
+        {code:'EF09MA02',title:'Modelagem geométrica com triângulos semelhantes',sim:'semelhanca',tag:'geo',
+         desc:'Modelar situações reais com triângulos semelhantes: espelho, sombra, medição indireta.'},
+        {code:'EF09MA02',title:'Semelhança de triângulos e Teorema de Tales',sim:'semelhanca',tag:'geo',
+         desc:'Relacionar semelhança com o Teorema de Tales: feixes de paralelas e transversais.'},
+        {code:'EF09MA02',title:'Problemas com semelhança de triângulos – Parte 2',sim:'semelhanca',tag:'geo',
+         desc:'Resolver problemas de maior complexidade com semelhança e Teorema de Tales.'},
+        {code:'EF09MA02',title:'Verificação: semelhança de triângulos',sim:'semelhanca',tag:'geo',
+         desc:'Avaliação formativa sobre semelhança de triângulos e Teorema de Tales.'},
+        {code:'EF09MA02',title:'Revisão: semelhança de triângulos – Parte 2',sim:'semelhanca',tag:'geo',
+         desc:'Revisão integradora de semelhança e Tales com problemas de medição indireta.'},
+      ]},
+      // ─── 4º Bimestre ─── Revisões Integradas
+      { num:4, sims:['potencia','semelhanca','pitagoras'], temas:[
+        {code:'EF09MA05',title:'Revisão: multiplicação e potenciação com racionais',sim:'potencia',tag:'num',
+         desc:'Revisão aprofundada de potenciação com racionais. Problemas integradores.'},
+        {code:'EF09MA05',title:'Revisão: radiciação com racionais',sim:'potencia',tag:'num',
+         desc:'Revisão de raízes: propriedades, cálculo e conexão com potências fracionárias.'},
+        {code:'EF09MA05',title:'Revisão: propriedades da potenciação',sim:'potencia',tag:'num',
+         desc:'Revisão das propriedades de produto, quociente e potência de potência.'},
+        {code:'EF09MA05',title:'Revisão: potenciação e radiciação com racionais',sim:'potencia',tag:'num',
+         desc:'Revisão integrada de potenciação e radiciação com expressões e problemas contextuais.'},
+        {code:'EF09MA05',title:'Revisão: estratégias de cálculo em radiciação',sim:'potencia',tag:'num',
+         desc:'Revisão de racionalização, simplificação de radicais e cálculos avançados.'},
+        {code:'EF09MA01',title:'Revisão: características dos triângulos',sim:'pitagoras',tag:'geo',
+         desc:'Revisão de classificação, ângulos e desigualdade triangular.'},
+        {code:'EF09MA02',title:'Revisão: critérios de semelhança de triângulos',sim:'semelhanca',tag:'geo',
+         desc:'Revisão dos critérios AA, LAL e LLL com exercícios aplicados.'},
+        {code:'EF09MA02',title:'Revisão: triângulos semelhantes',sim:'semelhanca',tag:'geo',
+         desc:'Revisão de semelhança de triângulos e Teorema de Tales com questões SARESP/ENEM.'},
+        {code:'EF09MA02',title:'Revisão: Teorema de Tales',sim:'semelhanca',tag:'geo',
+         desc:'Revisão do Teorema de Tales: feixes de paralelas e aplicações em medição indireta.'},
+        {code:'EF09MA02',title:'Revisão final: semelhança, Tales e Pitágoras',sim:'semelhanca',tag:'geo',
+         desc:'Revisão final: semelhança, Tales e Pitágoras integrados com problemas de contexto real.'},
+      ]},
+    ]
+  },
+
   em1: {
     label: '1ª EM',
     bimestres: [
@@ -962,9 +1253,15 @@ const CURRICULO = {
       ]},
       { num:4, sims:['afim','sistema','quadratica','graficos'], temas:[
         {code:'EM1-A25',title:'Revisão: equações do 1º grau – problemas',sim:'sistema',tag:'alg',desc:'Retomada aprofundada de equações lineares com problemas de maior complexidade.'},
-        {code:'EM1-A26',title:'Revisão: conceito de função',sim:'afim',tag:'alg',desc:'Consolidação dos conceitos de função: domínio, imagem e representações.'},
-        {code:'EM1-A27',title:'Revisão: função afim',sim:'afim',tag:'alg',desc:'Síntese dos conceitos da função afim: coeficientes, gráfico e zeros.'},
-        {code:'EM1-A28',title:'Revisão final: função afim',sim:'afim',tag:'alg',desc:'Revisão geral integrando equações, grandezas, funções e função afim com aplicações.'},
+        {code:'EM1-A26',title:'Revisão: modelagem com equações do 1º grau',sim:'sistema',tag:'alg',desc:'Revisão de modelagem algébrica: consecutivos, idades, misturas e geometria.'},
+        {code:'EM1-A27',title:'Revisão: grandezas proporcionais',sim:'afim',tag:'alg',desc:'Revisão de proporcionalidade direta e inversa. Regra de três simples e composta.'},
+        {code:'EM1-A28',title:'Revisão: conceito de função',sim:'afim',tag:'alg',desc:'Consolidação dos conceitos de função: domínio, imagem e representações.'},
+        {code:'EM1-A29',title:'Revisão: representação de funções',sim:'afim',tag:'alg',desc:'Revisão de tabela, diagrama, expressão algébrica e gráfico de funções.'},
+        {code:'EM1-A30',title:'Revisão: função afim – coeficientes',sim:'afim',tag:'alg',desc:'Revisão dos coeficientes angular e linear. Crescimento, decrescimento e constância.'},
+        {code:'EM1-A31',title:'Revisão: gráfico da função afim',sim:'afim',tag:'alg',desc:'Revisão do gráfico da reta: inclinação, intercepto e cruzamento com os eixos.'},
+        {code:'EM1-A32',title:'Revisão: função afim – zero e problemas',sim:'afim',tag:'alg',desc:'Revisão do zero da função afim e resolução de problemas contextualizados.'},
+        {code:'EM1-A33',title:'Revisão: função afim',sim:'afim',tag:'alg',desc:'Síntese dos conceitos da função afim: coeficientes, gráfico e zeros.'},
+        {code:'EM1-A34',title:'Revisão final: função afim',sim:'afim',tag:'alg',desc:'Revisão geral integrando equações, grandezas, funções e função afim com aplicações.'},
       ]},
     ]
   },
@@ -1002,10 +1299,16 @@ const CURRICULO = {
         {code:'EM2-A24',title:'Verificação: função logarítmica',sim:'funcao_log',tag:'alg',desc:'Avaliação formativa sobre gráfico, domínio e aplicações da função logarítmica.'},
       ]},
       { num:4, sims:['exponencial','logaritmo','funcao_log','exp_log_dual'], temas:[
-        {code:'EM2-A25',title:'Revisão: função exponencial',sim:'exponencial',tag:'alg',desc:'Síntese dos conceitos da função exponencial para nivelamento pré-simulado.'},
-        {code:'EM2-A26',title:'Revisão: logaritmos',sim:'logaritmo',tag:'alg',desc:'Revisão das propriedades, equações e cálculos com logaritmos.'},
-        {code:'EM2-A27',title:'Revisão: função logarítmica',sim:'funcao_log',tag:'alg',desc:'Revisão do gráfico, domínio, crescimento e aplicações da função logarítmica.'},
-        {code:'EM2-A28',title:'Revisão final: exponencial e logarítmica',sim:'exp_log_dual',tag:'alg',desc:'Revisão integrada de exponencial e logarítmica com problemas nível ENEM/vestibular.'},
+        {code:'EM2-A25',title:'Revisão: equações exponenciais',sim:'exponencial',tag:'alg',desc:'Revisão de equações exponenciais com base na igualdade de potências.'},
+        {code:'EM2-A26',title:'Revisão: função exponencial',sim:'exponencial',tag:'alg',desc:'Síntese dos conceitos da função exponencial para nivelamento pré-simulado.'},
+        {code:'EM2-A27',title:'Revisão: gráfico da função exponencial',sim:'exponencial',tag:'alg',desc:'Revisão do comportamento gráfico de f(x)=aˣ: assíntota, crescimento e zeros.'},
+        {code:'EM2-A28',title:'Revisão: propriedades dos logaritmos',sim:'logaritmo',tag:'alg',desc:'Revisão das propriedades do produto, quociente e potência de logaritmos.'},
+        {code:'EM2-A29',title:'Revisão: logaritmos',sim:'logaritmo',tag:'alg',desc:'Revisão das propriedades, equações e cálculos com logaritmos.'},
+        {code:'EM2-A30',title:'Revisão: equações logarítmicas',sim:'logaritmo',tag:'alg',desc:'Revisão de equações logarítmicas com uso das propriedades para simplificação.'},
+        {code:'EM2-A31',title:'Revisão: aplicações de logaritmos',sim:'logaritmo',tag:'alg',desc:'Revisão de aplicações: escala Richter, decibéis e pH em problemas contextualizados.'},
+        {code:'EM2-A32',title:'Revisão: função logarítmica',sim:'funcao_log',tag:'alg',desc:'Revisão do gráfico, domínio, crescimento e aplicações da função logarítmica.'},
+        {code:'EM2-A33',title:'Revisão: dualidade exponencial e logarítmica',sim:'exp_log_dual',tag:'alg',desc:'Revisão da simetria entre funções inversas: aˣ e logₐ(x) com problemas integrados.'},
+        {code:'EM2-A34',title:'Revisão final: exponencial e logarítmica',sim:'exp_log_dual',tag:'alg',desc:'Revisão integrada de exponencial e logarítmica com problemas nível ENEM/vestibular.'},
       ]},
     ]
   },
@@ -1043,10 +1346,16 @@ const CURRICULO = {
         {code:'EM3-A24',title:'Verificação: cálculo de probabilidades',sim:'probabilidade',tag:'est',desc:'Avaliação formativa sobre todos os conceitos de probabilidade estudados.'},
       ]},
       { num:4, sims:['combinatoria','probabilidade','prob_condicional','prob_comb'], temas:[
-        {code:'EM3-A25',title:'Revisão: análise combinatória',sim:'combinatoria',tag:'alg',desc:'Revisão aprofundada de P, A e C com questões de ENEM e vestibulares.'},
-        {code:'EM3-A26',title:'Revisão: probabilidade – Parte 1',sim:'probabilidade',tag:'est',desc:'Revisão de probabilidade clássica, frequência relativa e propriedades.'},
-        {code:'EM3-A27',title:'Revisão: probabilidade – Parte 2',sim:'prob_condicional',tag:'est',desc:'Revisão de probabilidade condicional, multiplicação e eventos independentes.'},
-        {code:'EM3-A28',title:'Revisão final: combinatória e probabilidade',sim:'prob_comb',tag:'est',desc:'Revisão integrada: análise combinatória e probabilidade com simulados estilo ENEM.'},
+        {code:'EM3-A25',title:'Revisão: princípio multiplicativo da contagem',sim:'combinatoria',tag:'alg',desc:'Revisão do princípio fundamental da contagem com problemas de restrição.'},
+        {code:'EM3-A26',title:'Revisão: permutação e arranjo',sim:'permutacao',tag:'alg',desc:'Revisão de permutação simples e arranjo simples com questões ENEM/vestibular.'},
+        {code:'EM3-A27',title:'Revisão: combinação simples',sim:'combinacao',tag:'alg',desc:'Revisão de combinação C(n,p) e triângulo de Pascal com problemas aplicados.'},
+        {code:'EM3-A28',title:'Revisão: análise combinatória',sim:'combinatoria',tag:'alg',desc:'Revisão aprofundada de P, A e C com questões de ENEM e vestibulares.'},
+        {code:'EM3-A29',title:'Revisão: probabilidade clássica',sim:'probabilidade',tag:'est',desc:'Revisão de P(A) = n(A)/n(Ω) com espaços amostrais e eventos compostos.'},
+        {code:'EM3-A30',title:'Revisão: propriedades das probabilidades',sim:'prob_propriedades',tag:'est',desc:'Revisão das propriedades: complementar, impossível e certo.'},
+        {code:'EM3-A31',title:'Revisão: probabilidade – Parte 1',sim:'probabilidade',tag:'est',desc:'Revisão de probabilidade clássica, frequência relativa e propriedades.'},
+        {code:'EM3-A32',title:'Revisão: adição de probabilidades',sim:'prob_adicao',tag:'est',desc:'Revisão de P(A∪B) com e sem eventos mutuamente exclusivos.'},
+        {code:'EM3-A33',title:'Revisão: probabilidade – Parte 2',sim:'prob_condicional',tag:'est',desc:'Revisão de probabilidade condicional, multiplicação e eventos independentes.'},
+        {code:'EM3-A34',title:'Revisão final: combinatória e probabilidade',sim:'prob_comb',tag:'est',desc:'Revisão integrada: análise combinatória e probabilidade com simulados estilo ENEM.'},
       ]},
     ]
   },
@@ -1059,10 +1368,10 @@ const ef8_aes = CURRICULO.ef8.bimestres.flatMap(b => b.temas);
 const ef9_aes = CURRICULO.ef9.bimestres.flatMap(b => b.temas);
 
 const seriesData = {
-  ef6:{name:'6º Ano — EF',aes:ef6_aes,simuladores:['fracao','reta','multiplos','poligonos','triangulos','quadrilateros','angulos','decimal','operacoes','geometria3d'],arenaChallenges:gerarQ(6),quizBank:gerarQ(6)},
-  ef7:{name:'7º Ano — EF',aes:ef7_aes,simuladores:['decimal','reta','operacoes','analitica','potencia','pitagoras','sistema','fracao','graficos','geometria3d'],arenaChallenges:gerarQ(7),quizBank:gerarQ(7)},
-  ef8:{name:'8º Ano — EF',aes:ef8_aes,simuladores:['afim','sistema','analitica','operacoes','exponencial','pitagoras','quadratica','fracao','graficos','potencia'],arenaChallenges:gerarQ(8),quizBank:gerarQ(8)},
-  ef9:{name:'9º Ano — EF',aes:ef9_aes,simuladores:['pitagoras','semelhanca','decimal','reta','afim','potencia','analitica','exponencial','sistema','graficos'],arenaChallenges:gerarQ(9),quizBank:gerarQ(9)},
+  ef6:{name:'6º Ano — EF',aes:ef6_aes,simuladores:['fracao_chocolate','fracao_pizza','fracao_bolo','fracao_torta','reta','multiplos','poligonos','triangulos','quadrilateros','angulos','decimal','operacoes','geometria3d'],arenaChallenges:gerarQ(6),quizBank:gerarQ(6)},
+  ef7:{name:'7º Ano — EF',aes:ef7_aes,simuladores:['fracao_pizza','fracao_torta','decimal','reta','operacoes','analitica','potencia','pitagoras','sistema','graficos','geometria3d'],arenaChallenges:gerarQ(7),quizBank:gerarQ(7)},
+  ef8:{name:'8º Ano — EF',aes:ef8_aes,simuladores:['fracao_bolo','fracao_chocolate','afim','sistema','analitica','operacoes','exponencial','pitagoras','quadratica','graficos','potencia'],arenaChallenges:gerarQ(8),quizBank:gerarQ(8)},
+  ef9:{name:'9º Ano — EF',aes:ef9_aes,simuladores:['fracao_torta','fracao_pizza','pitagoras','semelhanca','decimal','reta','afim','potencia','analitica','exponencial','sistema','graficos'],arenaChallenges:gerarQ(9),quizBank:gerarQ(9)},
   em1:{name:'1ª EM',aes:CURRICULO.em1.bimestres.flatMap(b=>b.temas),simuladores:['afim','sistema','exponencial','quadratica','progressao','pitagoras','ciclo','graficos','analitica','trigonometria'],arenaChallenges:gerarQ_em1(),quizBank:gerarQ_em1()},
   em2:{name:'2ª EM',aes:CURRICULO.em2.bimestres.flatMap(b=>b.temas),simuladores:['exponencial','logaritmo','funcao_log','graficos_exp','graficos_log','exp_log_dual','eq_logaritmica','logaritmo_aplic','exponencial_aplic','sistema'],arenaChallenges:gerarQ_em2(),quizBank:gerarQ_em2()},
   em3:{name:'3ª EM',aes:CURRICULO.em3.bimestres.flatMap(b=>b.temas),simuladores:['combinatoria','permutacao','arranjo','combinacao','probabilidade','espaco_amostral','prob_dados','prob_geometrica','prob_adicao','prob_condicional'],arenaChallenges:gerarQ_em3(),quizBank:gerarQ_em3()},
@@ -1219,9 +1528,15 @@ const simColors = {
   prob_multiplicacao:{bg:'#08080A', a:'#22C97A', b:'#4F8EF7', c:'#F5A623'},
   prob_comb:   {bg:'#080A08', a:'#22C97A', b:'#9B6FF7', c:'#F5A623'},
   prob_propriedades:{bg:'#080A18', a:'#4F8EF7', b:'#22C97A', c:'#F25C5C'},
+
+  // ── NOVOS SIMULADORES DE FRAÇÕES (contextos diversificados) ──
+  fracao_chocolate:{bg:'#1A0A00', a:'#8B4513', b:'#D2691E', c:'#F5A623'},
+  fracao_pizza:    {bg:'#0A0800', a:'#F25C5C', b:'#F5A623', c:'#22C97A'},
+  fracao_bolo:     {bg:'#0A0814', a:'#E879F9', b:'#9B6FF7', c:'#F5A623'},
+  fracao_torta:    {bg:'#080A08', a:'#22C97A', b:'#4F8EF7', c:'#F5A623'},
 };
 
-function gerarCanvasQuestao(canvasEl, temaSlug, qi) {
+function gerarCanvasQuestao(canvasEl, temaSlug, qi, tipoIdx = 0) {
   // Força dimensões explícitas antes de desenhar — evita canvas vazio
   canvasEl.style.height = '130px';
   const W = canvasEl.width  = Math.round(
@@ -1234,136 +1549,359 @@ function gerarCanvasQuestao(canvasEl, temaSlug, qi) {
   const ctx = canvasEl.getContext('2d');
   const col = simColors[temaSlug] || simColors.geometria3d;
 
+  // ── Paletas exclusivas por tipo de atividade ──────────────────
+  // 0=Resolução(azul), 1=Contextual(verde), 2=Investigativa(roxo),
+  // 3=Criativa(laranja/dourado), 4=Desafio(vermelho/âmbar)
+  const tipoOverlay = [
+    { accent:'#4F8EF7', accent2:'#22D3EE', bgTint:'rgba(79,142,247,0.07)'  }, // Resolução
+    { accent:'#22C97A', accent2:'#4F8EF7', bgTint:'rgba(34,201,122,0.07)'  }, // Contextual
+    { accent:'#9B6FF7', accent2:'#22D3EE', bgTint:'rgba(155,111,247,0.07)' }, // Investigativa
+    { accent:'#F5A623', accent2:'#E879F9', bgTint:'rgba(245,166,35,0.07)'  }, // Criativa
+    { accent:'#F25C5C', accent2:'#F5A623', bgTint:'rgba(242,92,92,0.07)'   }, // Desafio
+  ][tipoIdx] || { accent:'#4F8EF7', accent2:'#22D3EE', bgTint:'rgba(79,142,247,0.07)' };
+
+  // Fundo com tint do tipo
   ctx.fillStyle = col.bg;
   ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = tipoOverlay.bgTint;
+  ctx.fillRect(0, 0, W, H);
 
+  // Grade sutil
   ctx.strokeStyle = 'rgba(255,255,255,0.04)';
   ctx.lineWidth = 1;
   for (let x = 0; x < W; x += 28) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
   for (let y = 0; y < H; y += 28) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
 
-  const pat = qi % 8;
   const cx = W / 2, cy = H / 2;
 
-  if (pat === 0) {
-    ctx.strokeStyle = col.a; ctx.lineWidth = 2.5;
-    ctx.beginPath(); ctx.moveTo(40, cy); ctx.lineTo(W - 40, cy); ctx.stroke();
-    const step = (W - 80) / 10;
-    for (let i = 0; i <= 10; i++) {
-      const x = 40 + i * step;
-      ctx.beginPath(); ctx.moveTo(x, cy - 8); ctx.lineTo(x, cy + 8); ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1; ctx.stroke();
+  // ── Padrão visual indexado pelo tipo × qi ──────────────────────
+  // Cada tipo usa um conjunto de formas diferente para identidade visual
+  const a = tipoOverlay.accent, a2 = tipoOverlay.accent2;
+
+  if (tipoIdx === 0) {
+    // Resolução: ênfase em equações e cálculo — reta numérica, barras, grade cartesiana
+    const pat = qi % 4;
+    if (pat === 0) {
+      // Reta numérica com ponto destacado
+      ctx.strokeStyle = a; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.moveTo(30, cy); ctx.lineTo(W-30, cy); ctx.stroke();
+      const step = (W-60)/10;
+      for (let i=0;i<=10;i++){
+        const x=30+i*step;
+        ctx.beginPath(); ctx.moveTo(x,cy-7); ctx.lineTo(x,cy+7);
+        ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1; ctx.stroke();
+      }
+      const px=30+(4+qi%5)*step;
+      ctx.beginPath(); ctx.arc(px,cy,8,0,Math.PI*2); ctx.fillStyle=a+'AA'; ctx.fill();
+      ctx.beginPath(); ctx.arc(px,cy,5,0,Math.PI*2); ctx.fillStyle=a; ctx.fill();
+    } else if (pat === 1) {
+      // Barras de cálculo
+      const vals=[6,9,4,8,5].map(v=>v+(qi%3));
+      const bW=26,gap=10,baseY=H-24,maxV=Math.max(...vals);
+      vals.forEach((v,i)=>{
+        const x=32+i*(bW+gap);
+        const bh=(v/maxV)*(H-52);
+        const gr=ctx.createLinearGradient(x,baseY-bh,x,baseY);
+        gr.addColorStop(0,a); gr.addColorStop(1,a2+'88');
+        ctx.fillStyle=gr; ctx.beginPath(); ctx.roundRect(x,baseY-bh,bW,bh,3); ctx.fill();
+        ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.font='9px JetBrains Mono'; ctx.textAlign='center';
+        if(bh>10) ctx.fillText(v,x+bW/2,baseY-bh-4);
+      });
+      ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(25,H-24); ctx.lineTo(W-20,H-24); ctx.stroke();
+    } else if (pat === 2) {
+      // Grade cartesiana com ponto de função
+      ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx,0); ctx.lineTo(cx,H); ctx.stroke();
+      const slope=0.6+(qi%3)*0.3, inter=-20+qi*8;
+      ctx.strokeStyle=a; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.moveTo(0,cy-(slope*(0-cx)+inter));
+      ctx.lineTo(W,cy-(slope*(W-cx)+inter));
+      ctx.stroke();
+      const px2=cx+35,py2=cy-(slope*35+inter);
+      ctx.beginPath(); ctx.arc(px2,py2,5,0,Math.PI*2); ctx.fillStyle=a2; ctx.fill();
+    } else {
+      // Pizza (frações/divisão)
+      const n=3+(qi%4), filled=1+(qi%(n-1)), R=42;
+      for(let i=0;i<n;i++){
+        const s=-Math.PI/2+i*(2*Math.PI/n), e2=s+2*Math.PI/n;
+        ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,s,e2); ctx.closePath();
+        ctx.fillStyle=i<filled?a+'CC':'rgba(40,50,70,0.8)'; ctx.fill();
+        ctx.strokeStyle=col.bg; ctx.lineWidth=2; ctx.stroke();
+      }
+      ctx.fillStyle=a2; ctx.font='bold 13px JetBrains Mono';
+      ctx.textAlign='right'; ctx.fillText(`${filled}/${n}`,W-18,H-16); ctx.textAlign='left';
     }
-    const px = 40 + 6 * step;
-    ctx.beginPath(); ctx.arc(px, cy, 8, 0, Math.PI * 2);
-    ctx.fillStyle = col.a + 'AA'; ctx.fill();
-    ctx.beginPath(); ctx.arc(px, cy, 5, 0, Math.PI * 2);
-    ctx.fillStyle = col.a; ctx.fill();
-  } else if (pat === 1) {
-    const ox = 60, oy = H - 28, bx = W - 60, by = H - 28, tx = 60, ty = 28;
-    ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(bx, by); ctx.lineTo(tx, ty); ctx.closePath();
-    ctx.fillStyle = col.a + '22'; ctx.fill();
-    ctx.strokeStyle = col.a; ctx.lineWidth = 2; ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
-    ctx.strokeRect(ox, oy - 14, 14, 14);
-    ctx.fillStyle = col.b; ctx.font = 'bold 11px Space Grotesk';
-    ctx.fillText('a', ox - 18, (oy + ty) / 2);
-    ctx.fillText('b', (ox + bx) / 2 - 6, oy + 16);
-    ctx.fillStyle = col.c; ctx.fillText('c', (bx + tx) / 2 + 6, (by + ty) / 2);
-  } else if (pat === 2) {
-    const n = 4 + (qi % 3), filled = 1 + (qi % (n - 1));
-    const R = 44;
-    for (let i = 0; i < n; i++) {
-      const s = -Math.PI / 2 + i * (2 * Math.PI / n);
-      const e = s + 2 * Math.PI / n;
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, s, e); ctx.closePath();
-      ctx.fillStyle = i < filled ? col.a + 'CC' : 'rgba(40,50,70,0.8)'; ctx.fill();
-      ctx.strokeStyle = col.bg; ctx.lineWidth = 2; ctx.stroke();
-    }
-    ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2 * Math.PI);
-    ctx.strokeStyle = col.a + '66'; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.fillStyle = col.b; ctx.font = 'bold 14px JetBrains Mono';
-    ctx.textAlign = 'right'; ctx.fillText(`${filled}/${n}`, W - 20, H - 18); ctx.textAlign = 'left';
-  } else if (pat === 3) {
-    const vals = [4, 7, 5, 9, 6].map(v => v + (qi % 3));
-    const barW = 28, gap = 14, baseY = H - 28;
-    const maxV = Math.max(...vals);
-    vals.forEach((v, i) => {
-      const x = 38 + i * (barW + gap);
-      const bh = (v / maxV) * (H - 56);
-      const grad = ctx.createLinearGradient(x, baseY - bh, x, baseY);
-      grad.addColorStop(0, col.a); grad.addColorStop(1, col.b + '88');
-      ctx.fillStyle = grad; ctx.fillRect(x, baseY - bh, barW, bh);
-      ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '9px JetBrains Mono';
-      if (bh > 8) ctx.fillText(v, x + 8, baseY - bh - 4);
-    });
-    ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(30, H - 28); ctx.lineTo(W - 20, H - 28); ctx.stroke();
-  } else if (pat === 4) {
-    ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, H); ctx.stroke();
-    const a = 0.8 + (qi % 3) * 0.4, b = -30 + qi * 8;
-    ctx.strokeStyle = col.a; ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, cy - (a * (0 - cx) + b));
-    ctx.lineTo(W, cy - (a * (W - cx) + b));
-    ctx.stroke();
-    const px2 = cx + 40, py2 = cy - (a * 40 + b);
-    ctx.beginPath(); ctx.arc(px2, py2, 5, 0, Math.PI * 2);
-    ctx.fillStyle = col.b; ctx.fill();
-  } else if (pat === 5) {
-    const n2 = 3 + (qi % 6), R2 = 45;
-    ctx.beginPath();
-    for (let i = 0; i < n2; i++) {
-      const ang = -Math.PI / 2 + i * (2 * Math.PI / n2);
-      i === 0 ? ctx.moveTo(cx + R2 * Math.cos(ang), cy + R2 * Math.sin(ang))
-              : ctx.lineTo(cx + R2 * Math.cos(ang), cy + R2 * Math.sin(ang));
-    }
-    ctx.closePath();
-    ctx.fillStyle = col.c + '22'; ctx.fill();
-    ctx.strokeStyle = col.c; ctx.lineWidth = 2; ctx.stroke();
-    ctx.strokeStyle = col.c + '33'; ctx.lineWidth = 1;
-    for (let i = 0; i < n2; i++) {
-      for (let j = i + 2; j < n2 - (i === 0 ? 1 : 0); j++) {
-        const a1 = -Math.PI / 2 + i * (2 * Math.PI / n2);
-        const a2 = -Math.PI / 2 + j * (2 * Math.PI / n2);
-        ctx.beginPath(); ctx.moveTo(cx + R2 * Math.cos(a1), cy + R2 * Math.sin(a1));
-        ctx.lineTo(cx + R2 * Math.cos(a2), cy + R2 * Math.sin(a2)); ctx.stroke();
+
+  } else if (tipoIdx === 1) {
+    // Contextual: cenas do cotidiano — ícones geométricos simples representando objetos
+    const pat = qi % 4;
+    if (pat === 0) {
+      // "Prateleira de mercado" — retângulos empilhados representando caixas
+      const items=4+(qi%3);
+      const bW=Math.min(52,(W-40)/items-8), gap=8;
+      const total=items*(bW+gap)-gap, x0=(W-total)/2;
+      for(let i=0;i<items;i++){
+        const x=x0+i*(bW+gap), bh=30+Math.sin(i*1.2)*15;
+        ctx.fillStyle=i%2===0?a+'33':a2+'22';
+        ctx.beginPath(); ctx.roundRect(x,cy-bh/2,bW,bh,4); ctx.fill();
+        ctx.strokeStyle=i%2===0?a:a2; ctx.lineWidth=1.5; ctx.stroke();
+        ctx.fillStyle=i%2===0?a:a2; ctx.font='bold 10px JetBrains Mono'; ctx.textAlign='center';
+        ctx.fillText(`R$${2+i*3}`,x+bW/2,cy-bh/2-5);
+      }
+      // chão
+      ctx.strokeStyle='rgba(255,255,255,0.12)'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(x0-8,cy+25); ctx.lineTo(x0+total+8,cy+25); ctx.stroke();
+    } else if (pat === 1) {
+      // "Medição de distância" — reta com marcações de quilômetros
+      ctx.strokeStyle=a; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(28,cy); ctx.lineTo(W-28,cy); ctx.stroke();
+      // Setas nas pontas
+      [[28,1],[W-28,-1]].forEach(([x,d])=>{
+        ctx.beginPath(); ctx.moveTo(x,cy); ctx.lineTo(x+d*14,cy-7); ctx.lineTo(x+d*14,cy+7); ctx.closePath();
+        ctx.fillStyle=a; ctx.fill();
+      });
+      const seg=4, segW=(W-56)/seg;
+      for(let i=0;i<=seg;i++){
+        const x=28+i*segW;
+        ctx.strokeStyle=a2; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(x,cy-10); ctx.lineTo(x,cy+10); ctx.stroke();
+        ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font='bold 9px JetBrains Mono'; ctx.textAlign='center';
+        ctx.fillText(`${i*(5+qi%4)}km`,x,cy+22);
+      }
+    } else if (pat === 2) {
+      // "Gráfico de consumo/receita" — linhas de tendência
+      ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(40,10); ctx.lineTo(40,H-24); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(40,H-24); ctx.lineTo(W-10,H-24); ctx.stroke();
+      const pts=[0.2,0.5,0.4,0.8,0.6,0.9].map(v=>v+(qi%3)*0.05);
+      ctx.strokeStyle=a; ctx.lineWidth=2.5; ctx.beginPath();
+      pts.forEach((v,i)=>{
+        const x=40+i*(W-50)/5, y=H-24-(v*(H-40));
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+        ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fillStyle=a2; ctx.fill();
+        ctx.beginPath(); // reopen line
+        if(i>0){ const px=40+(i-1)*(W-50)/5, py=H-24-(pts[i-1]*(H-40));
+          ctx.moveTo(px,py); ctx.lineTo(x,y); ctx.strokeStyle=a; ctx.lineWidth=2.5; ctx.stroke(); }
+      });
+    } else {
+      // "Grupos de pessoas / divisão" — círculos agrupados
+      const grupos=2+(qi%3), porGrupo=2+(qi%3);
+      const gW=(W-40)/grupos;
+      for(let g=0;g<grupos;g++){
+        const gx=20+g*gW+gW/2;
+        ctx.strokeStyle=g%2===0?a:a2; ctx.lineWidth=1;
+        ctx.setLineDash([3,3]);
+        ctx.beginPath(); ctx.arc(gx,cy,gW*0.38,0,Math.PI*2); ctx.stroke();
+        ctx.setLineDash([]);
+        for(let p=0;p<porGrupo;p++){
+          const ang=(p/porGrupo)*Math.PI*2-Math.PI/2;
+          const r=gW*0.22;
+          const px=gx+r*Math.cos(ang), py=cy+r*Math.sin(ang);
+          ctx.beginPath(); ctx.arc(px,py,8,0,Math.PI*2);
+          ctx.fillStyle=g%2===0?a+'55':a2+'55'; ctx.fill();
+          ctx.strokeStyle=g%2===0?a:a2; ctx.lineWidth=1.5; ctx.stroke();
+        }
+        ctx.fillStyle=g%2===0?a:a2; ctx.font='bold 10px JetBrains Mono'; ctx.textAlign='center';
+        ctx.fillText(`G${g+1}`,gx,cy+gW*0.42);
       }
     }
-  } else if (pat === 6) {
-    ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(W, cy); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(60, 0); ctx.lineTo(60, H); ctx.stroke();
-    ctx.strokeStyle = col.a; ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    for (let px = 60; px <= W - 20; px++) {
-      const x = (px - 60) / 30;
-      const y = cy - Math.pow(1.4 + qi * 0.05, x) * 18;
-      px === 60 ? ctx.moveTo(px, y) : ctx.lineTo(px, Math.max(10, Math.min(H - 10, y)));
+
+  } else if (tipoIdx === 2) {
+    // Investigativa: padrões e sequências — visual de série / progressão
+    const pat = qi % 4;
+    if (pat === 0) {
+      // Sequência de pontos/quadrados crescendo
+      const n=5+(qi%3);
+      const maxSize=Math.min(28,(W-40)/(n+1));
+      const gap2=6, total2=n*(maxSize+gap2)-gap2, x0=(W-total2)/2;
+      for(let i=0;i<n;i++){
+        const sz=maxSize*(0.4+i*0.12);
+        const x=x0+i*(maxSize+gap2)+(maxSize-sz)/2;
+        const y=cy-sz/2;
+        ctx.fillStyle=i<n-1?a+'55':a; // último destacado
+        ctx.beginPath(); ctx.roundRect(x,y,sz,sz,3); ctx.fill();
+        ctx.strokeStyle=i<n-1?a+'88':a2; ctx.lineWidth=1.5; ctx.stroke();
+        ctx.fillStyle='rgba(255,255,255,0.6)'; ctx.font=`bold ${sz>16?9:7}px JetBrains Mono`; ctx.textAlign='center';
+        ctx.fillText(i<n-1?`${1+i*2}`:'?',x+sz/2,y+sz/2+3);
+      }
+    } else if (pat === 1) {
+      // Tabela de entradas e saídas (função)
+      const rows=4+(qi%2);
+      const colW=(W-40)/2, rowH=(H-24)/rows, x0=20;
+      ctx.fillStyle='rgba(255,255,255,0.06)'; ctx.fillRect(x0,12,colW,H-24);
+      ctx.fillStyle=a+'22'; ctx.fillRect(x0+colW,12,colW,H-24);
+      ['x','f(x)'].forEach((lbl,ci)=>{
+        ctx.fillStyle=ci===0?a:a2; ctx.font='bold 9px JetBrains Mono'; ctx.textAlign='center';
+        ctx.fillText(lbl,x0+ci*colW+colW/2,10);
+      });
+      for(let r=0;r<rows;r++){
+        const yy=12+r*rowH;
+        ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(x0,yy); ctx.lineTo(x0+2*colW,yy); ctx.stroke();
+        const xv=r+1, fv=r<rows-1?(2*xv+1):'?';
+        ctx.fillStyle=r<rows-1?'rgba(255,255,255,0.6)':a2; ctx.font=`bold ${r<rows-1?9:11}px JetBrains Mono`;
+        ctx.textAlign='center';
+        ctx.fillText(xv,x0+colW/2,yy+rowH/2+3);
+        ctx.fillText(fv,x0+colW+colW/2,yy+rowH/2+3);
+      }
+    } else if (pat === 2) {
+      // Espiral / caracol de padrão visual
+      ctx.strokeStyle=a; ctx.lineWidth=2;
+      ctx.beginPath();
+      for(let t=0;t<12*Math.PI;t+=0.05){
+        const r2=(t/(12*Math.PI))*48;
+        const x=cx+r2*Math.cos(t), y=cy+r2*Math.sin(t);
+        t===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+      // Pontos marcadores
+      for(let i=1;i<=4+(qi%3);i++){
+        const t=i*2*Math.PI, r2=(t/(12*Math.PI))*48;
+        const x=cx+r2*Math.cos(t), y=cy+r2*Math.sin(t);
+        ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fillStyle=i<4+(qi%3)?a2:a; ctx.fill();
+      }
+    } else {
+      // Grid de dots com padrão destacado
+      const cols=7, rows=4, dR=6, gX=(W-cols*(dR*2+8))/2, gY=(H-rows*(dR*2+8))/2;
+      for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+        const x=gX+c*(dR*2+8)+dR, y=gY+r*(dR*2+8)+dR;
+        const highlight=((r+c)%(2+(qi%3))===0);
+        ctx.beginPath(); ctx.arc(x,y,dR,0,Math.PI*2);
+        ctx.fillStyle=highlight?a+'CC':'rgba(40,50,70,0.6)'; ctx.fill();
+        ctx.strokeStyle=highlight?a2:'rgba(255,255,255,0.06)'; ctx.lineWidth=1; ctx.stroke();
+      }
     }
-    ctx.stroke();
+
+  } else if (tipoIdx === 3) {
+    // Criativa: arte, arquitetura, natureza — formas geométricas estéticas
+    const pat = qi % 4;
+    if (pat === 0) {
+      // Mandala / simetria radial
+      const petals=6+(qi%4);
+      for(let i=0;i<petals;i++){
+        const ang=i*(2*Math.PI/petals);
+        ctx.save(); ctx.translate(cx,cy); ctx.rotate(ang);
+        ctx.beginPath(); ctx.ellipse(0,-28,8,22,0,0,Math.PI*2);
+        ctx.fillStyle=i%2===0?a+'55':a2+'55'; ctx.fill();
+        ctx.strokeStyle=i%2===0?a:a2; ctx.lineWidth=1; ctx.stroke();
+        ctx.restore();
+      }
+      ctx.beginPath(); ctx.arc(cx,cy,10,0,Math.PI*2); ctx.fillStyle=a; ctx.fill();
+    } else if (pat === 1) {
+      // Proporção áurea / retângulos encaixados
+      let x=20,y=16,w=W-40,h=H-32;
+      const colors=[a,a2,a+'88',a2+'88',a+'55'];
+      for(let i=0;i<5;i++){
+        ctx.strokeStyle=colors[i]; ctx.lineWidth=1.5;
+        ctx.beginPath(); ctx.rect(x,y,w,h); ctx.stroke();
+        if(w>h){ x+=h; w-=h; } else { y+=w; h-=w; }
+        if(w<4||h<4) break;
+      }
+      // Arco espiral áurea
+      ctx.strokeStyle=a; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(20,16,H-32,0,-Math.PI/2); ctx.stroke();
+    } else if (pat === 2) {
+      // Triângulo artístico com linhas internas
+      const ox=cx-55, oy=H-22, bx=cx+55, by=H-22, tx=cx, ty=16;
+      ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(bx,by); ctx.lineTo(tx,ty); ctx.closePath();
+      ctx.fillStyle=a+'15'; ctx.fill(); ctx.strokeStyle=a; ctx.lineWidth=2; ctx.stroke();
+      for(let i=1;i<=3+(qi%3);i++){
+        const t=i/4;
+        const ax2=ox+(bx-ox)*t, ay2=oy, bx2=bx+(tx-bx)*t, by2=by+(ty-by)*t;
+        ctx.strokeStyle=a2+'55'; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(ax2,ay2); ctx.lineTo(bx2,by2); ctx.stroke();
+      }
+    } else {
+      // Hexágonos de colmeia
+      const R=24, rows2=2, cols2=4;
+      for(let r=0;r<rows2;r++) for(let c=0;c<cols2;c++){
+        const hx=30+c*(R*1.73)+(r%2?R*0.87:0), hy=cy-R/2+r*(R*1.5);
+        ctx.beginPath();
+        for(let j=0;j<6;j++){
+          const ang2=j*Math.PI/3-Math.PI/6;
+          j===0?ctx.moveTo(hx+R*Math.cos(ang2),hy+R*Math.sin(ang2))
+               :ctx.lineTo(hx+R*Math.cos(ang2),hy+R*Math.sin(ang2));
+        }
+        ctx.closePath();
+        ctx.fillStyle=(r+c)%3===0?a+'33':(r+c)%3===1?a2+'22':'rgba(30,40,60,0.4)';
+        ctx.fill(); ctx.strokeStyle=a+'66'; ctx.lineWidth=1; ctx.stroke();
+      }
+    }
+
   } else {
-    const R3 = 44;
-    ctx.beginPath(); ctx.arc(cx, cy, R3, 0, Math.PI * 2);
-    ctx.strokeStyle = col.a + '55'; ctx.lineWidth = 1.5; ctx.stroke();
-    const ang = (qi * 40) % 360 * Math.PI / 180;
-    const ex = cx + R3 * Math.cos(ang), ey = cy + R3 * Math.sin(ang);
-    ctx.strokeStyle = col.a; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey); ctx.stroke();
-    ctx.beginPath(); ctx.arc(ex, ey, 5, 0, Math.PI * 2);
-    ctx.fillStyle = col.b; ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(cx - R3 - 10, cy); ctx.lineTo(cx + R3 + 10, cy); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(cx, cy - R3 - 10); ctx.lineTo(cx, cy + R3 + 10); ctx.stroke();
+    // Desafio (tipoIdx===4): formas matemáticas complexas — círculos concêntricos, polígonos
+    const pat = qi % 4;
+    if (pat === 0) {
+      // Círculos concêntricos com rótulos de raio
+      for(let i=4;i>0;i--){
+        const r=i*14;
+        ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+        ctx.strokeStyle=i%2===0?a:a2; ctx.lineWidth=i===4?2:1; ctx.stroke();
+      }
+      ctx.strokeStyle=a; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+42,cy); ctx.stroke();
+      ctx.fillStyle=a; ctx.font='bold 9px JetBrains Mono'; ctx.textAlign='center';
+      ctx.fillText('r',cx+21,cy-5);
+    } else if (pat === 1) {
+      // Polígono com diagonais (convexo)
+      const n=5+(qi%4), R2=46;
+      const pts2=Array.from({length:n},(_,i)=>({
+        x:cx+R2*Math.cos(-Math.PI/2+i*2*Math.PI/n),
+        y:cy+R2*Math.sin(-Math.PI/2+i*2*Math.PI/n)
+      }));
+      ctx.beginPath(); pts2.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+      ctx.closePath(); ctx.fillStyle=a+'12'; ctx.fill(); ctx.strokeStyle=a; ctx.lineWidth=2; ctx.stroke();
+      // diagonais
+      ctx.strokeStyle=a2+'55'; ctx.lineWidth=1;
+      for(let i=0;i<n;i++) for(let j=i+2;j<n-(i===0?1:0);j++){
+        ctx.beginPath(); ctx.moveTo(pts2[i].x,pts2[i].y); ctx.lineTo(pts2[j].x,pts2[j].y); ctx.stroke();
+      }
+    } else if (pat === 2) {
+      // Curva exponencial/logarítmica
+      ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(0,cy); ctx.lineTo(W,cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(50,0); ctx.lineTo(50,H); ctx.stroke();
+      ctx.strokeStyle=a; ctx.lineWidth=2.5; ctx.beginPath();
+      for(let px2=50;px2<=W-10;px2++){
+        const x=(px2-50)/25, y=cy-Math.pow(1.5+(qi*0.05),x)*16;
+        px2===50?ctx.moveTo(px2,y):ctx.lineTo(px2,Math.max(8,Math.min(H-8,y)));
+      }
+      ctx.stroke();
+      // ponto de interseção com eixo
+      ctx.beginPath(); ctx.arc(50,cy-16,5,0,Math.PI*2); ctx.fillStyle=a2; ctx.fill();
+    } else {
+      // Matriz visual 3×3 com elementos destacados
+      const sz2=30, gap3=8, ox=cx-1.5*(sz2+gap3), oy=cy-1.5*(sz2+gap3);
+      for(let r=0;r<3;r++) for(let c=0;c<3;c++){
+        const x=ox+c*(sz2+gap3), y=oy+r*(sz2+gap3);
+        const diag=(r===c);
+        ctx.fillStyle=diag?a+'44':'rgba(30,39,64,0.5)';
+        ctx.beginPath(); ctx.roundRect(x,y,sz2,sz2,4); ctx.fill();
+        ctx.strokeStyle=diag?a:a2+'44'; ctx.lineWidth=diag?2:1; ctx.stroke();
+        ctx.fillStyle=diag?a:'rgba(255,255,255,0.25)'; ctx.font='bold 10px JetBrains Mono'; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(diag?'★':'·',x+sz2/2,y+sz2/2);
+      }
+      ctx.textBaseline='alphabetic';
+    }
   }
 
-  ctx.fillStyle = 'rgba(255,255,255,0.06)';
+  // Número da questão (fundo) — grande e discreto
+  ctx.fillStyle = 'rgba(255,255,255,0.05)';
   ctx.font = 'bold 52px JetBrains Mono';
   ctx.textAlign = 'right';
   ctx.fillText(String(qi + 1).padStart(2, '0'), W - 12, H - 8);
   ctx.textAlign = 'left';
 
+  // Badge do tipo no canto superior direito
+  const tipoBadges = ['📝','🌍','🔬','🎨','🏆'];
+  ctx.font = '14px sans-serif'; ctx.textAlign = 'right';
+  ctx.fillText(tipoBadges[tipoIdx] || '📝', W - 10, 20);
+  ctx.textAlign = 'left';
+
+  // Faixa de gradiente na base (para o caption)
   const grad2 = ctx.createLinearGradient(0, H * 0.55, 0, H);
   grad2.addColorStop(0, 'transparent');
   grad2.addColorStop(1, 'rgba(4,6,12,0.88)');
@@ -1446,6 +1984,12 @@ const simImgDB = {
   prob_multiplicacao:{caption:'Multiplicação para eventos dependentes e independentes.',tag:'✖️ P(A∩B)',icon:'✖️'},
   prob_comb:   {caption:'Combinando contagem e probabilidade: urnas e cartas.',tag:'🔢 Prob.+Comb.',icon:'🔢'},
   prob_propriedades:{caption:'Propriedades fundamentais: 0≤P(A)≤1, complementar.',tag:'📏 Propriedades',icon:'📏'},
+
+  // ── NOVOS SIMULADORES DE FRAÇÕES ──
+  fracao_chocolate:{caption:'Barra de chocolate dividida em pedaços iguais.',tag:'🍫 Chocolate',icon:'🍫'},
+  fracao_pizza:    {caption:'Pizza fatiada: numerador e denominador visuais.',tag:'🍕 Pizza',icon:'🍕'},
+  fracao_bolo:     {caption:'Bolo em camadas: frações e partes do todo.',tag:'🎂 Bolo',icon:'🎂'},
+  fracao_torta:    {caption:'Torta dividida: comparação e equivalência.',tag:'🥧 Torta',icon:'🥧'},
 };
 
 function _sl(id,min,max,val,step,fn){
@@ -1542,6 +2086,331 @@ simulators.fracao = function(c){
       const dec=(n/d).toFixed(3).replace('.',',');
       document.getElementById('fInfo').innerHTML=`<strong style="color:var(--warning)">${n}/${d}</strong> = `+(sn!==n?`<strong>${sn}/${sd}</strong> (simpl.) = `:'')+`<strong style="color:var(--primary)">${dec}</strong> | <strong style="color:var(--success)">${pct}%</strong>`;
     };window._fD();
+  });
+};
+
+/* ── fracao_chocolate: Barra de Chocolate ── */
+simulators.fracao_chocolate = function(c){
+  c.innerHTML=`<div class="sim-inner"><h3>🍫 Frações — Barra de Chocolate</h3>
+  ${_cv('fcCV',200)}
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 4px;">
+    <div><label style="font-size:0.65rem;color:var(--text-secondary);">Pedaços comidos (numerador)</label>${_sl('fcN',0,16,3,1,'_fcD()')}<div id="fcNv" style="text-align:center;font-weight:700;color:#D2691E;">3</div></div>
+    <div><label style="font-size:0.65rem;color:var(--text-secondary);">Total de pedaços (denominador)</label>${_sl('fcD2',1,16,8,1,'_fcD()')}<div id="fcDv" style="text-align:center;font-weight:700;color:var(--info);">8</div></div>
+  </div>
+  <div id="fcInfo" class="explicacao-box" style="margin-top:4px;"></div></div>`;
+  waitForWidth(c, ()=>{
+    const cv=document.getElementById('fcCV');if(!cv)return;
+    cv.width=Math.round(cv.getBoundingClientRect().width)||cv.offsetWidth||cv.parentElement?.offsetWidth||400;cv.height=200;
+    window._fcD=function(){
+      let n=parseInt(document.getElementById('fcN').value);
+      let d=parseInt(document.getElementById('fcD2').value);
+      if(d<1)d=1;if(n>d)n=d;
+      document.getElementById('fcN').max=d;
+      document.getElementById('fcNv').textContent=n;document.getElementById('fcDv').textContent=d;
+      const ctx=cv.getContext('2d'),W=cv.width,H=200;
+      ctx.fillStyle='#1A0A00';ctx.fillRect(0,0,W,H);
+      // Grade sutil
+      ctx.strokeStyle='rgba(255,255,255,0.03)';ctx.lineWidth=1;
+      for(let x=0;x<W;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+      for(let y=0;y<H;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+      // Dimensões da barra
+      const cols=d<=8?d:Math.ceil(d/2);
+      const rows=d<=8?1:2;
+      const pad=18, gap=3;
+      const barW=W-pad*2, barH=rows===1?70:130;
+      const barY=(H-barH)/2;
+      const pieceW=(barW-gap*(cols-1))/cols;
+      const pieceH=(barH-gap*(rows-1))/rows;
+      // Sombra da barra
+      ctx.fillStyle='rgba(0,0,0,0.5)';
+      ctx.beginPath();ctx.roundRect(pad+4,barY+4,barW,barH,10);ctx.fill();
+      // Wrapper da barra
+      ctx.fillStyle='#5C2A00';
+      ctx.beginPath();ctx.roundRect(pad,barY,barW,barH,10);ctx.fill();
+      let pieceIdx=0;
+      for(let r=0;r<rows;r++){
+        for(let col=0;col<cols;col++){
+          if(pieceIdx>=d)break;
+          const px=pad+col*(pieceW+gap);
+          const py=barY+r*(pieceH+gap);
+          const comido=pieceIdx<n;
+          // Fundo do pedaço
+          if(comido){
+            // Pedaço vazio (já comido)
+            ctx.fillStyle='rgba(90,40,0,0.5)';
+            ctx.beginPath();ctx.roundRect(px,py,pieceW,pieceH,5);ctx.fill();
+            ctx.strokeStyle='rgba(100,50,10,0.4)';ctx.lineWidth=1;
+            ctx.beginPath();ctx.roundRect(px,py,pieceW,pieceH,5);ctx.stroke();
+            // Ícone de mordida
+            ctx.font=`${Math.min(pieceW,pieceH)*0.5}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+            ctx.fillText('✓',px+pieceW/2,py+pieceH/2);
+          } else {
+            const grad=ctx.createLinearGradient(px,py,px,py+pieceH);
+            grad.addColorStop(0,'#D2691E');grad.addColorStop(0.4,'#A0522D');grad.addColorStop(1,'#6B3510');
+            ctx.fillStyle=grad;
+            ctx.beginPath();ctx.roundRect(px,py,pieceW,pieceH,5);ctx.fill();
+            // Highlight
+            ctx.fillStyle='rgba(255,255,255,0.1)';
+            ctx.beginPath();ctx.roundRect(px+2,py+2,pieceW-4,4,2);ctx.fill();
+            ctx.strokeStyle='rgba(255,200,100,0.25)';ctx.lineWidth=1;
+            ctx.beginPath();ctx.roundRect(px,py,pieceW,pieceH,5);ctx.stroke();
+          }
+          pieceIdx++;
+        }
+      }
+      // Label
+      const pct=d>0?(n/d*100).toFixed(1):'0';
+      ctx.font='bold 13px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='top';
+      ctx.fillStyle='rgba(245,166,35,0.9)';
+      ctx.fillText(`${n}/${d} = ${pct}%`,W/2,barY+barH+10);
+      ctx.textBaseline='alphabetic';ctx.textAlign='left';
+      function gcd(a,b){return b===0?a:gcd(b,a%b);}
+      const g=gcd(n,d),sn=n/g,sd=d/g;
+      const dec=(n/d).toFixed(3).replace('.',',');
+      document.getElementById('fcInfo').innerHTML=`🍫 <strong style="color:#D2691E">${n}/${d}</strong> pedaços comidos`+(sn!==n?` = <strong>${sn}/${sd}</strong> (simpl.)`:``)+ ` = <strong style="color:var(--primary)">${dec}</strong> | <strong style="color:var(--success)">${pct}%</strong>`;
+    };window._fcD();
+  });
+};
+
+/* ── fracao_pizza: Pizza Interativa (versão aprimorada) ── */
+simulators.fracao_pizza = function(c){
+  c.innerHTML=`<div class="sim-inner"><h3>🍕 Frações — Pizza</h3>
+  ${_cv('fpCV',215)}
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 4px;">
+    <div><label style="font-size:0.65rem;color:var(--text-secondary);">Fatias servidas (numerador)</label>${_sl('fpN',0,12,3,1,'_fpD()')}<div id="fpNv" style="text-align:center;font-weight:700;color:#F25C5C;">3</div></div>
+    <div><label style="font-size:0.65rem;color:var(--text-secondary);">Total de fatias (denominador)</label>${_sl('fpD2',1,12,8,1,'_fpD()')}<div id="fpDv" style="text-align:center;font-weight:700;color:var(--info);">8</div></div>
+  </div>
+  <div id="fpInfo" class="explicacao-box" style="margin-top:4px;"></div></div>`;
+  waitForWidth(c, ()=>{
+    const cv=document.getElementById('fpCV');if(!cv)return;
+    cv.width=Math.round(cv.getBoundingClientRect().width)||cv.offsetWidth||cv.parentElement?.offsetWidth||400;cv.height=215;
+    window._fpD=function(){
+      let n=parseInt(document.getElementById('fpN').value);
+      let d=parseInt(document.getElementById('fpD2').value);
+      if(d<1)d=1;if(n>d)n=d;
+      document.getElementById('fpN').max=d;
+      document.getElementById('fpNv').textContent=n;document.getElementById('fpDv').textContent=d;
+      const ctx=cv.getContext('2d'),W=cv.width,H=215,R=82,CX=W/2,CY=H/2+5;
+      ctx.fillStyle='#0A0800';ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(255,255,255,0.03)';ctx.lineWidth=1;
+      for(let x=0;x<W;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+      for(let y=0;y<H;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+      // Prato
+      ctx.beginPath();ctx.arc(CX,CY,R+10,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.06)';ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=2;ctx.stroke();
+      // Sombra pizza
+      ctx.beginPath();ctx.arc(CX+4,CY+4,R,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fill();
+      const toppings=['🧀','🍅','🌶️','🍄','🫑'];
+      for(let i=0;i<d;i++){
+        const s=-Math.PI/2+i*(2*Math.PI/d),e2=s+2*Math.PI/d;
+        ctx.beginPath();ctx.moveTo(CX,CY);ctx.arc(CX,CY,R,s,e2);ctx.closePath();
+        if(i<n){
+          // Fatia ausente (servida)
+          ctx.fillStyle='rgba(50,20,0,0.5)';ctx.fill();
+          ctx.strokeStyle='rgba(150,80,0,0.4)';ctx.lineWidth=2;ctx.stroke();
+          // Marcador de servida
+          const ang=s+(e2-s)/2,ir=R*0.55;
+          ctx.font='11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+          ctx.fillText('🍕',CX+ir*Math.cos(ang),CY+ir*Math.sin(ang));
+        } else {
+          // Fatia presente
+          const grad=ctx.createRadialGradient(CX,CY,0,CX,CY,R);
+          grad.addColorStop(0,'#FF7A00');grad.addColorStop(0.6,'#CC4400');grad.addColorStop(1,'#8B2500');
+          ctx.fillStyle=grad;ctx.fill();
+          // Queijo
+          const ang=s+(e2-s)/2,ir2=R*0.55;
+          ctx.fillStyle='rgba(255,230,100,0.8)';
+          ctx.beginPath();ctx.arc(CX+ir2*Math.cos(ang),CY+ir2*Math.sin(ang),4,0,Math.PI*2);ctx.fill();
+          ctx.strokeStyle='rgba(139,60,0,0.7)';ctx.lineWidth=2;ctx.stroke();
+        }
+      }
+      // Borda da pizza
+      ctx.beginPath();ctx.arc(CX,CY,R,0,Math.PI*2);ctx.strokeStyle='rgba(200,100,0,0.5)';ctx.lineWidth=3;ctx.stroke();
+      const pct=d>0?(n/d*100).toFixed(1):'0';
+      ctx.font='bold 16px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillStyle='rgba(255,255,255,0.7)';ctx.fillText(`${n}/${d}`,CX,CY);
+      ctx.font='12px Space Grotesk';ctx.fillStyle='rgba(245,166,35,0.8)';
+      ctx.fillText(`${pct}%`,CX,CY+R+18);ctx.textBaseline='alphabetic';ctx.textAlign='left';
+      function gcd(a,b){return b===0?a:gcd(b,a%b);}
+      const g=gcd(n,d),sn=n/g,sd=d/g;
+      const dec=(n/d).toFixed(3).replace('.',',');
+      document.getElementById('fpInfo').innerHTML=`🍕 <strong style="color:#F25C5C">${n}/${d}</strong> fatias servidas`+(sn!==n?` = <strong>${sn}/${sd}</strong> (simpl.)`:``)+ ` = <strong style="color:var(--primary)">${dec}</strong> | <strong style="color:var(--success)">${pct}%</strong>`;
+    };window._fpD();
+  });
+};
+
+/* ── fracao_bolo: Bolo em Fatias ── */
+simulators.fracao_bolo = function(c){
+  c.innerHTML=`<div class="sim-inner"><h3>🎂 Frações — Bolo</h3>
+  ${_cv('fbCV',215)}
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 4px;">
+    <div><label style="font-size:0.65rem;color:var(--text-secondary);">Fatias distribuídas (numerador)</label>${_sl('fbN',0,12,4,1,'_fbD()')}<div id="fbNv" style="text-align:center;font-weight:700;color:#E879F9;">4</div></div>
+    <div><label style="font-size:0.65rem;color:var(--text-secondary);">Total de fatias (denominador)</label>${_sl('fbD2',1,12,8,1,'_fbD()')}<div id="fbDv" style="text-align:center;font-weight:700;color:var(--info);">8</div></div>
+  </div>
+  <div id="fbInfo" class="explicacao-box" style="margin-top:4px;"></div></div>`;
+  waitForWidth(c, ()=>{
+    const cv=document.getElementById('fbCV');if(!cv)return;
+    cv.width=Math.round(cv.getBoundingClientRect().width)||cv.offsetWidth||cv.parentElement?.offsetWidth||400;cv.height=215;
+    window._fbD=function(){
+      let n=parseInt(document.getElementById('fbN').value);
+      let d=parseInt(document.getElementById('fbD2').value);
+      if(d<1)d=1;if(n>d)n=d;
+      document.getElementById('fbN').max=d;
+      document.getElementById('fbNv').textContent=n;document.getElementById('fbDv').textContent=d;
+      const ctx=cv.getContext('2d'),W=cv.width,H=215;
+      ctx.fillStyle='#0A0814';ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(255,255,255,0.03)';ctx.lineWidth=1;
+      for(let x=0;x<W;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+      for(let y=0;y<H;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+      // Bolo: vista de cima em perspectiva (elipse para dar 3D)
+      const CX=W/2,CY=H/2+10;
+      const RX=Math.min(W*0.38,100),RY=RX*0.45; // elipse
+      const altura=55; // altura 3D
+      // Lateral do bolo (3D)
+      ctx.beginPath();
+      ctx.ellipse(CX,CY+altura/2,RX,RY,0,0,Math.PI);
+      ctx.lineTo(CX-RX,CY-altura/2);
+      ctx.ellipse(CX,CY-altura/2,RX,RY,0,Math.PI,0);
+      ctx.closePath();
+      ctx.fillStyle='#5B2D8E';ctx.fill();
+      ctx.strokeStyle='rgba(232,121,249,0.3)';ctx.lineWidth=1.5;ctx.stroke();
+      // Recheio (faixa de cream)
+      ctx.beginPath();
+      ctx.ellipse(CX,CY+altura/2,RX,RY,0,0,Math.PI);
+      ctx.lineTo(CX-RX,CY-altura/2+12);
+      ctx.ellipse(CX,CY-altura/2+12,RX,RY,0,Math.PI,0);
+      ctx.closePath();
+      ctx.fillStyle='rgba(255,220,180,0.2)';ctx.fill();
+      // Topo do bolo: fatias
+      for(let i=0;i<d;i++){
+        const s=-Math.PI/2+i*(2*Math.PI/d),e2=s+2*Math.PI/d;
+        const cy2=CY-altura/2;
+        ctx.beginPath();
+        ctx.moveTo(CX,cy2);
+        // Desenha a fatia na elipse
+        const steps=12;
+        for(let st=0;st<=steps;st++){
+          const ang=s+(e2-s)*(st/steps);
+          ctx.lineTo(CX+RX*Math.cos(ang),cy2+RY*Math.sin(ang));
+        }
+        ctx.closePath();
+        if(i<n){
+          ctx.fillStyle='rgba(80,30,120,0.4)';ctx.fill();
+          ctx.strokeStyle='rgba(232,121,249,0.3)';ctx.lineWidth=1.5;ctx.stroke();
+          // Vela (indicador de fatia distribuída)
+          const ang2=s+(e2-s)/2,ir=RX*0.55;
+          ctx.font='9px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='middle';
+          ctx.fillStyle='rgba(232,121,249,0.6)';ctx.fillText('✓',CX+ir*Math.cos(ang2),cy2+RY*0.7*Math.sin(ang2));
+        } else {
+          const grad=ctx.createRadialGradient(CX,cy2,0,CX,cy2,RX);
+          grad.addColorStop(0,'#C77DFF');grad.addColorStop(0.6,'#9B59D0');grad.addColorStop(1,'#6B1FB0');
+          ctx.fillStyle=grad;ctx.fill();
+          // Granulado
+          const ang2=s+(e2-s)/2,ir=RX*0.55;
+          ctx.fillStyle='rgba(255,255,150,0.8)';
+          ctx.beginPath();ctx.arc(CX+ir*Math.cos(ang2),cy2+RY*0.7*Math.sin(ang2),3,0,Math.PI*2);ctx.fill();
+          ctx.strokeStyle='rgba(200,100,255,0.5)';ctx.lineWidth=1.5;ctx.stroke();
+        }
+      }
+      // Cobertura (topo elipse border)
+      ctx.beginPath();ctx.ellipse(CX,CY-altura/2,RX,RY,0,0,Math.PI*2);
+      ctx.strokeStyle='rgba(232,121,249,0.5)';ctx.lineWidth=2;ctx.stroke();
+      const pct=d>0?(n/d*100).toFixed(1):'0';
+      ctx.font='bold 15px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='top';
+      ctx.fillStyle='rgba(255,255,255,0.7)';ctx.fillText(`${n}/${d} = ${pct}%`,CX,CY+altura/2+RY+6);
+      ctx.textBaseline='alphabetic';ctx.textAlign='left';
+      function gcd(a,b){return b===0?a:gcd(b,a%b);}
+      const g=gcd(n,d),sn=n/g,sd=d/g;
+      const dec=(n/d).toFixed(3).replace('.',',');
+      document.getElementById('fbInfo').innerHTML=`🎂 <strong style="color:#E879F9">${n}/${d}</strong> fatias distribuídas`+(sn!==n?` = <strong>${sn}/${sd}</strong> (simpl.)`:``)+ ` = <strong style="color:var(--primary)">${dec}</strong> | <strong style="color:var(--success)">${pct}%</strong>`;
+    };window._fbD();
+  });
+};
+
+/* ── fracao_torta: Torta com Comparação de Frações ── */
+simulators.fracao_torta = function(c){
+  c.innerHTML=`<div class="sim-inner"><h3>🥧 Frações — Torta (Comparação)</h3>
+  ${_cv('ftCV',170)}
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0 4px;">
+    <div style="background:rgba(34,201,122,0.07);border:1px solid rgba(34,201,122,0.2);border-radius:8px;padding:8px;">
+      <div style="font-size:0.65rem;color:var(--success);font-weight:700;margin-bottom:4px;">🟢 Torta A</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+        <div><label style="font-size:0.6rem;color:var(--text-secondary);">Numerador</label>${_sl('ftNA',0,10,2,1,'_ftD()')}<div id="ftNAv" style="text-align:center;font-weight:700;color:var(--success);font-size:0.75rem;">2</div></div>
+        <div><label style="font-size:0.6rem;color:var(--text-secondary);">Denominador</label>${_sl('ftDA',1,10,4,1,'_ftD()')}<div id="ftDAv" style="text-align:center;font-weight:700;color:var(--success);font-size:0.75rem;">4</div></div>
+      </div>
+    </div>
+    <div style="background:rgba(79,142,247,0.07);border:1px solid rgba(79,142,247,0.2);border-radius:8px;padding:8px;">
+      <div style="font-size:0.65rem;color:var(--primary);font-weight:700;margin-bottom:4px;">🔵 Torta B</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+        <div><label style="font-size:0.6rem;color:var(--text-secondary);">Numerador</label>${_sl('ftNB',0,10,3,1,'_ftD()')}<div id="ftNBv" style="text-align:center;font-weight:700;color:var(--primary);font-size:0.75rem;">3</div></div>
+        <div><label style="font-size:0.6rem;color:var(--text-secondary);">Denominador</label>${_sl('ftDB',1,10,6,1,'_ftD()')}<div id="ftDBv" style="text-align:center;font-weight:700;color:var(--primary);font-size:0.75rem;">6</div></div>
+      </div>
+    </div>
+  </div>
+  <div id="ftInfo" class="explicacao-box" style="margin-top:4px;"></div></div>`;
+  waitForWidth(c, ()=>{
+    const cv=document.getElementById('ftCV');if(!cv)return;
+    cv.width=Math.round(cv.getBoundingClientRect().width)||cv.offsetWidth||cv.parentElement?.offsetWidth||400;cv.height=170;
+    window._ftD=function(){
+      let nA=parseInt(document.getElementById('ftNA').value),dA=parseInt(document.getElementById('ftDA').value);
+      let nB=parseInt(document.getElementById('ftNB').value),dB=parseInt(document.getElementById('ftDB').value);
+      if(dA<1)dA=1;if(nA>dA)nA=dA;if(dB<1)dB=1;if(nB>dB)nB=dB;
+      document.getElementById('ftNA').max=dA;document.getElementById('ftNB').max=dB;
+      document.getElementById('ftNAv').textContent=nA;document.getElementById('ftDAv').textContent=dA;
+      document.getElementById('ftNBv').textContent=nB;document.getElementById('ftDBv').textContent=dB;
+      const ctx=cv.getContext('2d'),W=cv.width,H=170,R=60;
+      ctx.fillStyle='#080A08';ctx.fillRect(0,0,W,H);
+      ctx.strokeStyle='rgba(255,255,255,0.03)';ctx.lineWidth=1;
+      for(let x=0;x<W;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+      for(let y=0;y<H;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+      const drawTorta=(cx,cy,n,d,cor)=>{
+        // Sombra
+        ctx.beginPath();ctx.arc(cx+3,cy+3,R,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,0.4)';ctx.fill();
+        for(let i=0;i<d;i++){
+          const s=-Math.PI/2+i*(2*Math.PI/d),e2=s+2*Math.PI/d;
+          ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,s,e2);ctx.closePath();
+          if(i<n){
+            const grad=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
+            grad.addColorStop(0,cor+'FF');grad.addColorStop(1,cor+'88');
+            ctx.fillStyle=grad;
+          } else {
+            ctx.fillStyle='rgba(15,20,30,0.9)';
+          }
+          ctx.fill();
+          ctx.strokeStyle='rgba(8,10,8,0.9)';ctx.lineWidth=2;ctx.stroke();
+        }
+        // Borda
+        ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.strokeStyle=cor+'66';ctx.lineWidth=2.5;ctx.stroke();
+        // Label
+        const pct=(n/d*100).toFixed(0);
+        ctx.font='bold 13px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillStyle='rgba(255,255,255,0.8)';ctx.fillText(`${n}/${d}`,cx,cy);
+        ctx.font='10px Space Grotesk';ctx.fillStyle=cor+'CC';
+        ctx.fillText(`${pct}%`,cx,cy+R+14);
+        ctx.textBaseline='alphabetic';
+      };
+      const margin=W/4;
+      drawTorta(margin,H/2,nA,dA,'#22C97A');
+      drawTorta(W-margin,H/2,nB,dB,'#4F8EF7');
+      // Sinal de comparação
+      const valA=nA/dA,valB=nB/dB;
+      const sinal=valA>valB?'>':valA<valB?'<':'=';
+      ctx.font='bold 22px JetBrains Mono';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillStyle=sinal==='='?'var(--success)':'var(--warning)';
+      ctx.fillText(sinal,W/2,H/2);
+      ctx.textBaseline='alphabetic';ctx.textAlign='left';
+      function gcd(a,b){return b===0?a:gcd(b,a%b);}
+      const gA=gcd(nA,dA),gB=gcd(nB,dB);
+      const sA=`${nA/gA}/${dA/gA}`,sB=`${nB/gB}/${dB/gB}`;
+      const mmc=dA*dB/gcd(dA,dB);
+      const equiv=nA*dB===nB*dA;
+      document.getElementById('ftInfo').innerHTML=
+        `🟢 <strong style="color:var(--success)">${nA}/${dA}</strong>`+(nA/gA!==nA?` = <strong>${sA}</strong>`:``)+
+        ` &nbsp; <span style="color:var(--warning);font-size:1rem">${sinal}</span> &nbsp; `+
+        `🔵 <strong style="color:var(--primary)">${nB}/${dB}</strong>`+(nB/gB!==nB?` = <strong>${sB}</strong>`:``)+
+        (equiv?` &nbsp; <span style="color:var(--success);font-size:0.75rem">✓ Equivalentes!</span>`:
+          ` &nbsp; <span style="font-size:0.68rem;color:var(--text-secondary)">MMC: ${mmc}</span>`);
+    };window._ftD();
   });
 };
 
@@ -4262,17 +5131,57 @@ async function carregarAtv(tipoIdx){
     em3:`3ª série EM — Geometria Analítica, Geometria Espacial, Combinatória, Complexos`,
   }[atvState.serie]||'';
 
+  // Instruções estruturais específicas por tipo de atividade
+  const tipoInstrucoes = [
+    /* 0 - Resolução */
+    `TIPO: Resolução de Problemas.
+ENUNCIADO: direto, com dados numéricos explícitos. Nenhuma narrativa ou contexto narrativo.
+Exemplo de enunciado válido: "Calcule o valor de 3² + √25 − 2³."
+Exemplo de enunciado inválido: "Maria foi à feira..."
+ALTERNATIVAS: valores numéricos distintos, sem texto narrativo.
+DIFICULDADE: Q1-3 cálculos diretos, Q4-7 expressões com mais passos, Q8-10 equações e propriedades.`,
+    /* 1 - Contextual */
+    `TIPO: Situação do Cotidiano Brasileiro.
+ENUNCIADO: crie uma micro-história com personagem, lugar e dado real brasileiro (preço em R$, distância em km, receita culinária, placar de futebol, tarifa de ônibus etc.).
+Exemplo de enunciado válido: "Lucas comprou 3 pacotes de macarrão a R$ 4,50 cada. Quanto gastou no total?"
+ALTERNATIVAS: valores plausíveis no cotidiano, com unidades (R$, km, kg).
+DIFICULDADE: Q1-3 situações simples do dia a dia, Q4-7 situações com duas etapas, Q8-10 situações com dados percentuais ou proporcionais.`,
+    /* 2 - Investigativa */
+    `TIPO: Investigação de Padrões.
+ENUNCIADO: apresente uma sequência numérica, geométrica ou tabela INCOMPLETA e peça ao aluno que identifique o padrão e complete.
+Exemplo de enunciado válido: "Observe a sequência: 2, 6, 18, 54, ___. Qual é o próximo termo?"
+NUNCA use enunciados diretos de cálculo. SEMPRE apresente um padrão a descobrir.
+ALTERNATIVAS: o valor correto + três distratores plausíveis gerados por erros de padrão.
+DIFICULDADE: Q1-3 sequências aritméticas simples, Q4-7 sequências geométricas ou mistas, Q8-10 generalização algébrica.`,
+    /* 3 - Criativa */
+    `TIPO: Conexão Interdisciplinar (Arte, Música, Arquitetura, Natureza).
+ENUNCIADO: conecte o conteúdo matemático a uma obra de arte, instrumento musical, construção histórica, proporção áurea ou fenômeno natural. O enunciado deve começar com contexto cultural.
+Exemplo de enunciado válido: "A fachada do Partenon grego tem proporção base:altura de aproximadamente 8:5. Se a base mede 69,5 m, qual é a altura aproximada?"
+ALTERNATIVAS: valores que remetem ao contexto cultural descrito.
+DIFICULDADE: Q1-3 conexões diretas com um cálculo simples, Q4-7 conexões com dois passos, Q8-10 relações matemáticas em obras ou fenômenos complexos.`,
+    /* 4 - Desafio */
+    `TIPO: Desafio Olímpico (OBMEP / ENEM avançado).
+ENUNCIADO: problema de múltiplos passos com elegância matemática. Pode envolver demonstração parcial, contra-exemplo ou generalização. Use linguagem formal e precisa.
+Exemplo de enunciado válido: "Para quais valores inteiros de n a expressão n²+n+41 NÃO é primo? Justifique analisando um caso específico."
+ALTERNATIVAS: opções que exigem raciocínio, não apenas cálculo direto. Inclua distratores que correspondem a erros conceituais clássicos.
+DIFICULDADE: Q1-3 nível OBMEP fase 1, Q4-7 nível OBMEP fase 2, Q8-10 nível ENEM/vestibular difícil.`
+  ][tipoIdx] || '';
+
   const prompt=`Você é professor de matemática do estado de São Paulo.
 Contexto curricular: ${curriculoInfo}
-Gere EXATAMENTE 10 questões de múltipla escolha sobre: "${atvState.tituloAE}" — tema: ${atvState.tema}
-Abordagem: ${tipo.abordagem}
+Tema da atividade: "${atvState.tituloAE}" (simulador: ${atvState.tema})
 
-OBRIGATÓRIO:
-1. EXATAMENTE 4 alternativas por questão
-2. UMA alternativa correta (índice 0=A,1=B,2=C,3=D)
-3. Explicação detalhada (2-3 frases) da resposta correta
-4. Dificuldade crescente (questões 1-3 fáceis, 4-7 médias, 8-10 difíceis)
-5. Para cada questão: "imagemKeyword" (1 palavra) e "imagemCaption" (max 55 chars em pt-BR)
+${tipoInstrucoes}
+
+OBRIGATÓRIO PARA TODAS AS QUESTÕES:
+1. EXATAMENTE 4 alternativas por questão (A, B, C, D)
+2. UMA alternativa correta (índice 0=A, 1=B, 2=C, 3=D)
+3. Varie qual índice é a correta entre as 10 questões (não repita sempre o mesmo índice)
+4. Explicação detalhada (2-3 frases) da resposta correta, indicando o erro dos distratores
+5. Dificuldade CRESCENTE conforme as instruções do tipo acima
+6. Para cada questão: "imagemKeyword" (1 palavra em pt-BR relacionada ao enunciado) e "imagemCaption" (frase descritiva max 55 chars em pt-BR)
+
+IMPORTANTE: As questões DEVEM refletir o tipo "${tipo.nome}" — enunciados, alternativas e nível de abstração DIFERENTES do padrão genérico.
 
 Responda APENAS JSON válido sem markdown:
 {"questoes":[{"enunciado":"","opcoes":["A. ","B. ","C. ","D. "],"correta":0,"explicacao":"","imagemKeyword":"","imagemCaption":""}]}`;
@@ -4602,11 +5511,11 @@ function renderAtv(qs, tipo){
       const tryRender = () => {
         const w = Math.round(cv.getBoundingClientRect().width || cv.offsetWidth || cv.parentElement?.offsetWidth || 0);
         if (w > 0) {
-          gerarCanvasQuestao(cv, atvState.tema, qi);
+          gerarCanvasQuestao(cv, atvState.tema, qi, atvState.tipoIdx);
         } else {
           const ro = new ResizeObserver(() => {
             const w2 = Math.round(cv.getBoundingClientRect().width || cv.offsetWidth || 0);
-            if (w2 > 0) { ro.disconnect(); gerarCanvasQuestao(cv, atvState.tema, qi); }
+            if (w2 > 0) { ro.disconnect(); gerarCanvasQuestao(cv, atvState.tema, qi, atvState.tipoIdx); }
           });
           ro.observe(cv);
         }
@@ -4734,14 +5643,32 @@ function gerarCanvasHeader(tipo) {
   ctx.save();
   ctx.globalAlpha = 0.18;
 
-  if (['fracao','decimal','multiplos','operacoes','potencia'].includes(tipo)) {
-    // Círculo partido (frações/decimal)
-    const segs = tipo === 'decimal' ? 10 : tipo === 'multiplos' ? 6 : 4;
-    for (let i = 0; i < segs; i++) {
-      const s = (i / segs) * Math.PI * 2 - Math.PI / 2;
-      const e = s + (Math.PI * 2 / segs) - 0.06;
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, 58, s, e); ctx.closePath();
-      ctx.fillStyle = i % 2 === 0 ? col.a : col.b; ctx.fill();
+  if (['fracao','fracao_chocolate','fracao_pizza','fracao_bolo','fracao_torta','decimal','multiplos','operacoes','potencia'].includes(tipo)) {
+    // Círculo/fatias para frações e variantes, disco para decimal/multiplos
+    const segs = tipo === 'decimal' ? 10
+               : tipo === 'multiplos' ? 6
+               : tipo === 'fracao_chocolate' ? 8   // barra: 8 retângulos
+               : tipo === 'fracao_torta' ? 6        // torta: 6 fatias
+               : tipo === 'fracao_bolo' ? 5         // bolo: 5 fatias
+               : 4;                                 // pizza / fracao genérica
+
+    if (tipo === 'fracao_chocolate') {
+      // Desenha mini barra de chocolate
+      const bW = 140, bH = 56, bX = cx - bW/2, bY = cy - bH/2;
+      const cols2 = 4, rows2 = 2, pw = (bW-6)/cols2-3, ph = (bH-4)/rows2-3;
+      for (let r = 0; r < rows2; r++) for (let c2 = 0; c2 < cols2; c2++) {
+        const px = bX + 3 + c2*(pw+3), py = bY + 2 + r*(ph+3);
+        ctx.fillStyle = (r*cols2+c2) < 3 ? col.b : col.a;
+        ctx.beginPath(); ctx.roundRect(px, py, pw, ph, 3); ctx.fill();
+      }
+    } else {
+      // Pizza / torta / bolo / fracao genérica
+      for (let i = 0; i < segs; i++) {
+        const s = (i / segs) * Math.PI * 2 - Math.PI / 2;
+        const e = s + (Math.PI * 2 / segs) - 0.06;
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, 58, s, e); ctx.closePath();
+        ctx.fillStyle = i % 2 === 0 ? col.a : col.b; ctx.fill();
+      }
     }
   } else if (['pitagoras','triangulos','semelhanca','trigonometria'].includes(tipo)) {
     // Triângulo retângulo grande
@@ -4820,7 +5747,8 @@ function gerarCanvasHeader(tipo) {
 }
 
 // Simuladores que têm canvas ao vivo — header estático ocultado
-const _simsComCanvas = ['fracao','reta','angulos','poligonos','triangulos','quadrilateros',
+const _simsComCanvas = ['fracao','fracao_chocolate','fracao_pizza','fracao_bolo','fracao_torta',
+  'reta','angulos','poligonos','triangulos','quadrilateros',
   'pitagoras','semelhanca','analitica','afim','quadratica','potencia','exponencial',
   'trigonometria','ciclo','progressao','graficos','decimal','operacoes','multiplos',
   'sistema','geometria3d',
@@ -4891,7 +5819,13 @@ const nomesSim = {
   prob_dados:'Simulador de Dados',prob_geometrica:'Prob. Geométrica',
   prob_adicao:'Adição de Probabilidades',prob_condicional:'Prob. Condicional',
   prob_multiplicacao:'Multiplicação de Prob.',prob_comb:'Prob. + Combinatória',
-  prob_propriedades:'Propriedades da Probabilidade'
+  prob_propriedades:'Propriedades da Probabilidade',
+
+  // ── NOVOS SIMULADORES DE FRAÇÕES ──
+  fracao_chocolate:'Frações — Barra de Chocolate',
+  fracao_pizza:    'Frações — Pizza',
+  fracao_bolo:     'Frações — Bolo',
+  fracao_torta:    'Frações — Torta',
 };
 
 function changePage(p){

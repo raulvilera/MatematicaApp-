@@ -1,82 +1,71 @@
-// api/webhook.js - Recebe notificações do Mercado Pago e atualiza Firebase
-import { initializeApp, cert, getApps } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import crypto from 'crypto';
+// app/api/webhook/route.js  (Next.js App Router)
+// OU pages/api/webhook.js  (Next.js Pages Router — veja abaixo)
 
-if (!getApps().length) {
-  initializeApp({
-    credential: cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    })
-  });
-}
+// ============================================================
+// VERSÃO APP ROUTER (pasta app/)
+// ============================================================
+import { NextResponse } from 'next/server';
 
-const db = getFirestore();
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const { type, data } = body;
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
+    console.log('Webhook MP recebido:', type, data);
 
-  // Verificar assinatura do Mercado Pago
-  const secret = process.env.MP_WEBHOOK_SECRET;
-  const signature = req.headers['x-signature'];
-  const requestId = req.headers['x-request-id'];
-  
-  if (secret && signature) {
-    const [tsPart, v1Part] = signature.split(',');
-    const ts = tsPart?.split('=')[1];
-    const v1 = v1Part?.split('=')[1];
-    const manifest = `id:${req.query.data?.id};request-id:${requestId};ts:${ts};`;
-    const hmac = crypto.createHmac('sha256', secret).update(manifest).digest('hex');
-    if (hmac !== v1) return res.status(401).json({ error: 'Invalid signature' });
-  }
+    if (type === 'payment') {
+      const paymentId = data.id;
 
-  const { type, data } = req.body;
-  
-  if (type === 'payment') {
-    try {
-      // Buscar detalhes do pagamento no MP
-      const mpRes = await fetch(`https://api.mercadopago.com/v1/payments/${data.id}`, {
-        headers: { 'Authorization': `Bearer ${process.env.MP_ACCESS_TOKEN}` }
-      });
-      const payment = await mpRes.json();
-      
-      if (payment.status === 'approved') {
-        const uid = payment.external_reference;
-        const plan = payment.metadata?.plan || 'monthly';
-        
-        const now = new Date();
-        const periodEnd = new Date(now);
-        if (plan === 'yearly') {
-          periodEnd.setFullYear(periodEnd.getFullYear() + 1);
-        } else {
-          periodEnd.setMonth(periodEnd.getMonth() + 1);
+      // Consulta o pagamento na API do Mercado Pago
+      const response = await fetch(
+        `https://api.mercadopago.com/v1/payments/${paymentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
+          },
         }
+      );
 
-        await db.collection('users').doc(uid).update({
-          'subscription.status': 'active',
-          'subscription.plan': plan,
-          'subscription.currentPeriodStart': now.toISOString(),
-          'subscription.currentPeriodEnd': periodEnd.toISOString(),
-          'subscription.cancelledAt': null,
-          updatedAt: now.toISOString()
-        });
+      const payment = await response.json();
+      console.log('Pagamento:', payment.status, payment.transaction_amount);
 
-        await db.collection('users').doc(uid).collection('payments').add({
-          mpPaymentId: String(data.id),
-          amount: payment.transaction_amount,
-          method: 'pix',
-          status: 'approved',
-          plan,
-          createdAt: now.toISOString()
-        });
+      if (payment.status === 'approved') {
+        // ✅ PAGAMENTO APROVADO — coloque sua lógica aqui:
+        // - Ativar acesso do usuário
+        // - Salvar no banco de dados
+        // - Enviar e-mail de confirmação
+        console.log('Pagamento aprovado! ID:', paymentId);
       }
-    } catch (e) {
-      console.error('Webhook error:', e);
-      return res.status(500).json({ error: e.message });
     }
-  }
 
-  return res.status(200).json({ received: true });
+    // Sempre retorne 200 para o Mercado Pago
+    return NextResponse.json({ received: true }, { status: 200 });
+
+  } catch (error) {
+    console.error('Erro no webhook:', error);
+    return NextResponse.json({ error: 'Erro interno' }, { status: 500 });
+  }
 }
+
+// ============================================================
+// VERSÃO PAGES ROUTER (pasta pages/api/)
+// ============================================================
+// export default async function handler(req, res) {
+//   if (req.method !== 'POST') return res.status(405).end();
+//
+//   const { type, data } = req.body;
+//
+//   if (type === 'payment') {
+//     const paymentId = data.id;
+//     const response = await fetch(
+//       `https://api.mercadopago.com/v1/payments/${paymentId}`,
+//       { headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` } }
+//     );
+//     const payment = await response.json();
+//     if (payment.status === 'approved') {
+//       // sua lógica aqui
+//     }
+//   }
+//
+//   res.status(200).json({ received: true });
+// }

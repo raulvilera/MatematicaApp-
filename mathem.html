@@ -112,6 +112,12 @@ onAuthStateChanged(auth, async (user) => {
         div.innerHTML = `<div style="background:rgba(34,201,122,0.15);color:var(--success);border-bottom:1px solid rgba(34,201,122,0.3);text-align:center;padding:0.4rem;font-size:0.75rem;font-weight:700;">🎓 Acesso de Aluno ativado. Vinculado ao professor: ${teacherDoc.data().name}</div>`;
         document.body.insertBefore(div, document.body.firstChild);
       }
+      
+      if (!userData.studentSerie) {
+        _askStudentSerie(user.uid);
+      } else {
+        _restrictStudentSerie(userData.studentSerie);
+      }
     } else {
       sub = userData.subscription;
       // Inicia o dashboard se for professor
@@ -167,6 +173,56 @@ onAuthStateChanged(auth, async (user) => {
     checkFallback();
   }
 });
+
+window._restrictStudentSerie = function(serie) {
+  // Oculta todas as outras abas de séries
+  document.querySelectorAll('.serie-btn').forEach(btn => {
+    if (!btn.getAttribute('onclick').includes(`'${serie}'`)) {
+      btn.style.display = 'none';
+    } else {
+      btn.style.display = 'inline-block';
+    }
+  });
+  // Seleciona automaticamente a série do aluno
+  selectSerie(serie);
+  
+  // Oculta a aba "Professor"
+  const profTab = Array.from(document.querySelectorAll('.nav-tab')).find(el => el.textContent.trim() === 'Professor');
+  if (profTab) profTab.style.display = 'none';
+};
+
+window._askStudentSerie = function(uid) {
+  const div = document.createElement('div');
+  div.id = '_serie_modal';
+  div.style = "position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:10000;display:flex;align-items:center;justify-content:center;";
+  div.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:2rem;width:90%;max-width:400px;text-align:center;">
+      <h2 style="font-family:'Nunito';font-size:1.3rem;margin-bottom:1rem;color:var(--primary);">Em qual ano/série você está?</h2>
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem;">Selecione a sua série para visualizar as atividades do seu professor.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1.5rem;">
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef6')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">6º Ano</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef7')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">7º Ano</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef8')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">8º Ano</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef9')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">9º Ano</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','em1')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">1ª EM</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','em2')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">2ª EM</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','em3')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;grid-column:span 2;">3ª EM</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(div);
+};
+
+window._saveStudentSerie = async function(uid, serie) {
+  try {
+    await setDoc(doc(db, 'users', uid), { studentSerie: serie }, { merge: true });
+    document.getElementById('_serie_modal').remove();
+    _restrictStudentSerie(serie);
+  } catch(e) {
+    console.error(e);
+    alert('Erro ao salvar série. Verifique sua conexão.');
+  }
+};
 
 window.saveProgressToFirebase = async function(activity, score, corrects, total) {
   if (!auth.currentUser || !currentSerie) return;

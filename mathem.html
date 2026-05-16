@@ -19,6 +19,8 @@ import { getAuth, onAuthStateChanged, signOut as fbSignOut }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 import { getFirestore, doc, getDoc, collection, query, where, getDocs, addDoc, setDoc }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
 const app = initializeApp({
   apiKey: "AIzaSyDJ4ZxM-1DmDrUj3yIar4C_tPqS3Gp1S1Q",
@@ -30,6 +32,8 @@ const app = initializeApp({
 });
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
+window._firebaseStorage = storage;
 
 // Verifica acesso UMA vez após auth resolver
 onAuthStateChanged(auth, async (user) => {
@@ -114,9 +118,10 @@ onAuthStateChanged(auth, async (user) => {
       }
       
       if (!userData.studentSerie) {
-        _askStudentSerie(user.uid);
+        _askStudentSerie(user.uid, teacherDoc.id);
       } else {
         _restrictStudentSerie(userData.studentSerie);
+        loadStudentActivities(teacherDoc.id, userData.studentSerie);
       }
     } else {
       sub = userData.subscription;
@@ -191,7 +196,7 @@ window._restrictStudentSerie = function(serie) {
   if (profTab) profTab.style.display = 'none';
 };
 
-window._askStudentSerie = function(uid) {
+window._askStudentSerie = function(uid, teacherId) {
   const div = document.createElement('div');
   div.id = '_serie_modal';
   div.style = "position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:10000;display:flex;align-items:center;justify-content:center;";
@@ -200,24 +205,25 @@ window._askStudentSerie = function(uid) {
       <h2 style="font-family:'Nunito';font-size:1.3rem;margin-bottom:1rem;color:var(--primary);">Em qual ano/série você está?</h2>
       <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem;">Selecione a sua série para visualizar as atividades do seu professor.</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1.5rem;">
-        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef6')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">6º Ano</button>
-        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef7')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">7º Ano</button>
-        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef8')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">8º Ano</button>
-        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef9')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">9º Ano</button>
-        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','em1')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">1ª EM</button>
-        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','em2')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">2ª EM</button>
-        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','em3')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;grid-column:span 2;">3ª EM</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef6','${teacherId||''}')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">6º Ano</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef7','${teacherId||''}')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">7º Ano</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef8','${teacherId||''}')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">8º Ano</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','ef9','${teacherId||''}')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">9º Ano</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','em1','${teacherId||''}')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">1ª EM</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','em2','${teacherId||''}')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;">2ª EM</button>
+        <button class="btn-primary" onclick="_saveStudentSerie('${uid}','em3','${teacherId||''}')" style="background:var(--surface-2);border:1px solid var(--border-2);color:white;grid-column:span 2;">3ª EM</button>
       </div>
     </div>
   `;
   document.body.appendChild(div);
 };
 
-window._saveStudentSerie = async function(uid, serie) {
+window._saveStudentSerie = async function(uid, serie, teacherId) {
   try {
     await setDoc(doc(db, 'users', uid), { studentSerie: serie }, { merge: true });
     document.getElementById('_serie_modal').remove();
     _restrictStudentSerie(serie);
+    if (teacherId) loadStudentActivities(teacherId, serie);
   } catch(e) {
     console.error(e);
     alert('Erro ao salvar série. Verifique sua conexão.');
@@ -248,6 +254,113 @@ window.saveProgressToFirebase = async function(activity, score, corrects, total)
     console.error('Erro ao salvar progresso:', e);
   }
 }
+
+window.loadStudentActivities = async function(teacherId, studentSerie) {
+  try {
+    const q = query(collection(db, 'customActivities'), where('teacherId', '==', teacherId), where('serie', '==', studentSerie));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      let html = '<div class="section-title" style="margin-top:2rem;color:var(--info);">📄 Atividades do Meu Professor</div><div style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:2rem;">';
+      snap.forEach(doc => {
+        const d = doc.data();
+        html += `<div style="padding:1rem;background:linear-gradient(90deg, var(--surface-2), var(--surface-3));border-left:4px solid var(--info);border-radius:8px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:800;font-size:1rem;color:white;">${d.title}</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);">Anexo: ${d.fileName}</div>
+          </div>
+          <a href="${d.fileUrl}" target="_blank" class="btn-primary" style="text-decoration:none;background:var(--info);color:#000;">Visualizar</a>
+        </div>`;
+      });
+      html += '</div>';
+      
+      const homePage = document.getElementById('page-home');
+      const container = document.createElement('div');
+      container.innerHTML = html;
+      homePage.insertBefore(container, document.getElementById('planoPanel'));
+    }
+  } catch(e) {
+    console.error(e);
+  }
+};
+
+window.uploadCustomActivity = async function() {
+  const fileInput = document.getElementById('uploadFile');
+  const titleInput = document.getElementById('uploadTitle');
+  const serie = document.getElementById('uploadSerie').value;
+  const progressDiv = document.getElementById('uploadProgress');
+  
+  if (!fileInput.files.length) return alert('Selecione um arquivo.');
+  if (!titleInput.value.trim()) return alert('Digite um título.');
+  if (!window._firebaseStorage) return alert('Armazenamento não configurado.');
+  
+  const file = fileInput.files[0];
+  const uid = auth.currentUser.uid;
+  const ext = file.name.split('.').pop();
+  const safeTitle = titleInput.value.trim().replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  const fileName = `${Date.now()}_${safeTitle}.${ext}`;
+  
+  const fileRef = ref(window._firebaseStorage, `activities/${uid}/${fileName}`);
+  const uploadTask = uploadBytesResumable(fileRef, file);
+  
+  progressDiv.style.display = 'block';
+  progressDiv.textContent = 'Enviando: 0%';
+  progressDiv.style.color = 'var(--info)';
+  
+  uploadTask.on('state_changed', 
+    (snapshot) => {
+      const p = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      progressDiv.textContent = `Enviando: ${Math.round(p)}%`;
+    }, 
+    (error) => {
+      progressDiv.textContent = 'Erro no envio!';
+      progressDiv.style.color = 'var(--danger)';
+      console.error(error);
+    }, 
+    async () => {
+      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+      await addDoc(collection(db, 'customActivities'), {
+        teacherId: uid,
+        title: titleInput.value.trim(),
+        serie: serie,
+        fileUrl: downloadURL,
+        fileName: file.name,
+        createdAt: new Date().toISOString()
+      });
+      progressDiv.textContent = 'Enviado com sucesso! ✅';
+      progressDiv.style.color = 'var(--success)';
+      fileInput.value = '';
+      titleInput.value = '';
+      loadTeacherActivities();
+    }
+  );
+};
+
+window.loadTeacherActivities = async function() {
+  const listEl = document.getElementById('profCustomActivitiesList');
+  if (!listEl) return;
+  try {
+    const q = query(collection(db, 'customActivities'), where('teacherId', '==', auth.currentUser.uid));
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      listEl.innerHTML = '<div class="empty-state" style="padding:1rem;">Nenhuma atividade enviada.</div>';
+    } else {
+      let html = '';
+      snap.forEach(doc => {
+        const d = doc.data();
+        html += `<div style="padding:0.6rem 0.8rem;background:var(--surface-3);border-radius:8px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border-2);margin-bottom:0.5rem;">
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;">${d.title}</div>
+            <div style="font-size:0.75rem;color:var(--text-secondary);">Série: ${d.serie.toUpperCase()} | Arquivo: ${d.fileName}</div>
+          </div>
+          <a href="${d.fileUrl}" target="_blank" class="btn-ghost" style="font-size:0.75rem;padding:0.3rem 0.6rem;text-decoration:none;">📄 Abrir</a>
+        </div>`;
+      });
+      listEl.innerHTML = html;
+    }
+  } catch(e) {
+    console.error(e);
+  }
+};
 
 async function loadTeacherDashboard(userData) {
   if (userData.role === 'student') return;
@@ -286,6 +399,10 @@ async function loadTeacherDashboard(userData) {
         listEl.innerHTML = html;
       }
     }
+    
+    // Carrega as atividades do professor
+    loadTeacherActivities();
+    
   } catch(e) {
     console.error('Erro ao carregar alunos:', e);
   }
@@ -1111,8 +1228,39 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
       </div>
     </div>
     <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.5rem;">Alunos vinculados:</div>
-    <div id="profStudentList" style="display:flex;flex-direction:column;gap:0.2rem;max-height:200px;overflow-y:auto;background:var(--surface-2);border-radius:8px;padding:0.5rem;border:1px solid var(--border-2);">
+    <div id="profStudentList" style="display:flex;flex-direction:column;gap:0.2rem;max-height:200px;overflow-y:auto;background:var(--surface-2);border-radius:8px;padding:0.5rem;border:1px solid var(--border-2);margin-bottom:1.5rem;">
       <div class="empty-state" style="padding:1rem;">Nenhum aluno vinculado ainda.</div>
+    </div>
+    
+    <div style="border-top:1px solid var(--border);margin:1.5rem 0;"></div>
+    
+    <!-- UPLOAD DE ATIVIDADES -->
+    <h3 style="font-size:1rem;margin-bottom:0.8rem;color:var(--info);">📤 Enviar Atividade Externa</h3>
+    <div style="background:var(--surface-2);border:1px solid var(--border-2);border-radius:8px;padding:1rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:0.8rem;">
+        <input type="text" id="uploadTitle" placeholder="Título da Atividade" class="plano-field-edit" style="width:100%;">
+        <select id="uploadSerie" class="plano-field-edit" style="width:100%;color:var(--text);">
+          <option value="ef6">6º Ano EF</option>
+          <option value="ef7">7º Ano EF</option>
+          <option value="ef8">8º Ano EF</option>
+          <option value="ef9">9º Ano EF</option>
+          <option value="em1">1ª Série EM</option>
+          <option value="em2">2ª Série EM</option>
+          <option value="em3">3ª Série EM</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:0.8rem;align-items:center;flex-wrap:wrap;">
+        <input type="file" id="uploadFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="flex:1;min-width:200px;background:var(--surface-3);color:var(--text);border-radius:6px;padding:0.5rem;border:1px solid var(--border);">
+        <button class="btn-primary" onclick="uploadCustomActivity()" id="btnUploadActivity" style="padding:0.6rem 1rem;background:var(--info);color:#000;">Enviar para Alunos</button>
+      </div>
+      <div id="uploadProgress" style="font-size:0.75rem;color:var(--success);margin-top:0.5rem;display:none;">Enviando...</div>
+    </div>
+    
+    <div style="margin-top:1.5rem;">
+      <h3 style="font-size:0.9rem;margin-bottom:0.8rem;color:var(--text-secondary);">Minhas Atividades Enviadas</h3>
+      <div id="profCustomActivitiesList" style="display:flex;flex-direction:column;gap:0.5rem;">
+        <div class="empty-state" style="padding:1rem;">Nenhuma atividade enviada.</div>
+      </div>
     </div>
   </div>
   

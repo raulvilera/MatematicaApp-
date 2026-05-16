@@ -64,15 +64,18 @@ export default async function handler(req, res) {
 
         console.log('[webhook] gravando no Firestore uid:', uid);
 
-        await db.collection('users').doc(uid).update({
-          'subscription.status': 'active',
-          'subscription.plan': plan,
-          'subscription.maxStudents': studentsCount,
-          'subscription.currentPeriodStart': now.toISOString(),
-          'subscription.currentPeriodEnd': periodEnd.toISOString(),
-          'subscription.cancelledAt': null,
+        await db.collection('users').doc(uid).set({
+          role: 'teacher',
+          subscription: {
+            status: 'active',
+            plan: plan,
+            maxStudents: studentsCount,
+            currentPeriodStart: now.toISOString(),
+            currentPeriodEnd: periodEnd.toISOString(),
+            cancelledAt: null
+          },
           updatedAt: now.toISOString()
-        });
+        }, { merge: true });
 
         await db.collection('users').doc(uid).collection('payments').add({
           mpPaymentId: String(paymentId),

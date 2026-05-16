@@ -99,8 +99,15 @@ onAuthStateChanged(auth, async (user) => {
 
     const now = new Date();
 
+    const parseDate = (val) => {
+      if (!val) return new Date(NaN);
+      if (typeof val.toDate === 'function') return val.toDate();
+      if (val.seconds) return new Date(val.seconds * 1000);
+      return new Date(val);
+    };
+
     if (sub.status === 'trial') {
-      const trialEnd = new Date(sub.trialEndsAt);
+      const trialEnd = parseDate(sub.trialEndsAt);
       
       if (isNaN(trialEnd.getTime()) || now >= trialEnd || (trialEnd - now) > 8 * 86400000) {
         window.location.href = role === 'student' ? './paywall.html?reason=teacher_expired' : './paywall.html?reason=trial_expired';
@@ -117,7 +124,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     if (sub.status === 'active') {
-      const periodEnd = new Date(sub.currentPeriodEnd);
+      const periodEnd = parseDate(sub.currentPeriodEnd);
       if (isNaN(periodEnd.getTime()) || now >= periodEnd || (periodEnd - now) > 400 * 86400000) {
         window.location.href = role === 'student' ? './paywall.html?reason=teacher_expired' : './paywall.html?reason=expired';
         return;

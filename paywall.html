@@ -136,9 +136,16 @@ onAuthStateChanged(auth, async (user) => {
       const sub = snap.data().subscription;
       const now = new Date();
 
+      const parseDate = (val) => {
+        if (!val) return new Date(NaN);
+        if (typeof val.toDate === 'function') return val.toDate();
+        if (val.seconds) return new Date(val.seconds * 1000);
+        return new Date(val);
+      };
+
       // Assinatura ativa e dentro do período → entra direto
       if (sub && sub.status === 'active') {
-        const periodEnd = new Date(sub.currentPeriodEnd);
+        const periodEnd = parseDate(sub.currentPeriodEnd);
         if (!isNaN(periodEnd.getTime()) && now < periodEnd) {
           showMsg('✅ Assinatura ativa! Redirecionando…', 'success');
           setTimeout(() => { window.location.href = './mathem.html'; }, 1200);
@@ -148,7 +155,7 @@ onAuthStateChanged(auth, async (user) => {
 
       // Trial ainda válido → entra direto
       if (sub && sub.status === 'trial') {
-        const trialEnd = new Date(sub.trialEndsAt);
+        const trialEnd = parseDate(sub.trialEndsAt);
         if (!isNaN(trialEnd.getTime()) && now < trialEnd) {
           window.location.href = './mathem.html';
           return;

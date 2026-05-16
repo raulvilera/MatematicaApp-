@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assinar - Matematica@App</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{min-height:100vh;background:linear-gradient(160deg,#1a0000 0%,#5C0A0A 30%,#B71C1C 65%,#FF5252 100%);
+  font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.card{background:rgba(0,0,0,0.5);backdrop-filter:blur(20px);border:1.5px solid rgba(255,82,82,0.35);
+  border-radius:24px;padding:2rem;width:min(92vw,460px);color:white;}
+.logo{text-align:center;font-weight:900;font-size:1.6rem;margin-bottom:0.3rem;}
+.logo .at{color:#FF5252;}.logo .app{color:#FFCDD2;}
+h2{text-align:center;font-size:1.1rem;color:rgba(255,205,210,0.8);margin-bottom:1.5rem;font-weight:700;}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.plan{background:rgba(255,82,82,0.08);border:2px solid rgba(255,82,82,0.25);border-radius:16px;
+  padding:1.2rem;text-align:center;cursor:pointer;transition:0.2s;}
+.plan:hover,.plan.selected{border-color:#FF5252;background:rgba(255,82,82,0.2);}
+.plan .price{font-size:1.6rem;font-weight:900;color:#FF8A80;}
+.plan .period{font-size:0.8rem;color:rgba(255,205,210,0.7);margin-bottom:0.3rem;}
+.plan .save{background:#FF5252;color:white;border-radius:99px;font-size:0.7rem;
+  font-weight:900;padding:0.2rem 0.6rem;display:inline-block;margin-top:0.3rem;}
+.btn{width:100%;padding:1rem;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#C0392B,#FF5252);color:white;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;cursor:pointer;
+  transition:0.2s;margin-bottom:1rem;}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+.pix-box{background:rgba(255,255,255,0.05);border:1px solid rgba(255,82,82,0.3);
+  border-radius:16px;padding:1.2rem;text-align:center;display:none;}
+.pix-box img{width:200px;height:200px;border-radius:12px;margin:0.5rem auto;display:block;}
+.pix-code{background:rgba(0,0,0,0.3);border-radius:8px;padding:0.5rem;
+  font-size:0.65rem;word-break:break-all;color:rgba(255,205,210,0.8);margin:0.5rem 0;}
+.copy-btn{background:rgba(255,82,82,0.3);border:none;color:white;padding:0.4rem 1rem;
+  border-radius:8px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.8rem;}
+.msg{padding:0.65rem 1rem;border-radius:10px;font-size:0.82rem;font-weight:700;
+  text-align:center;margin-top:0.5rem;display:none;}
+.msg.error{background:rgba(255,82,82,0.15);color:#FF8A80;}
+.msg.success{background:rgba(34,201,122,0.12);color:#6EE7B7;}
+.msg.info{background:rgba(255,200,80,0.12);color:#FFD580;}
+.logout{text-align:center;margin-top:1rem;}
+.logout a{color:rgba(255,180,180,0.6);font-size:0.78rem;cursor:pointer;text-decoration:none;}
+#loadingScreen{text-align:center;padding:2rem;color:rgba(255,205,210,0.7);}
+#paymentUI{display:none;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Matematica<span class="at">@</span><span class="app">App</span></div>
+  <h2 id="subtitle">Verificando sua conta…</h2>
+
+  <div id="loadingScreen">
+    <div style="font-size:2rem;margin-bottom:0.5rem;">⏳</div>
+    <div>Aguarde…</div>
+  </div>
+
+  <div id="paymentUI">
+    <div class="plans">
+      <div class="plan selected" id="planMonthly" onclick="selectPlan('monthly')">
+        <div class="period">Mensal</div>
+        <div class="price" id="priceMonthly">R$21,99</div>
+        <div style="font-size:0.75rem;color:rgba(255,205,210,0.6);">por mês</div>
+      </div>
+      <div class="plan" id="planYearly" onclick="selectPlan('yearly')">
+        <div class="period">Anual</div>
+        <div class="price" id="priceYearly">R$250,00</div>
+        <div style="font-size:0.75rem;color:rgba(255,205,210,0.6);">por ano</div>
+        <div class="save">Economize 5%</div>
+      </div>
+    </div>
+
+    <div style="background:rgba(255,82,82,0.08);border:1px solid rgba(255,82,82,0.25);border-radius:16px;padding:1.2rem;margin-bottom:1.5rem;">
+      <label for="studentsCount" style="display:block;margin-bottom:0.8rem;font-weight:700;color:rgba(255,205,210,0.9);">
+        Número máximo de alunos
+      </label>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <input type="range" id="studentsCount" min="35" max="200" value="35" oninput="updatePrice()" style="flex:1;accent-color:#FF5252;">
+        <span id="studentsLabel" style="font-weight:900;font-size:1.4rem;color:#FF8A80;min-width:40px;text-align:right;">35</span>
+      </div>
+      <div style="font-size:0.75rem;color:rgba(255,205,210,0.7);margin-top:0.6rem;line-height:1.4;">
+        Até 35 alunos sem custo extra.<br>
+        Adicional: <strong>+R$ 1,00/mês</strong> ou <strong>+R$ 10,00/ano</strong> por aluno.
+      </div>
+    </div>
+
+    <button class="btn" id="btnPay" onclick="doPayment()">Gerar PIX</button>
+
+    <div class="pix-box" id="pixBox">
+      <p style="font-weight:800;margin-bottom:0.5rem;">Escaneie o QR Code PIX</p>
+      <img id="qrImg" src="" alt="QR Code PIX">
+      <p style="font-size:0.78rem;color:rgba(255,205,210,0.7);margin-bottom:0.3rem;">Ou copie o código:</p>
+      <div class="pix-code" id="pixCode"></div>
+      <button class="copy-btn" onclick="copyPix()">📋 Copiar código PIX</button>
+      <p style="font-size:0.72rem;color:rgba(255,205,210,0.6);margin-top:0.8rem;">
+        Após o pagamento, o acesso é liberado automaticamente.
+      </p>
+    </div>
+  </div>
+
+  <div class="msg" id="msg"></div>
+  <div class="logout"><a onclick="doLogout()">Sair da conta</a></div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, onAuthStateChanged, signOut }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, doc, getDoc }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const app = initializeApp({
+  apiKey: "AIzaSyDJ4ZxM-1DmDrUj3yIar4C_tPqS3Gp1S1Q",
+  authDomain: "matematica-app-a59ef.firebaseapp.com",
+  projectId: "matematica-app-a59ef",
+  storageBucket: "matematica-app-a59ef.firebasestorage.app",
+  messagingSenderId: "1080081552143",
+  appId: "1:1080081552143:web:2316e6b57bc1097f25a47a"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let selectedPlan = 'monthly';
+let currentUser = null;
+let currentStudentsCount = 35;
+let pollingInterval = null;
+
+// ── 1. Verifica assinatura ANTES de mostrar a tela de pagamento ─────────────
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { window.location.href = './login.html'; return; }
+  currentUser = user;
+
+  try {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists()) {
+      const sub = snap.data().subscription;
+      const now = new Date();
+
+      // Assinatura ativa e dentro do período → entra direto
+      if (sub && sub.status === 'active') {
+        const periodEnd = new Date(sub.currentPeriodEnd);
+        if (!isNaN(periodEnd.getTime()) && now < periodEnd) {
+          showMsg('✅ Assinatura ativa! Redirecionando…', 'success');
+          setTimeout(() => { window.location.href = './mathem.html'; }, 1200);
+          return;
+        }
+      }
+
+      // Trial ainda válido → entra direto
+      if (sub && sub.status === 'trial') {
+        const trialEnd = new Date(sub.trialEndsAt);
+        if (!isNaN(trialEnd.getTime()) && now < trialEnd) {
+          window.location.href = './mathem.html';
+          return;
+        }
+      }
+    }
+  } catch(e) {
+    console.error('Erro ao verificar assinatura:', e);
+  }
+
+  // Precisa pagar: exibe o subtítulo certo e mostra a UI
+  const reason = new URLSearchParams(location.search).get('reason');
+  const subtitleMap = {
+    trial_expired:    'Seu trial expirou. Assine para continuar!',
+    expired:          'Sua assinatura expirou. Renove para continuar!',
+    no_access:        'Escolha um plano para ter acesso.',
+    teacher_expired:  'O plano do professor expirou.'
+  };
+  document.getElementById('subtitle').textContent =
+    subtitleMap[reason] || 'Escolha seu plano para continuar';
+
+  document.getElementById('loadingScreen').style.display = 'none';
+  document.getElementById('paymentUI').style.display = 'block';
+});
+
+// ── 2. Polling: verifica Firestore a cada 4s após PIX gerado ───────────────
+function startPaymentPolling(user) {
+  if (pollingInterval) return;
+  let attempts = 0;
+  pollingInterval = setInterval(async () => {
+    attempts++;
+    if (attempts > 45) { // ~3 minutos
+      clearInterval(pollingInterval); pollingInterval = null;
+      showMsg('⚠️ Tempo esgotado. Se já pagou, recarregue a página.', 'info');
+      return;
+    }
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (!snap.exists()) return;
+      const sub = snap.data().subscription;
+      if (sub && sub.status === 'active') {
+        clearInterval(pollingInterval); pollingInterval = null;
+        showMsg('✅ Pagamento confirmado! Redirecionando…', 'success');
+        setTimeout(() => { window.location.href = './mathem.html'; }, 1500);
+      }
+    } catch(e) { /* silencioso */ }
+  }, 4000);
+}
+
+// ── 3. Preços ──────────────────────────────────────────────────────────────
+window.updatePrice = function() {
+  currentStudentsCount = parseInt(document.getElementById('studentsCount').value, 10);
+  document.getElementById('studentsLabel').textContent = currentStudentsCount;
+  const add = Math.max(0, currentStudentsCount - 35);
+  document.getElementById('priceMonthly').textContent =
+    'R$' + (21.99 + add).toFixed(2).replace('.', ',');
+  document.getElementById('priceYearly').textContent =
+    'R$' + (250.00 + add * 10).toFixed(2).replace('.', ',');
+  document.getElementById('pixBox').style.display = 'none';
+  const btn = document.getElementById('btnPay');
+  btn.disabled = false; btn.textContent = 'Gerar PIX';
+};
+
+// ── 4. Troca de plano ──────────────────────────────────────────────────────
+window.selectPlan = function(plan) {
+  if (selectedPlan === plan) return;
+  selectedPlan = plan;
+  document.getElementById('planMonthly').classList.toggle('selected', plan === 'monthly');
+  document.getElementById('planYearly').classList.toggle('selected', plan === 'yearly');
+  document.getElementById('pixBox').style.display = 'none';
+  if (pollingInterval) { clearInterval(pollingInterval); pollingInterval = null; }
+  const btn = document.getElementById('btnPay');
+  btn.disabled = false; btn.textContent = 'Gerar PIX';
+};
+
+// ── 5. Gerar PIX (APENAS ao clicar no botão, nunca automático) ─────────────
+window.doPayment = async function() {
+  if (!currentUser) return;
+  const btn = document.getElementById('btnPay');
+  btn.disabled = true; btn.textContent = 'Gerando PIX…';
+  showMsg('', '');
+  try {
+    const token = await currentUser.getIdToken(true); // token fresco
+    const res = await fetch('/api/create-payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ plan: selectedPlan, studentsCount: currentStudentsCount })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Erro ao criar pagamento');
+
+    document.getElementById('pixBox').style.display = 'block';
+    document.getElementById('qrImg').src = `data:image/png;base64,${data.qrCodeBase64}`;
+    document.getElementById('pixCode').textContent = data.qrCode;
+    btn.textContent = 'PIX gerado ✅';
+    showMsg('⏳ Aguardando confirmação do pagamento…', 'info');
+    startPaymentPolling(currentUser);
+  } catch(e) {
+    showMsg('Erro: ' + e.message, 'error');
+    btn.disabled = false; btn.textContent = 'Gerar PIX';
+  }
+};
+
+window.copyPix = function() {
+  navigator.clipboard.writeText(document.getElementById('pixCode').textContent)
+    .then(() => showMsg('Código copiado!', 'success'));
+};
+
+window.doLogout = async function() {
+  if (pollingInterval) clearInterval(pollingInterval);
+  await signOut(auth);
+  window.location.href = './login.html';
+};
+
+function showMsg(text, type) {
+  const el = document.getElementById('msg');
+  el.style.display = text ? 'block' : 'none';
+  el.className = 'msg ' + type;
+  el.textContent = text;
+}
+</script>
+</body>
+</html>

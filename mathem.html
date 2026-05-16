@@ -383,6 +383,97 @@ window.openStudentAnalytics = async function(studentId, studentName) {
   }
 };
 
+window.exportClassToCSV = async function() {
+  const btn = document.getElementById('btnExportCsv');
+  btn.textContent = 'Gerando...';
+  try {
+    const q = query(collection(db, 'users'), where('teacherId', '==', auth.currentUser.uid), where('role', '==', 'student'));
+    const snap = await getDocs(q);
+    
+    const pq = query(collection(db, 'progress'), where('teacherId', '==', auth.currentUser.uid));
+    const pSnap = await getDocs(pq);
+    const progressMap = {};
+    pSnap.forEach(doc => {
+      const p = doc.data();
+      if (!progressMap[p.studentId]) progressMap[p.studentId] = { xp: 0, count: 0, corrects: 0, totalQ: 0 };
+      progressMap[p.studentId].xp += (p.score || 0);
+      progressMap[p.studentId].count++;
+      progressMap[p.studentId].corrects += (p.correctAnswers || 0);
+      progressMap[p.studentId].totalQ += (p.totalQuestions || 0);
+    });
+    
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Nome do Aluno,Email,Total XP,Atividades Feitas,Media de Acertos (%)\n";
+    
+    snap.forEach(doc => {
+      const student = doc.data();
+      const id = doc.id;
+      const prog = progressMap[id] || { xp: 0, count: 0, corrects: 0, totalQ: 0 };
+      const avg = prog.totalQ > 0 ? Math.round((prog.corrects / prog.totalQ) * 100) : 0;
+      
+      const row = `"${student.name || 'Sem nome'}","${student.email || ''}",${prog.xp},${prog.count},${avg}%`;
+      csvContent += row + "\n";
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Relatorio_Turma_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (e) {
+    console.error(e);
+    alert('Erro ao exportar dados.');
+  }
+  btn.textContent = '⬇️ Exportar Excel (CSV)';
+};
+
+window.exportStudentToPDF = function() {
+  const nome = document.getElementById('analyticsStudentName').textContent;
+  const xp = document.getElementById('analyticsTotalXP').textContent;
+  const acts = document.getElementById('analyticsActivities').textContent;
+  const avg = document.getElementById('analyticsAvgScore').textContent;
+  const last = document.getElementById('analyticsLastAccess').textContent;
+  
+  const good = document.getElementById('analyticsGoodSkills').innerHTML;
+  const bad = document.getElementById('analyticsBadSkills').innerHTML;
+  const plan = document.getElementById('analyticsActionPlan').innerHTML;
+  
+  const html = `<!DOCTYPE html><html lang="pt-br"><head><meta charset="UTF-8"><title>Relatório - ${nome}</title>
+<style>
+body{font-family:Arial,sans-serif;margin:20px;color:#111;font-size:11pt;line-height:1.5;}
+.cab{text-align:center;margin-bottom:18px;border-bottom:3px solid #1E3A8A;padding-bottom:10px;}
+.escola{font-size:14pt;font-weight:bold;color:#1E3A8A;text-transform:uppercase;}
+.box{border:1px solid #ccc;padding:15px;border-radius:8px;margin-bottom:15px;}
+.good{color:green;} .bad{color:red;}
+h3{margin-top:0;font-size:12pt;color:#1E3A8A;}
+@media print{body{margin:0;}}
+</style></head><body>
+<div class="cab">
+  <div class="escola">Matemática·SP - Relatório do Aluno</div>
+  <div style="font-size:14pt;font-weight:bold;margin:8px 0;">${nome}</div>
+  <div style="font-size:10pt;color:#555;">${last}</div>
+</div>
+<div style="display:flex;gap:15px;margin-bottom:15px;">
+  <div class="box" style="flex:1;"><strong>Progresso Geral:</strong><br>${xp}<br>${acts}</div>
+  <div class="box" style="flex:1;"><strong>Taxa de Acerto:</strong><br><span style="font-size:14pt;font-weight:bold;">${avg}</span></div>
+</div>
+<div class="box"><h3>✅ Habilidades Atingidas (Acima de 70%)</h3>${good}</div>
+<div class="box"><h3>⚠️ Requer Atenção (Abaixo de 60%)</h3>${bad}</div>
+<div class="box"><h3>💡 Plano de Ação Recomendado</h3>${plan}</div>
+<div style="margin-top:20px;text-align:center;font-size:8pt;color:#888;border-top:1px solid #ddd;padding-top:8px;">Relatório gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
+<script>window.onload=()=>{window.print();}<\/script></body></html>`;
+
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Relatorio_${nome.replace(/\s+/g,'_')}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
 function _showTrialBanner(days) {
   if (document.getElementById('_trial_banner')) return;
   const plural = days === 1 ? 'dia' : 'dias';
@@ -1005,7 +1096,10 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
   </button>
   
   <div id="teacherDashboard" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.125rem;margin-bottom:1.25rem;">
-    <h3 style="font-size:1rem;margin-bottom:0.8rem;color:var(--primary);">👨‍🏫 Meus Alunos</h3>
+    <h3 style="font-size:1rem;margin-bottom:0.8rem;color:var(--primary);display:flex;justify-content:space-between;align-items:center;">
+      <span>👨‍🏫 Meus Alunos</span>
+      <button class="btn-primary" id="btnExportCsv" onclick="exportClassToCSV()" style="font-size:0.75rem;padding:0.4rem 0.8rem;">⬇️ Exportar Excel (CSV)</button>
+    </h3>
     <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;">
       <div style="background:var(--surface-2);padding:0.6rem 1rem;border-radius:8px;border:1px solid var(--border-2);">
         <div style="font-size:0.65rem;color:var(--text-secondary);text-transform:uppercase;margin-bottom:0.2rem;">Código de Convite</div>
@@ -1030,12 +1124,15 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 <!-- ANALYTICS MODAL -->
 <div class="plano-overlay" id="analyticsOverlay" style="display:none;z-index:9999;">
   <div class="plano-modal" style="max-width:700px;width:95%;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;">
       <div>
         <h2 style="font-size:1.4rem;font-weight:900;" id="analyticsStudentName">Aluno</h2>
         <div style="font-size:0.8rem;color:var(--text-secondary);" id="analyticsLastAccess">Último acesso: -</div>
       </div>
-      <button style="background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;" onclick="document.getElementById('analyticsOverlay').style.display='none'">×</button>
+      <div style="display:flex;gap:0.5rem;align-items:center;">
+        <button class="btn-primary" onclick="exportStudentToPDF()" style="font-size:0.75rem;padding:0.4rem 0.8rem;background:var(--secondary);border:none;">📄 Imprimir PDF</button>
+        <button style="background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;" onclick="document.getElementById('analyticsOverlay').style.display='none'">×</button>
+      </div>
     </div>
     
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">

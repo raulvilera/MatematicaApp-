@@ -87,6 +87,30 @@ export default async function handler(req, res) {
         });
 
         console.log('[webhook] Firestore atualizado com sucesso ✅ uid:', uid);
+
+        // ── ENVIAR PARA O GOOGLE SHEETS ──
+        try {
+          const userDoc = await db.collection('users').doc(uid).get();
+          const userData = userDoc.data() || {};
+          
+          const sheetData = {
+            dataHora: now.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+            nome: userData.name || 'Cliente (Sem Nome)',
+            email: payment.payer?.email || userData.email || 'Email oculto',
+            plano: plan === 'yearly' ? 'Anual' : 'Mensal',
+            valor: `R$ ${payment.transaction_amount.toFixed(2).replace('.', ',')}`,
+            status: 'ATIVO'
+          };
+
+          await fetch('https://script.google.com/macros/s/AKfycbxDRg5pbSsWGbR13ptQmDK2xGDltG2qcEVYWZuoi2e2KwTfrpuR8KtYm1__1JULO80/exec', {
+            method: 'POST',
+            body: JSON.stringify(sheetData)
+          });
+          console.log('[webhook] Planilha Google atualizada com sucesso! ✅');
+        } catch (sheetErr) {
+          console.error('[webhook] Erro ao salvar na planilha:', sheetErr.message);
+        }
+
       } else {
         console.log('[webhook] pagamento não aprovado, status:', payment.status);
       }

@@ -703,6 +703,16 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .tema-pill:hover{border-color:rgba(155,111,247,0.4);color:var(--text);}
 .tema-pill.active{background:linear-gradient(135deg,rgba(155,111,247,0.25),rgba(79,142,247,0.2));
   border-color:var(--secondary);color:var(--text);}
+.bimestre-heading{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;
+  gap:0.75rem;margin-top:0.35rem;padding:0.7rem 0.85rem;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius-sm);}
+.bimestre-title{font-size:0.82rem;font-weight:800;color:var(--text);letter-spacing:0;}
+.bimestre-count{font-size:0.68rem;font-weight:700;color:var(--text-secondary);
+  background:var(--surface-2);border:1px solid var(--border);border-radius:2rem;padding:0.15rem 0.5rem;
+  white-space:nowrap;}
+.bimestre-empty{grid-column:1/-1;background:var(--surface);border:1px dashed var(--border-2);
+  border-radius:var(--radius-sm);padding:1.25rem;text-align:center;color:var(--text-secondary);
+  font-size:0.82rem;}
 
 /* ── CARDS ── */
 .ae-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:0.75rem;}
@@ -1148,6 +1158,10 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
     <p style="font-size:0.8rem;color:var(--text-secondary);">Plataforma completa com <strong style="color:var(--secondary)">todos os temas</strong> do BNCC: simuladores interativos, atividades geradas por IA, Arena e Quiz para cada tópico.</p>
   </div>
   <div class="serie-nav" id="serieNavHome"></div>
+  <div id="bimestresContainerHome" class="temas-container" style="display:none;">
+    <div class="temas-label">Calendario bimestral <span id="bimestresSerieLabel"></span></div>
+    <div class="temas-grid" id="bimestresPillsHome"></div>
+  </div>
   <div id="temasContainerHome" class="temas-container" style="display:none;">
     <div class="temas-label">📚 Unidades Temáticas <span id="temasSerieLabel"></span></div>
     <div class="temas-grid" id="temasPillsHome"></div>
@@ -1165,6 +1179,10 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 
 <div class="page" id="page-simuladores">
   <div class="serie-nav" id="serieNavSim"></div>
+  <div id="bimestresContainerSim" class="temas-container" style="display:none;">
+    <div class="temas-label">Filtrar por bimestre</div>
+    <div class="temas-grid" id="bimestresPillsSim"></div>
+  </div>
   <div id="temasContainerSim" class="temas-container" style="display:none;">
     <div class="temas-label">📚 Filtrar por Unidade</div>
     <div class="temas-grid" id="temasPillsSim"></div>
@@ -1276,8 +1294,12 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
       </div>
     </div>
   </div>
-  
+
   <div class="serie-nav" id="serieNavProf"></div>
+  <div id="bimestresContainerProf" class="temas-container" style="display:none;">
+    <div class="temas-label">Filtrar por bimestre</div>
+    <div class="temas-grid" id="bimestresPillsProf"></div>
+  </div>
   <div class="section-title">Estratégias Metodológicas</div>
   <div class="ae-grid" id="profGrid"></div>
 </div>
@@ -3887,6 +3909,7 @@ document.addEventListener('keydown', e => {
    ==================================================== */
 let currentSerie = null, arenaState = null, quizState = null, xpTotal = 0;
 let currentTemaFilter = null;
+let currentBimestreFilter = null;
 
 const nomesSim = {
   fracao:'Frações',decimal:'Sistema Decimal',reta:'Reta Numérica',operacoes:'Operações',
@@ -3898,6 +3921,55 @@ const nomesSim = {
   geometria3d:'Geometria 3D'
 };
 
+const bimestreLabels = {
+  1:'1o bimestre',
+  2:'2o bimestre',
+  3:'3o bimestre',
+  4:'4o bimestre'
+};
+
+function calcularBimestre(index, total){
+  if (!total) return 1;
+  return Math.min(4, Math.floor(index * 4 / total) + 1);
+}
+
+function aesDaSerieComBimestre(data){
+  return data.aes.map((ae, index) => ({
+    ...ae,
+    bimestre: ae.bimestre || calcularBimestre(index, data.aes.length)
+  }));
+}
+
+function filtrarPorBimestre(items){
+  return currentBimestreFilter
+    ? items.filter(item => item.bimestre === currentBimestreFilter)
+    : items;
+}
+
+function renderGroupedCards(containerId, items, renderCard, emptyText){
+  const container = document.getElementById(containerId);
+  const visibleItems = filtrarPorBimestre(items);
+
+  if (!visibleItems.length){
+    container.innerHTML = `<div class="bimestre-empty">${emptyText}</div>`;
+    return;
+  }
+
+  const html = [1,2,3,4].map(bimestre => {
+    const group = visibleItems.filter(item => item.bimestre === bimestre);
+    if (!group.length) return '';
+    const countLabel = group.length === 1 ? '1 item' : `${group.length} itens`;
+    return `
+      <div class="bimestre-heading">
+        <div class="bimestre-title">${bimestreLabels[bimestre]}</div>
+        <div class="bimestre-count">${countLabel}</div>
+      </div>
+      ${group.map(renderCard).join('')}`;
+  }).join('');
+
+  container.innerHTML = html;
+}
+
 function changePage(p){
   document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
@@ -3908,7 +3980,7 @@ function changePage(p){
 }
 
 function selectSerie(id, btn){
-  currentSerie = id; currentTemaFilter = null;
+  currentSerie = id; currentTemaFilter = null; currentBimestreFilter = null;
   document.querySelectorAll('.serie-btn').forEach(b => b.classList.remove('active'));
   if (btn){
     const label = btn.textContent;
@@ -3924,6 +3996,7 @@ function selectSerie(id, btn){
     }
   }
   renderAEs(); renderSimuladores(); renderArena(); renderQuiz(); renderProfessor();
+  renderBimestresPills();
   renderTemasPills();
   updateProgress();
 }
@@ -3932,11 +4005,44 @@ function getTemasUnicos(){
   if (!currentSerie) return [];
   const data = seriesData[currentSerie];
   const tags = {};
-  data.aes.forEach(ae => {
+  aesDaSerieComBimestre(data).forEach(ae => {
     const tagLabel = {num:'Números',geo:'Geometria',alg:'Álgebra',est:'Estatística'}[ae.tag] || ae.tag;
     tags[ae.tag] = tagLabel;
   });
   return Object.entries(tags).map(([tag, label]) => ({tag, label}));
+}
+
+function renderBimestresPills(){
+  const containers = [
+    document.getElementById('bimestresContainerHome'),
+    document.getElementById('bimestresContainerSim'),
+    document.getElementById('bimestresContainerProf')
+  ];
+
+  if (!currentSerie){
+    containers.forEach(container => { if (container) container.style.display = 'none'; });
+    return;
+  }
+
+  const pillsHtml = `<button class="tema-pill active" data-bimestre="all" onclick="filtrarBimestre('all',this)">Todos</button>` +
+    [1,2,3,4].map(b => `<button class="tema-pill" data-bimestre="${b}" onclick="filtrarBimestre(${b},this)">${bimestreLabels[b]}</button>`).join('');
+
+  containers.forEach(container => { if (container) container.style.display = 'block'; });
+  ['bimestresPillsHome','bimestresPillsSim','bimestresPillsProf'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = pillsHtml;
+  });
+  const label = document.getElementById('bimestresSerieLabel');
+  if (label) label.textContent = ' - ' + seriesData[currentSerie].name;
+}
+
+function filtrarBimestre(bimestre, btn){
+  currentBimestreFilter = bimestre === 'all' ? null : Number(bimestre);
+  document.querySelectorAll('.tema-pill[data-bimestre]').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll(`.tema-pill[data-bimestre="${bimestre}"]`).forEach(b => b.classList.add('active'));
+  renderAEs();
+  renderSimuladores();
+  renderProfessor();
 }
 
 function renderTemasPills(){
@@ -3956,7 +4062,7 @@ function renderTemasPills(){
 
 function filtrarTema(tag, btn){
   currentTemaFilter = tag === 'all' ? null : tag;
-  document.querySelectorAll('.tema-pill').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tema-pill[data-tag]').forEach(b => b.classList.remove('active'));
   document.querySelectorAll(`.tema-pill[data-tag="${tag}"]`).forEach(b => b.classList.add('active'));
   renderAEs();
 }
@@ -3964,10 +4070,10 @@ function filtrarTema(tag, btn){
 function renderAEs(){
   if (!currentSerie) return;
   const data = seriesData[currentSerie];
-  const aes = currentTemaFilter ? data.aes.filter(ae => ae.tag === currentTemaFilter) : data.aes;
+  const aes = aesDaSerieComBimestre(data).filter(ae => !currentTemaFilter || ae.tag === currentTemaFilter);
   const tagColors = {num:'ae-tag num',geo:'ae-tag geo',alg:'ae-tag alg',est:'ae-tag est'};
   const tagLabels = {num:'Números',geo:'Geometria',alg:'Álgebra',est:'Estatística'};
-  document.getElementById('aeGrid').innerHTML = aes.map(ae => `
+  renderGroupedCards('aeGrid', aes, ae => `
     <div class="ae-card">
       <div class="ae-code">${ae.code}</div>
       <span class="${tagColors[ae.tag]||'ae-tag num'}">${tagLabels[ae.tag]||ae.tag}</span>
@@ -3979,21 +4085,33 @@ function renderAEs(){
         <button class="btn-sm plano" onclick="abrirPlanoModal('${ae.code}','${ae.title}','${ae.sim}','${ae.desc}')">📋 Plano</button>
         <button class="btn-sm atv" onclick="openAtvModal('${ae.sim}','${ae.title}','${currentSerie}')">✏️ Atividade</button>
       </div>
-    </div>`).join('');
+    </div>`, 'Nenhum conteudo encontrado para este filtro.');
 }
 
 function renderSimuladores(){
   if (!currentSerie) return;
   const data = seriesData[currentSerie];
-  document.getElementById('simGrid').innerHTML = data.simuladores.map(tipo => `
+  const aes = aesDaSerieComBimestre(data);
+  const simItems = data.simuladores
+    .map(tipo => {
+      const usos = aes.filter(ae => ae.sim === tipo);
+      const bimestres = usos.length ? [...new Set(usos.map(ae => ae.bimestre))] : [1];
+      const bimestre = currentBimestreFilter
+        ? (bimestres.includes(currentBimestreFilter) ? currentBimestreFilter : null)
+        : bimestres[0];
+      return {tipo, bimestre};
+    })
+    .filter(item => item.bimestre);
+
+  renderGroupedCards('simGrid', simItems, item => { const tipo = item.tipo; return `
     <div class="ae-card">
-      <div class="ae-title">${nomesSim[tipo]||tipo}</div>
-      <div class="ae-desc">${(simImgDB[tipo]||simImgDB.geometria3d).caption}</div>
+      <div class="ae-title">${nomesSim[item.tipo]||item.tipo}</div>
+      <div class="ae-desc">${(simImgDB[item.tipo]||simImgDB.geometria3d).caption}</div>
       <div class="ae-actions">
         <button class="btn-sm sim" onclick="openSimPopup('${tipo}','${nomesSim[tipo]||tipo}',this)">▶ Simular</button>
         <button class="btn-sm atv" onclick="openAtvModal('${tipo}','${nomesSim[tipo]||tipo}','${currentSerie}')">✏️ Atividade</button>
       </div>
-    </div>`).join('');
+    </div>`; }, 'Nenhum simulador encontrado para este bimestre.');
 }
 
 function renderArena(){
@@ -4260,7 +4378,19 @@ function startSerieQuiz(){ renderQuiz(); changePage('quiz'); }
 function renderProfessor(){
   if (!currentSerie) return;
   const data = seriesData[currentSerie];
-  document.getElementById('profGrid').innerHTML = data.simuladores.map(tipo => `
+  const aes = aesDaSerieComBimestre(data);
+  const simItems = data.simuladores
+    .map(tipo => {
+      const usos = aes.filter(ae => ae.sim === tipo);
+      const bimestres = usos.length ? [...new Set(usos.map(ae => ae.bimestre))] : [1];
+      const bimestre = currentBimestreFilter
+        ? (bimestres.includes(currentBimestreFilter) ? currentBimestreFilter : null)
+        : bimestres[0];
+      return {tipo, bimestre};
+    })
+    .filter(item => item.bimestre);
+
+  renderGroupedCards('profGrid', simItems, item => { const tipo = item.tipo; return `
     <div class="ae-card">
       <div class="ae-title">🎓 ${nomesSim[tipo]||tipo}</div>
       <div class="ae-desc">${(simImgDB[tipo]||simImgDB.geometria3d).caption}</div>
@@ -4268,7 +4398,7 @@ function renderProfessor(){
         <button class="btn-sm sim" onclick="openSimPopup('${tipo}','${nomesSim[tipo]||tipo}',this)">Ver recurso</button>
         <button class="btn-sm atv" onclick="openAtvModal('${tipo}','${nomesSim[tipo]||tipo}','${currentSerie}')">✏️ Atividade</button>
       </div>
-    </div>`).join('');
+    </div>`; }, 'Nenhum recurso encontrado para este bimestre.');
 }
 
 function updateProgress(){ document.getElementById('xpTotal').innerText = xpTotal; }

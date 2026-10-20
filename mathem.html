@@ -3419,8 +3419,20 @@ async function fetchComTimeout(url, options, timeoutMs) {
 async function carregarAtv(tipoIdx){
   const tipo=tiposAtv[tipoIdx];
   const k=`${atvState.tema}_${atvState.serie}_${tipoIdx}`;
-  _setLoading(`Gerando ${tipo.emoji} ${tipo.nome}… aguarde`);
+  _setLoading(`Preparando ${tipo.emoji} ${tipo.nome}…`);
   if(atvState.cache[k]){renderAtv(atvState.cache[k],tipo);return;}
+
+  /*
+   * Primeiro renderizamos uma atividade completa localmente. Isso evita que
+   * o aluno fique aguardando as quatro tentativas da API (que podem levar
+   * dezenas de segundos em celular ou quando o provedor está indisponível).
+   * Cada modalidade tem um gerador próprio em gerarFallback(), portanto a
+   * resposta é imediata e não repete a estrutura das outras modalidades.
+   */
+  const atividadeRapida = gerarFallback(atvState.tituloAE, tipoIdx, atvState.tema);
+  atvState.cache[k] = atividadeRapida;
+  renderAtv(atividadeRapida, tipo);
+  return;
 
   const curriculoInfo = {
     ef1:`1º Ano EF — Guia MAT_AI: números, medidas, geometria, operações e dados`,

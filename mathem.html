@@ -1427,6 +1427,75 @@ function getAppBaseUrl() {
    BANCO CURRICULAR COMPLETO
    ==================================================== */
 
+/* ── GUIA PRIORIZADO DE MATEMÁTICA — MAT_AI 2026 ── */
+const ef1_aes = [
+  {code:'EF01MA14',title:'Figuras geométricas planas no cotidiano',desc:'Identificar figuras geométricas planas e reconhecê-las em objetos do cotidiano.',sim:'geometria3d',tag:'geo'},
+  {code:'EF01MA18',title:'Datas e calendário',desc:'Identificar e registrar datas utilizando o calendário.',sim:'reta',tag:'med'},
+  {code:'EF01MA15',title:'Estimativa de comprimento, capacidade e massa',desc:'Estimar medidas e ordenar objetos do cotidiano por comprimento, capacidade e massa.',sim:'geometria3d',tag:'med'},
+  {code:'EF01MA19',title:'Sistema monetário brasileiro',desc:'Relacionar cédulas e moedas aos valores que representam em situações simples.',sim:'afim',tag:'num'},
+  {code:'EF01MA05',title:'Ordenação de números naturais até 100',desc:'Ordenar números naturais com ou sem apoio da reta numérica.',sim:'reta',tag:'num'},
+  {code:'EF01MA07',title:'Composição e decomposição de números',desc:'Compor e decompor números de duas ou mais ordens com ou sem material manipulável.',sim:'operacoes',tag:'num'},
+  {code:'EF01MA08',title:'Problemas de adição e subtração',desc:'Resolver situações-problema de adição e subtração utilizando estratégias pessoais.',sim:'operacoes',tag:'num'},
+  {code:'EF01MA23*',title:'Ideias de multiplicação e divisão',desc:'Resolver situações-problema envolvendo as ideias da multiplicação e da divisão.',sim:'operacoes',tag:'num'},
+  {code:'EF01MA10',title:'Padrões e sequências',desc:'Identificar regularidades ou padrões em sequências e reconhecer elementos ausentes.',sim:'graficos',tag:'alg'},
+  {code:'EF01MA21',title:'Tabelas e gráficos de colunas',desc:'Interpretar dados expressos em tabelas e gráficos de colunas simples.',sim:'graficos',tag:'est'},
+  {code:'EF01MA12',title:'Localização no espaço',desc:'Descrever a localização de pessoas e objetos a partir de um ponto de referência.',sim:'reta',tag:'geo'},
+  {code:'EF01MA17',title:'Medidas de tempo e calendário',desc:'Reconhecer medidas de tempo e suas relações utilizando o calendário.',sim:'reta',tag:'med'},
+  {code:'EF01MA08',title:'Problemas com as quatro operações',desc:'Resolver problemas de adição, subtração e noções de multiplicação e divisão com registros pessoais.',sim:'operacoes',tag:'num'},
+];
+const ef2_aes = [
+  {code:'EF02MA15',title:'Figuras geométricas planas e espaciais',desc:'Comparar figuras geométricas planas e espaciais, identificando características e relações com objetos do cotidiano.',sim:'geometria3d',tag:'geo'},
+  {code:'EF02MA12',title:'Localização e movimentação',desc:'Representar a localização e a movimentação de pessoas e objetos a partir de um ponto de referência.',sim:'reta',tag:'geo'},
+  {code:'EF02MA20',title:'Sistema monetário brasileiro',desc:'Resolver situações-problema envolvendo o sistema monetário brasileiro.',sim:'afim',tag:'num'},
+  {code:'EF02MA16',title:'Medidas de comprimento',desc:'Comparar medidas de comprimento usando unidades não padronizadas e padronizadas.',sim:'geometria3d',tag:'med'},
+  {code:'EF02MA19',title:'Instrumentos de medidas de tempo',desc:'Utilizar instrumentos de medidas de tempo, identificando intervalos e duração de eventos.',sim:'reta',tag:'med'},
+  {code:'EF02MA06',title:'Adição e subtração',desc:'Resolver situações-problema envolvendo os diferentes significados da adição e subtração.',sim:'operacoes',tag:'num'},
+  {code:'EF02MA01',title:'Sistema de numeração decimal',desc:'Comparar e ordenar números naturais compreendendo as características do sistema decimal.',sim:'reta',tag:'num'},
+  {code:'EF02MA07',title:'Adição de parcelas iguais',desc:'Resolver situações-problema envolvendo a adição de parcelas iguais (multiplicação).',sim:'operacoes',tag:'num'},
+  {code:'EF02MA09',title:'Sequências repetitivas e recursivas',desc:'Elaborar sequências repetitivas e recursivas, identificando regularidades e elementos ausentes.',sim:'graficos',tag:'alg'},
+  {code:'EF02MA22',title:'Tabelas, gráficos e dados',desc:'Registrar dados em tabelas simples e de dupla entrada e em gráficos de colunas.',sim:'graficos',tag:'est'},
+  {code:'EF02MA15',title:'Figuras geométricas planas',desc:'Nomear figuras geométricas planas considerando características e semelhanças.',sim:'geometria3d',tag:'geo'},
+  {code:'EF02MA17',title:'Massa e capacidade',desc:'Comparar unidades de medida de massa e capacidade com instrumentos padronizados e não padronizados.',sim:'geometria3d',tag:'med'},
+  {code:'EF02MA10',title:'Regularidades em sequências',desc:'Descrever regularidades de sequências repetitivas e recursivas, identificando elementos ausentes.',sim:'graficos',tag:'alg'},
+];
+const ef3_aes = [
+  {code:'EF03MA15',title:'Classificação de figuras planas',desc:'Classificar figuras geométricas planas identificando suas propriedades.',sim:'geometria3d',tag:'geo'},
+  {code:'EF03MA20',title:'Capacidade e massa',desc:'Estimar capacidade e massa com unidades não padronizadas e padronizadas, realizando conversões.',sim:'geometria3d',tag:'med'},
+  {code:'EF03MA22',title:'Intervalos e duração de eventos',desc:'Calcular intervalos e duração de eventos registrando horas e relacionando unidades de tempo.',sim:'reta',tag:'med'},
+  {code:'EF03MA24',title:'Problemas com sistema monetário',desc:'Resolver situações-problema envolvendo o sistema monetário brasileiro.',sim:'afim',tag:'num'},
+  {code:'EF03MA06',title:'Problemas de adição e subtração',desc:'Resolver problemas envolvendo adição e subtração.',sim:'operacoes',tag:'num'},
+  {code:'EF03MA06',title:'Problemas de multiplicação e divisão',desc:'Resolver problemas envolvendo multiplicação e divisão.',sim:'operacoes',tag:'num'},
+  {code:'EF03MA10',title:'Sequências numéricas recursivas',desc:'Identificar regularidades em sequências numéricas recursivas.',sim:'graficos',tag:'alg'},
+  {code:'EF03MA27',title:'Tabelas de dupla entrada e gráficos',desc:'Resolver problemas a partir de dados em tabelas de dupla entrada e gráficos de barras.',sim:'graficos',tag:'est'},
+  {code:'EF03MA12',title:'Localização e movimentação',desc:'Representar localização e movimentação usando pontos de referência, direção e sentido.',sim:'reta',tag:'geo'},
+  {code:'EF03MA19',title:'Unidades de medida usuais',desc:'Comparar unidades de medida não padronizadas e padronizadas mais usuais.',sim:'geometria3d',tag:'med'},
+  {code:'EF03MA14',title:'Ângulos e figuras geométricas',desc:'Descrever figuras geométricas planas e espaciais analisando suas características.',sim:'angulos',tag:'geo'},
+  {code:'EF03MA23',title:'Medidas de tempo',desc:'Resolver problemas com medidas de tempo e intervalos entre eventos.',sim:'reta',tag:'med'},
+  {code:'EF03MA11',title:'Relações de igualdade',desc:'Analisar relações de igualdade em adição e subtração e identificar elementos faltantes em sequências.',sim:'sistema',tag:'alg'},
+];
+const ef4_aes = [
+  {code:'EF04MA18',title:'Ângulos retos e não retos',desc:'Reconhecer ângulos retos e não retos em diferentes polígonos.',sim:'angulos',tag:'geo'},
+  {code:'EF04MA16B',title:'Localização e movimentação',desc:'Descrever movimentação e localização no espaço a partir de pontos de referência.',sim:'reta',tag:'geo'},
+  {code:'EF04MA20',title:'Medidas de comprimento, massa e capacidade',desc:'Resolver problemas envolvendo unidades de medidas de comprimento, massa e capacidade.',sim:'geometria3d',tag:'med'},
+  {code:'EF04MA04A',title:'Operações com números naturais',desc:'Resolver problemas com uma ou mais operações com números naturais usando diferentes estratégias.',sim:'operacoes',tag:'num'},
+  {code:'EF04MA10A',title:'Representações de números racionais',desc:'Estabelecer relações entre as representações dos números racionais.',sim:'fracao',tag:'num'},
+  {code:'EF04MA14',title:'Propriedades da igualdade',desc:'Reconhecer propriedades da igualdade e associar equivalência ao sinal de igual.',sim:'sistema',tag:'alg'},
+  {code:'EF04MA17A',title:'Figuras geométricas e regularidades',desc:'Reconhecer figuras geométricas planas e espaciais, identificando características e regularidades.',sim:'geometria3d',tag:'geo'},
+  {code:'EF04MA15',title:'Igualdade e sequências',desc:'Reconhecer propriedades da igualdade e regularidades em sequências numéricas.',sim:'sistema',tag:'alg'},
+  {code:'EF04MA27',title:'Dados em tabelas e gráficos',desc:'Resolver problemas a partir de dados apresentados em tabelas e gráficos.',sim:'graficos',tag:'est'},
+  {code:'EF04MA25',title:'Medidas e intervalos de tempo',desc:'Resolver situações-problema envolvendo medidas e intervalos de tempo.',sim:'reta',tag:'med'},
+  {code:'EF04MA25',title:'Sistema monetário e troco',desc:'Resolver problemas do sistema monetário envolvendo compra, venda, troco, desconto e prejuízo.',sim:'afim',tag:'num'},
+];
+const ef5_aes = [
+  {code:'EF05MA17',title:'Classificação de figuras e ângulos',desc:'Classificar figuras geométricas planas por propriedades, representações e ângulos.',sim:'angulos',tag:'geo'},
+  {code:'EF05MA19',title:'Perímetro, área e volume',desc:'Resolver problemas envolvendo o cálculo do perímetro, da área e do volume de figuras.',sim:'geometria3d',tag:'geo'},
+  {code:'EF05MA08',title:'Quatro operações com naturais e racionais',desc:'Resolver problemas com as quatro operações envolvendo números naturais e racionais em diversas representações.',sim:'operacoes',tag:'num'},
+  {code:'EF05MA12',title:'Igualdade e equivalência',desc:'Utilizar propriedades da igualdade e a noção de equivalência na resolução de problemas.',sim:'sistema',tag:'alg'},
+  {code:'EF05MA24',title:'Interpretação de dados',desc:'Interpretar dados apresentados em textos, tabelas e gráficos em diferentes contextos.',sim:'graficos',tag:'est'},
+  {code:'EF05MA16',title:'Figuras, ampliação e redução',desc:'Reconhecer figuras geométricas planas e espaciais e aplicar ampliação e redução de figuras poligonais.',sim:'geometria3d',tag:'geo'},
+  {code:'EF05MA15B',title:'Plano cartesiano',desc:'Representar localização e movimentação no plano cartesiano a partir de pontos de referência.',sim:'analitica',tag:'geo'},
+  {code:'EF05MA10',title:'Propriedades da igualdade',desc:'Resolver problemas envolvendo propriedades da igualdade e a noção de equivalência.',sim:'sistema',tag:'alg'},
+];
 const ef6_aes = [
   {code:'EF06MA07',title:'Frações como resultado de divisão',sim:'fracao',tag:'num',desc:'Fração como divisão: numerador ÷ denominador. Representação na reta numérica.'},
   {code:'EF06MA08',title:'Fração de uma quantidade',sim:'fracao',tag:'num',desc:'Estratégias para calcular a fração de uma quantidade. Resolução de problemas.'},
@@ -1661,6 +1730,11 @@ const em3_aes = [
 ];
 
 const seriesData = {
+  ef1:{name:'1º Ano — EF',aes:ef1_aes,simuladores:['geometria3d','reta','operacoes','graficos','afim'],arenaChallenges:gerarQ(1),quizBank:gerarQ(1)},
+  ef2:{name:'2º Ano — EF',aes:ef2_aes,simuladores:['geometria3d','reta','operacoes','graficos','afim'],arenaChallenges:gerarQ(2),quizBank:gerarQ(2)},
+  ef3:{name:'3º Ano — EF',aes:ef3_aes,simuladores:['geometria3d','reta','operacoes','graficos','afim'],arenaChallenges:gerarQ(3),quizBank:gerarQ(3)},
+  ef4:{name:'4º Ano — EF',aes:ef4_aes,simuladores:['geometria3d','reta','operacoes','graficos','afim','angulos'],arenaChallenges:gerarQ(4),quizBank:gerarQ(4)},
+  ef5:{name:'5º Ano — EF',aes:ef5_aes,simuladores:['geometria3d','reta','operacoes','graficos','afim','angulos','analitica'],arenaChallenges:gerarQ(5),quizBank:gerarQ(5)},
   ef6:{name:'6º Ano — EF',aes:ef6_aes,simuladores:['fracao','reta','multiplos','poligonos','triangulos','quadrilateros','angulos','decimal','operacoes','geometria3d'],arenaChallenges:gerarQ(6),quizBank:gerarQ(6)},
   ef7:{name:'7º Ano — EF',aes:ef7_aes,simuladores:['decimal','reta','operacoes','analitica','potencia','pitagoras','sistema','fracao','graficos','geometria3d'],arenaChallenges:gerarQ(7),quizBank:gerarQ(7)},
   ef8:{name:'8º Ano — EF',aes:ef8_aes,simuladores:['afim','sistema','analitica','operacoes','exponencial','pitagoras','quadratica','fracao','graficos','potencia'],arenaChallenges:gerarQ(8),quizBank:gerarQ(8)},
@@ -3467,7 +3541,7 @@ function lerParamAtv(){
   if (payload && payload.v === 1 && payload.qs) {
     // ★ Novo formato: restaura atividade completa sem chamar a API
     const { serie, tema, titulo, tipoIdx, qs, cod } = payload;
-    const serieMap = {ef6:'ef6',ef7:'ef7',ef8:'ef8',ef9:'ef9',em1:'em1',em2:'em2',em3:'em3'};
+    const serieMap = {ef1:'ef1',ef2:'ef2',ef3:'ef3',ef4:'ef4',ef5:'ef5',ef6:'ef6',ef7:'ef7',ef8:'ef8',ef9:'ef9',em1:'em1',em2:'em2',em3:'em3'};
     const serieKey = serieMap[serie] || 'ef6';
     const questoes = qs.map(q => ({
       enunciado: q.e, opcoes: q.o, correta: q.c,
@@ -3512,7 +3586,7 @@ function lerParamAtv(){
   const serieRaw = parts[0].toLowerCase();
   const temaRaw  = parts[1].toLowerCase();
   const tipoRaw  = parseInt(parts[2].replace('T','')) || 0;
-  const serieMap2 = {ef6:'ef6',ef7:'ef7',ef8:'ef8',ef9:'ef9',em1:'em1',em2:'em2',em3:'em3'};
+  const serieMap2 = {ef1:'ef1',ef2:'ef2',ef3:'ef3',ef4:'ef4',ef5:'ef5',ef6:'ef6',ef7:'ef7',ef8:'ef8',ef9:'ef9',em1:'em1',em2:'em2',em3:'em3'};
   const serieKey2 = serieMap2[serieRaw] || 'ef6';
   const data2 = seriesData[serieKey2];
   const ae2 = data2 ? data2.aes.find(a => a.sim === temaRaw || a.code.toLowerCase().includes(temaRaw)) : null;
@@ -3986,8 +4060,8 @@ function selectSerie(id, btn){
     const label = btn.textContent;
     document.querySelectorAll('.serie-btn').forEach(b => { if (b.textContent === label) b.classList.add('active'); });
   } else {
-    const names = ['6º Ano','7º Ano','8º Ano','9º Ano','1ª EM','2ª EM','3ª EM'];
-    const keys  = ['ef6','ef7','ef8','ef9','em1','em2','em3'];
+    const names = ['1º Ano','2º Ano','3º Ano','4º Ano','5º Ano','6º Ano','7º Ano','8º Ano','9º Ano','1ª EM','2ª EM','3ª EM'];
+    const keys  = ['ef1','ef2','ef3','ef4','ef5','ef6','ef7','ef8','ef9','em1','em2','em3'];
     const idx = keys.indexOf(id);
     if (idx >= 0){
       document.querySelectorAll('.serie-btn').forEach(b => {
@@ -4412,8 +4486,8 @@ function showToast(msg){
 
 /* ── INICIALIZAÇÃO ── */
 function initSelectors(){
-  const series = ['ef6','ef7','ef8','ef9','em1','em2','em3'];
-  const names  = ['6º Ano','7º Ano','8º Ano','9º Ano','1ª EM','2ª EM','3ª EM'];
+  const series = ['ef1','ef2','ef3','ef4','ef5','ef6','ef7','ef8','ef9','em1','em2','em3'];
+  const names  = ['1º Ano','2º Ano','3º Ano','4º Ano','5º Ano','6º Ano','7º Ano','8º Ano','9º Ano','1ª EM','2ª EM','3ª EM'];
   series.forEach((s, i) => {
     const btn = `<button class="serie-btn" onclick="selectSerie('${s}',this)">${names[i]}</button>`;
     document.querySelectorAll('.serie-nav').forEach(nav => nav.innerHTML += btn);

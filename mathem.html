@@ -1753,6 +1753,23 @@ const seriesData = {
   em3:{name:'3ª EM',aes:em3_aes,simuladores:['graficos','geometria3d','triangulos','poligonos','semelhanca','pitagoras','analitica','quadratica','exponencial','ciclo'],arenaChallenges:gerarQ_em3(),quizBank:gerarQ_em3()},
 };
 
+/* ── DISTRIBUIÇÃO BIMESTRAL DO GUIA MAT_AI 2026 ──
+   Alguns AEs atravessam mais de um bimestre; mantemos a lista completa. */
+const bimestresGuiaIniciais = {
+  ef1:[[3],[3],[3],[3,4],[3,4],[3],[3],[3,4],[3,4],[3,4],[4],[4],[4]],
+  ef2:[[3],[3],[3],[3,4],[3],[3],[3,4],[3,4],[3],[3,4],[4],[4],[4]],
+  ef3:[[3],[3],[3],[3,4],[3],[3,4],[3],[3,4],[4],[4],[4],[4],[4]],
+  ef4:[[3],[3,4],[3,4],[3],[3,4],[3],[4],[4],[4],[4],[4]],
+  ef5:[[3],[3,4],[3,4],[3],[3,4],[4],[4],[4]]
+};
+Object.entries(bimestresGuiaIniciais).forEach(([serie, mapa]) => {
+  (seriesData[serie]?.aes || []).forEach((ae, index) => {
+    const bimestres = mapa[index] || [1];
+    ae.bimestres = bimestres;
+    ae.bimestre = bimestres[0];
+  });
+});
+
 /* ── Quiz / Arena — 1ª EM: Equações, Funções e Função Afim ── */
 function gerarQ_em1(){
   return [
@@ -4019,13 +4036,14 @@ function calcularBimestre(index, total){
 function aesDaSerieComBimestre(data){
   return data.aes.map((ae, index) => ({
     ...ae,
-    bimestre: ae.bimestre || calcularBimestre(index, data.aes.length)
+    bimestres: ae.bimestres || [ae.bimestre || calcularBimestre(index, data.aes.length)],
+    bimestre: ae.bimestre || (ae.bimestres && ae.bimestres[0]) || calcularBimestre(index, data.aes.length)
   }));
 }
 
 function filtrarPorBimestre(items){
   return currentBimestreFilter
-    ? items.filter(item => item.bimestre === currentBimestreFilter)
+    ? items.filter(item => (item.bimestres || [item.bimestre]).includes(currentBimestreFilter))
     : items;
 }
 
@@ -4039,7 +4057,7 @@ function renderGroupedCards(containerId, items, renderCard, emptyText){
   }
 
   const html = [1,2,3,4].map(bimestre => {
-    const group = visibleItems.filter(item => item.bimestre === bimestre);
+    const group = visibleItems.filter(item => (item.bimestres || [item.bimestre]).includes(bimestre));
     if (!group.length) return '';
     const countLabel = group.length === 1 ? '1 item' : `${group.length} itens`;
     return `
@@ -4178,11 +4196,11 @@ function renderSimuladores(){
   const simItems = data.simuladores
     .map(tipo => {
       const usos = aes.filter(ae => ae.sim === tipo);
-      const bimestres = usos.length ? [...new Set(usos.map(ae => ae.bimestre))] : [1];
+      const bimestres = usos.length ? [...new Set(usos.flatMap(ae => ae.bimestres || [ae.bimestre]))] : [1];
       const bimestre = currentBimestreFilter
         ? (bimestres.includes(currentBimestreFilter) ? currentBimestreFilter : null)
         : bimestres[0];
-      return {tipo, bimestre};
+      return {tipo, bimestre, bimestres};
     })
     .filter(item => item.bimestre);
 
@@ -4465,11 +4483,11 @@ function renderProfessor(){
   const simItems = data.simuladores
     .map(tipo => {
       const usos = aes.filter(ae => ae.sim === tipo);
-      const bimestres = usos.length ? [...new Set(usos.map(ae => ae.bimestre))] : [1];
+      const bimestres = usos.length ? [...new Set(usos.flatMap(ae => ae.bimestres || [ae.bimestre]))] : [1];
       const bimestre = currentBimestreFilter
         ? (bimestres.includes(currentBimestreFilter) ? currentBimestreFilter : null)
         : bimestres[0];
-      return {tipo, bimestre};
+      return {tipo, bimestre, bimestres};
     })
     .filter(item => item.bimestre);
 

@@ -663,6 +663,15 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
   white-space:nowrap;flex-shrink:0;
   background:linear-gradient(135deg,#4F8EF7,#9B6FF7);
   -webkit-background-clip:text;background-clip:text;color:transparent;}
+.logo-mark{position:relative;display:inline-grid;place-items:center;width:1.7em;height:1.7em;
+  margin-right:0.28rem;vertical-align:-0.42em;background:linear-gradient(135deg,#4F8EF7,#9B6FF7);
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.logo-at{position:absolute;inset:-0.16em 0 0;font-family:Arial,sans-serif;font-size:1.72em;
+  line-height:1;font-weight:900;opacity:0.95;}
+.logo-m{position:relative;z-index:1;font-family:'Nunito',sans-serif;font-size:0.82em;font-weight:900;
+  line-height:1;background:linear-gradient(135deg,#9B6FF7,#4F8EF7);-webkit-background-clip:text;
+  background-clip:text;color:transparent;}
+.logo-word{vertical-align:middle;}
 .nav-tabs{display:flex;gap:0.1rem;background:var(--surface);padding:0.2rem;border-radius:0.875rem;
   overflow-x:auto;scrollbar-width:none;flex-shrink:1;min-width:0;}
 .nav-tabs::-webkit-scrollbar{display:none;}
@@ -1070,7 +1079,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 <body>
 
 <nav class="navbar">
-  <div class="logo">MatemáticaApp</div>
+  <div class="logo" aria-label="MatemáticaApp"><span class="logo-mark"><span class="logo-at">@</span><span class="logo-m">M</span></span><span class="logo-word">atemáticaApp</span></div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="changePage('home')">Início</button>
     <button class="nav-tab" onclick="changePage('simuladores')">Simuladores</button>

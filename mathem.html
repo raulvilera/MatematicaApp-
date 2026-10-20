@@ -825,6 +825,15 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .tipo-btn-icon{font-size:1rem;}
 .tipo-btn-label{font-size:0.6rem;font-weight:700;color:var(--text-secondary);text-align:center;line-height:1.2;}
 .tipo-btn.active .tipo-btn-label{color:var(--text);}
+.atv-identificacao{padding:0.85rem 1rem 0.25rem;background:var(--surface);border-bottom:1px solid var(--border);}
+.atv-identificacao-title{font-size:0.68rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--secondary);margin-bottom:.45rem;}
+.atv-identificacao-grid{display:grid;grid-template-columns:2fr .8fr 1fr 1fr;gap:.45rem;}
+.atv-identificacao input{width:100%;min-width:0;padding:.48rem .58rem;border-radius:.55rem;border:1px solid var(--border-2);background:var(--surface-2);color:var(--text);font:600 .72rem 'Space Grotesk',sans-serif;outline:none;}
+.atv-identificacao input:focus{border-color:var(--secondary);box-shadow:0 0 0 2px rgba(155,111,247,.12);}
+.atv-identificacao input::placeholder{color:var(--text-tertiary);}
+.atv-shared .atv-tipos{display:none;}
+.atv-shared .atv-identificacao{background:linear-gradient(135deg,rgba(155,111,247,.08),rgba(79,142,247,.05));}
+@media(max-width:600px){.atv-identificacao-grid{grid-template-columns:1fr 1fr;}.atv-identificacao input:first-child{grid-column:1/-1;}}
 .atv-body{padding:1rem;min-height:280px;}
 .atv-footer{display:flex;align-items:center;justify-content:space-between;
   padding:0.75rem 1rem;background:var(--surface-2);border-top:1px solid var(--border);
@@ -1115,7 +1124,16 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
       </div>
       <button class="atv-close" onclick="closeAtvModal()">✕</button>
     </div>
-    <div class="atv-tipos">
+    <div class="atv-identificacao" id="atvIdentificacao">
+      <div class="atv-identificacao-title">Identificação do aluno</div>
+      <div class="atv-identificacao-grid">
+        <input id="atvNome" type="text" autocomplete="name" placeholder="Nome do aluno">
+        <input id="atvChamada" type="text" inputmode="numeric" placeholder="Nº chamada">
+        <input id="atvTurma" type="text" placeholder="Turma">
+        <input id="atvSerie" type="text" placeholder="Ano/Série">
+      </div>
+    </div>
+    <div class="atv-tipos" id="atvTipos">
       <button class="tipo-btn active" data-tipo="0" onclick="selecionarTipo(0,this)">
         <span class="tipo-btn-icon">📝</span><span class="tipo-btn-label">Resolução</span>
       </button>
@@ -1153,7 +1171,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
         &nbsp;|&nbsp; <span id="atvRespondidas">0/10</span>
       </div>
       <div style="display:flex;gap:0.4rem;">
-        <button class="btn-ghost" style="font-size:0.78rem;padding:0.35rem 0.7rem;" onclick="recarregarAtv()">🔄 Nova</button>
+        <button id="atvNovaBtn" class="btn-ghost" style="font-size:0.78rem;padding:0.35rem 0.7rem;" onclick="recarregarAtv()">🔄 Nova</button>
         <button class="btn-ghost" style="font-size:0.78rem;padding:0.35rem 0.7rem;" onclick="closeAtvModal()">Fechar</button>
       </div>
     </div>
@@ -3308,28 +3326,36 @@ simulators.graficos = function(c){
    TIPOS DE ATIVIDADE
    ==================================================== */
 const tiposAtv = [
-  {id:0,emoji:'📝',nome:'Resolução de Problemas',descricao:'Questões diretas com cálculo algébrico e procedimentos.',
-   abordagem:'resolução de problemas matemáticos diretos com cálculo algébrico, numérico ou geométrico. 4 alternativas objetivas (A, B, C, D).'},
-  {id:1,emoji:'🌍',nome:'Contextualizada',descricao:'Situações do cotidiano brasileiro com dados reais.',
-   abordagem:'situações-problema do cotidiano: mercado, culinária, esportes, arquitetura. 4 alternativas. Use contextos familiares aos alunos brasileiros.'},
-  {id:2,emoji:'🔬',nome:'Investigativa',descricao:'Padrões, sequências e raciocínio indutivo.',
-   abordagem:'investigação de padrões, reconhecimento de regularidades e generalização. 4 alternativas.'},
-  {id:3,emoji:'🎨',nome:'Criativa',descricao:'Matemática com arte, música e arquitetura.',
-   abordagem:'conexões interdisciplinares: arte, arquitetura, música, natureza. 4 alternativas.'},
-  {id:4,emoji:'🏆',nome:'Desafio Olímpico',descricao:'Nível OBMEP: raciocínio lógico avançado.',
-   abordagem:'nível OBMEP/competições, múltiplos passos e elegância matemática. 4 alternativas. Alta dificuldade progressiva.'}
+  {id:0,emoji:'📝',nome:'Atividade normal',descricao:'Exercícios diretos e graduados sobre o conteúdo.',
+   abordagem:'atividade escolar tradicional: conceitos, cálculos e procedimentos diretamente ligados ao tema. Comece no nível básico e avance até questões médias. 4 alternativas objetivas.'},
+  {id:1,emoji:'🌍',nome:'Contextualizada',descricao:'Situações do cotidiano brasileiro.',
+   abordagem:'problemas narrativos do cotidiano brasileiro, como compras, receitas, transporte, jogos esportivos e medidas. Use dados plausíveis e exija interpretação antes do cálculo. 4 alternativas.'},
+  {id:2,emoji:'🔬',nome:'Investigativa',descricao:'Descoberta, padrões e argumentação.',
+   abordagem:'sequência investigativa: faça o aluno observar, levantar hipótese, testar, justificar e generalizar. Priorize padrões, comparação, exploração e explicação do raciocínio. 4 alternativas.'},
+  {id:3,emoji:'🎮',nome:'Gamificada',descricao:'Missões, fases e pontuação.',
+   abordagem:'transforme o tema em uma missão ou jogo com fases, personagens, regras, pontuação, escolhas e feedback. As questões devem formar uma narrativa gamificada, não apenas trocar os números. 4 alternativas.'},
+  {id:4,emoji:'🏃',nome:'Brincadeiras do dia a dia',descricao:'Desafios lúdicos e movimento.',
+   abordagem:'atividade lúdica baseada em brincadeiras reais de crianças, como amarelinha, bolinha de gude, roda, caça ao tesouro, trilha ou desafios com materiais simples. Relacione cada brincadeira ao tema matemático e aumente a dificuldade. 4 alternativas.'}
 ];
 
 /* ====================================================
    ESTADO DA ATIVIDADE
    ==================================================== */
 let atvState = {tema:'',tituloAE:'',serie:'',tipoIdx:0,questoes:[],
-  respostas:[],respondidas:0,pontos:0,cache:{},codigo:''};
+  respostas:[],respondidas:0,pontos:0,cache:{},codigo:'',shared:false};
+
+function tituloAtividade(titulo){
+  return `ATIVIDADE DE ${String(titulo||'MATEMÁTICA').toUpperCase()}`;
+}
 
 async function openAtvModal(tema, tituloAE, serie){
   atvState={...atvState,tema,tituloAE,serie:serie||currentSerie||'ef6',
-    tipoIdx:0,questoes:[],respostas:[],respondidas:0,pontos:0,cache:{}};
-  document.getElementById('atvTitle').textContent=`Atividades — ${tituloAE}`;
+    tipoIdx:0,questoes:[],respostas:[],respondidas:0,pontos:0,cache:{},shared:false};
+  document.querySelector('.atv-modal').classList.remove('atv-shared');
+  document.getElementById('atvTipos').style.display='flex';
+  document.getElementById('atvNovaBtn').style.display='inline-block';
+  document.getElementById('atvTitle').textContent=tituloAtividade(tituloAE);
+  document.getElementById('atvSerie').value=seriesData[atvState.serie]?.name||atvState.serie;
   document.getElementById('atvSub').textContent='Escolha um tipo de atividade abaixo';
   document.getElementById('atvScore').textContent='0 pts';
   document.getElementById('atvRespondidas').textContent='0/10';
@@ -3342,6 +3368,7 @@ async function openAtvModal(tema, tituloAE, serie){
 }
 
 async function selecionarTipo(idx,btn){
+  if(atvState.shared){showToast('🔒 Este link contém somente esta atividade.');return;}
   if(atvState.tipoIdx===idx&&atvState.questoes.length>0)return;
   atvState.tipoIdx=idx;atvState.respondidas=0;atvState.pontos=0;
   document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.remove('active'));
@@ -3353,6 +3380,7 @@ async function selecionarTipo(idx,btn){
 }
 
 async function recarregarAtv(){
+  if(atvState.shared){showToast('🔒 Este link contém somente esta atividade.');return;}
   const k=`${atvState.tema}_${atvState.serie}_${atvState.tipoIdx}`;
   delete atvState.cache[k];
   atvState.respondidas=0;atvState.pontos=0;
@@ -3390,6 +3418,11 @@ async function carregarAtv(tipoIdx){
   if(atvState.cache[k]){renderAtv(atvState.cache[k],tipo);return;}
 
   const curriculoInfo = {
+    ef1:`1º Ano EF — Guia MAT_AI: números, medidas, geometria, operações e dados`,
+    ef2:`2º Ano EF — Guia MAT_AI: números, medidas, geometria, operações e dados`,
+    ef3:`3º Ano EF — Guia MAT_AI: números, medidas, geometria, operações e dados`,
+    ef4:`4º Ano EF — Guia MAT_AI: números, medidas, geometria, operações, frações e dados`,
+    ef5:`5º Ano EF — Guia MAT_AI: números naturais e racionais, medidas, geometria, operações e dados`,
     ef6:`6º Ano EF — BNCC: Frações, Geometria (ângulos, polígonos, triângulos, quadriláteros)`,
     ef7:`7º Ano EF — BNCC: Números Racionais, Plano Cartesiano, Áreas`,
     ef8:`8º Ano EF — BNCC: Álgebra, Equações 1º grau, Sistemas de equações`,
@@ -3401,8 +3434,9 @@ async function carregarAtv(tipoIdx){
 
   const prompt=`Você é professor de matemática do estado de São Paulo.
 Contexto curricular: ${curriculoInfo}
-Gere EXATAMENTE 10 questões de múltipla escolha sobre: "${atvState.tituloAE}" — tema: ${atvState.tema}
-Abordagem: ${tipo.abordagem}
+  Gere EXATAMENTE 10 questões de múltipla escolha sobre: "${atvState.tituloAE}" — tema: ${atvState.tema}
+  Abordagem: ${tipo.abordagem}
+  Esta modalidade deve ser substancialmente diferente das outras modalidades: não reaproveite enunciados, narrativa, estrutura ou exemplos de outra modalidade. Respeite a faixa etária da série e mantenha o foco no tema.
 
 OBRIGATÓRIO:
 1. EXATAMENTE 4 alternativas por questão
@@ -3516,6 +3550,7 @@ function gerarLinkAtv(codigo){
       tema: atvState.tema,
       titulo: atvState.tituloAE,
       tipoIdx: atvState.tipoIdx,
+      modalidade: tiposAtv[atvState.tipoIdx]?.nome || '',
       qs: atvState.questoes.map(q => ({
         e: q.enunciado,
         o: q.opcoes,
@@ -3589,10 +3624,13 @@ function lerParamAtv(){
       const cacheKey = `${tema}_${serieKey}_${tipoIdx}`;
       atvState = { ...atvState, tema, tituloAE: titulo, serie: serieKey,
         tipoIdx, questoes: [], respostas: [], respondidas: 0, pontos: 0,
-        cache: { [cacheKey]: questoes }, codigo: cod || '' };
+        cache: { [cacheKey]: questoes }, codigo: cod || '', shared: true };
 
-      document.getElementById('atvTitle').textContent = `Atividades — ${titulo}`;
-      document.getElementById('atvSub').textContent = 'Atividade compartilhada';
+      document.querySelector('.atv-modal').classList.add('atv-shared');
+      document.getElementById('atvTipos').style.display = 'none';
+      document.getElementById('atvNovaBtn').style.display = 'none';
+      document.getElementById('atvTitle').textContent = tituloAtividade(titulo);
+      document.getElementById('atvSub').textContent = 'Atividade individual — responda somente esta versão';
       document.getElementById('atvScore').textContent = '0 pts';
       document.getElementById('atvRespondidas').textContent = `0/${questoes.length}`;
       document.getElementById('atvShareBox').style.display = 'none';
@@ -3635,12 +3673,18 @@ function renderAtv(qs, tipo){
   atvState.questoes = qs;
   atvState.respostas = new Array(qs.length).fill(null);
   atvState.timers = {};  // ★ cronômetros por questão
-  const cod = gerarCodigoAtv(atvState.tema, atvState.serie, atvState.tipoIdx);
+  const cod = atvState.shared ? (atvState.codigo || '') : gerarCodigoAtv(atvState.tema, atvState.serie, atvState.tipoIdx);
   atvState.codigo = cod;
 
-  const link = gerarLinkAtv(cod);
-  document.getElementById('atvShareInput').value = link;
-  document.getElementById('atvShareBox').style.display = 'block';
+  if (!atvState.shared) {
+    const link = gerarLinkAtv(cod);
+    document.getElementById('atvShareInput').value = link;
+    document.getElementById('atvShareBox').style.display = 'block';
+  } else {
+    document.getElementById('atvShareBox').style.display = 'none';
+  }
+  document.getElementById('atvTitle').textContent = tituloAtividade(atvState.tituloAE);
+  document.getElementById('atvSerie').value = seriesData[atvState.serie]?.name || atvState.serie;
   document.getElementById('atvRespondidas').textContent = `0/${qs.length}`;
   document.getElementById('atvScore').textContent = '0 pts';
 

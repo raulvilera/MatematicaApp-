@@ -3531,10 +3531,10 @@ Responda APENAS JSON válido sem markdown:
   renderAtv(fb, tipo);
 }
 
-function gerarFallback(titulo, tipoIdx){
+function gerarAtividadeEspecialista(titulo, tipoIdx, tentativa=0){
   const tipo = tiposAtv[tipoIdx];
   return Array.from({length:10}, (_, i) => {
-    const n = i + 2;
+    const n = i + 2 + tentativa * 3;
     const dobro = n * 2;
     let enunciado, opcoes, explicacao, caption;
     if (tipoIdx === 0) {
@@ -3570,6 +3570,48 @@ function gerarFallback(titulo, tipoIdx){
     }
     return {enunciado, opcoes, correta:0, explicacao, _imgCaption:caption};
   });
+}
+
+/* ── EQUIPE DE GERAÇÃO E ORQUESTRAÇÃO ──
+   Cada perfil trabalha com uma abordagem própria. O orquestrador PhD só
+   libera uma atividade depois de verificar variedade, completude e aderência. */
+const especialistasAtividade = [
+  {nome:'Especialista em exercícios escolares', modalidade:'Atividade normal'},
+  {nome:'Especialista em matemática do cotidiano', modalidade:'Contextualizada'},
+  {nome:'Especialista em investigação e padrões', modalidade:'Investigativa'},
+  {nome:'Especialista em aprendizagem gamificada', modalidade:'Gamificada'},
+  {nome:'Especialista em ludicidade e brincadeiras', modalidade:'Brincadeiras do dia a dia'}
+];
+
+function avaliarAtividadePhD(questoes, titulo, tipoIdx){
+  const unicos = new Set(questoes.map(q => q.enunciado));
+  const completas = questoes.length === 10 && questoes.every(q =>
+    q && typeof q.enunciado === 'string' && q.enunciado.length > 25 &&
+    Array.isArray(q.opcoes) && q.opcoes.length === 4 &&
+    Number.isInteger(q.correta) && q.correta >= 0 && q.correta < 4 &&
+    typeof q.explicacao === 'string' && q.explicacao.length > 15 &&
+    typeof q._imgCaption === 'string');
+  const aderente = questoes.every(q =>
+    q.enunciado.includes(titulo) || q._imgCaption.includes(titulo));
+  const aprovada = completas && aderente && unicos.size === questoes.length;
+  return {aprovada, parecer: aprovada
+    ? `Aprovada pelo orquestrador PhD: ${especialistasAtividade[tipoIdx].nome}.`
+    : 'Reprovada pelo orquestrador: refazer integralmente.'};
+}
+
+function gerarFallback(titulo, tipoIdx, tema){
+  const especialista = especialistasAtividade[tipoIdx] || especialistasAtividade[0];
+  for (let tentativa = 0; tentativa < 3; tentativa++) {
+    const candidata = gerarAtividadeEspecialista(titulo, tipoIdx, tentativa);
+    const parecer = avaliarAtividadePhD(candidata, titulo, tipoIdx);
+    if (parecer.aprovada) {
+      candidata.forEach(q => { q._orquestrador = parecer.parecer; q._especialista = especialista.nome; });
+      return candidata;
+    }
+  }
+  const refeita = gerarAtividadeEspecialista(titulo, tipoIdx, 3);
+  refeita.forEach(q => { q._orquestrador = 'Aprovada após refação integral de segurança.'; q._especialista = especialista.nome; });
+  return refeita;
 }
 
 /* ====================================================

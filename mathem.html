@@ -834,6 +834,12 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .atv-activity-heading{display:flex;flex-direction:column;gap:.2rem;padding:.8rem 1rem .15rem;font-size:.9rem;color:var(--text);}
 .atv-activity-heading strong{background:linear-gradient(135deg,#9B6FF7,#4F8EF7);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .atv-activity-heading span{font-size:.68rem;color:var(--text-secondary);}
+.lab-card{margin:.4rem 0 0;padding:1rem;border:1px solid rgba(34,211,238,.28);border-radius:1rem;background:linear-gradient(145deg,rgba(34,211,238,.08),rgba(155,111,247,.08));}
+.lab-card h3{margin:0 0 .25rem;color:#22D3EE;font-size:1rem;}.lab-card p{margin:.25rem 0 .75rem;color:var(--text-secondary);font-size:.78rem;line-height:1.5;}
+.lab-controls{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.75rem 0;}.lab-control label{display:flex;justify-content:space-between;font-size:.74rem;color:var(--text-secondary);margin-bottom:.25rem;}.lab-control strong{color:var(--text);}
+.lab-control input[type=range]{width:100%;accent-color:#22D3EE;}.lab-fraction{text-align:center;font-size:2.2rem;font-weight:900;color:var(--text);margin:.3rem 0 .7rem;}.lab-fraction small{display:block;font-size:.68rem;font-weight:600;color:var(--text-secondary);}
+.lab-parts{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;min-height:45px;margin:.6rem 0 .4rem;}.lab-part{border-radius:5px;background:rgba(255,255,255,.08);border:1px solid var(--border-2);transition:.2s;}.lab-part.filled{background:linear-gradient(180deg,#22D3EE,#4F8EF7);box-shadow:0 0 10px rgba(34,211,238,.3);}.lab-readout{text-align:center;color:var(--text-secondary);font-size:.76rem;}.lab-challenge{margin-top:.8rem;padding:.65rem;border-radius:.7rem;background:var(--surface-2);border:1px solid var(--border);font-size:.78rem;color:var(--text);}.lab-actions{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.7rem;}.lab-result{margin-top:.65rem;padding:.6rem;border-radius:.6rem;font-size:.78rem;display:none;}.lab-result.show{display:block;background:rgba(34,201,122,.1);border:1px solid rgba(34,201,122,.35);color:#8ff0bd;}
+@media(max-width:600px){.lab-controls{gap:.45rem;}.lab-parts{gap:2px;}}
 .atv-shared .atv-tipos{display:none;}
 .atv-shared .atv-identificacao{background:linear-gradient(135deg,rgba(155,111,247,.08),rgba(79,142,247,.05));}
 @media(max-width:600px){.atv-identificacao-grid{grid-template-columns:1fr 1fr;}.atv-identificacao input:first-child{grid-column:1/-1;}}
@@ -3336,7 +3342,8 @@ const tiposAtv = [
    ESTADO DA ATIVIDADE
    ==================================================== */
 let atvState = {tema:'',tituloAE:'',serie:'',tipoIdx:0,questoes:[],
-  respostas:[],respondidas:0,pontos:0,cache:{},codigo:'',shared:false};
+  respostas:[],respondidas:0,pontos:0,cache:{},codigo:'',shared:false,lab:false,
+  labState:{numerador:1,denominador:2,alvoN:3,alvoD:4}};
 
 function tituloAtividade(titulo){
   return `ATIVIDADE DE ${String(titulo||'MATEMÁTICA').toUpperCase()}`;
@@ -3356,7 +3363,8 @@ function identificacaoAtividadeHtml(){
 
 async function openAtvModal(tema, tituloAE, serie){
   atvState={...atvState,tema,tituloAE,serie:serie||currentSerie||'ef6',
-    tipoIdx:0,questoes:[],respostas:[],respondidas:0,pontos:0,cache:{},shared:false};
+    tipoIdx:0,questoes:[],respostas:[],respondidas:0,pontos:0,cache:{},shared:false,lab:false,
+    labState:{numerador:1,denominador:2,alvoN:3,alvoD:4}};
   document.querySelector('.atv-modal').classList.remove('atv-shared');
   document.getElementById('atvTipos').style.display='flex';
   document.getElementById('atvNovaBtn').style.display='inline-block';
@@ -3375,7 +3383,7 @@ async function openAtvModal(tema, tituloAE, serie){
 async function selecionarTipo(idx,btn){
   if(atvState.shared){showToast('🔒 Este link contém somente esta atividade.');return;}
   if(atvState.tipoIdx===idx&&atvState.questoes.length>0)return;
-  atvState.tipoIdx=idx;atvState.respondidas=0;atvState.pontos=0;
+  atvState.tipoIdx=idx;atvState.lab=false;atvState.respondidas=0;atvState.pontos=0;
   document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('atvScore').textContent='0 pts';
@@ -3419,6 +3427,11 @@ async function fetchComTimeout(url, options, timeoutMs) {
 async function carregarAtv(tipoIdx){
   const tipo=tiposAtv[tipoIdx];
   const k=`${atvState.tema}_${atvState.serie}_${tipoIdx}`;
+  if (tipoIdx === 2) {
+    atvState.lab = true;
+    renderLaboratorioFracoes();
+    return;
+  }
   _setLoading(`Preparando ${tipo.emoji} ${tipo.nome}…`);
   if(atvState.cache[k]){renderAtv(atvState.cache[k],tipo);return;}
 
@@ -3614,6 +3627,65 @@ function gerarFallback(titulo, tipoIdx, tema){
   return refeita;
 }
 
+function renderLaboratorioFracoes(){
+  const st = atvState.labState || {numerador:1,denominador:2,alvoN:3,alvoD:4};
+  atvState.labState = st;
+  atvState.questoes = [];
+  atvState.codigo = gerarCodigoAtv(atvState.tema, atvState.serie, 2);
+  const tipo = tiposAtv[2];
+  const body = document.getElementById('atvBody');
+  body.innerHTML = `${identificacaoAtividadeHtml()}
+    <div class="atv-activity-heading"><strong>${tituloAtividade(atvState.tituloAE)}</strong><span>Laboratório Virtual de Frações · ${seriesData[atvState.serie]?.name||atvState.serie}</span></div>
+    <div class="lab-card">
+      <h3>🔬 Laboratório Virtual de Frações</h3>
+      <p>Manipule o numerador e o denominador, observe a representação visual e resolva o desafio. O resultado muda em tempo real.</p>
+      <div class="lab-fraction" id="labFraction">1/2<small>fração representada</small></div>
+      <div class="lab-parts" id="labParts"></div>
+      <div class="lab-readout" id="labReadout"></div>
+      <div class="lab-controls">
+        <div class="lab-control"><label>Numerador <strong id="labNumValue">1</strong></label><input id="labNum" type="range" min="0" max="12" value="1" oninput="labAtualizar()"></div>
+        <div class="lab-control"><label>Denominador <strong id="labDenValue">2</strong></label><input id="labDen" type="range" min="1" max="12" value="2" oninput="labAtualizar()"></div>
+      </div>
+      <div class="lab-challenge" id="labChallenge"></div>
+      <div class="lab-actions"><button class="btn-primary" onclick="labVerificar()">✓ Verificar desafio</button><button class="btn-ghost" onclick="labNovoDesafio()">↻ Novo desafio</button></div>
+      <div class="lab-result" id="labResult"></div>
+    </div>`;
+  document.getElementById('atvScore').textContent='Laboratório';
+  document.getElementById('atvRespondidas').textContent='Exploração';
+  document.getElementById('atvShareBox').style.display = atvState.shared ? 'none' : 'block';
+  if (!atvState.shared) document.getElementById('atvShareInput').value = gerarLinkAtv(atvState.codigo);
+  labAtualizar();
+}
+
+function labAtualizar(){
+  const n = Number(document.getElementById('labNum')?.value || 1);
+  const d = Number(document.getElementById('labDen')?.value || 2);
+  atvState.labState.numerador=n; atvState.labState.denominador=d;
+  const parts = document.getElementById('labParts');
+  if (!parts) return;
+  document.getElementById('labNumValue').textContent=n;
+  document.getElementById('labDenValue').textContent=d;
+  document.getElementById('labFraction').innerHTML=`${n}/${d}<small>fração representada</small>`;
+  parts.innerHTML = Array.from({length:d},(_,i)=>`<div class="lab-part ${i<n?'filled':''}"></div>`).join('');
+  document.getElementById('labReadout').textContent = n===0 ? 'Nenhuma parte preenchida' : `${n} de ${d} partes preenchidas · ${Math.round(n/d*100)}%`;
+  const a=atvState.labState.alvoN,b=atvState.labState.alvoD;
+  document.getElementById('labChallenge').textContent=`Desafio: represente a fração ${a}/${b} usando os controles. Depois, clique em “Verificar desafio”.`;
+  if (!atvState.shared) document.getElementById('atvShareInput').value=gerarLinkAtv(atvState.codigo);
+}
+
+function labVerificar(){
+  const st=atvState.labState; const ok=st.numerador===st.alvoN && st.denominador===st.alvoD;
+  const el=document.getElementById('labResult'); if(!el)return;
+  el.classList.add('show'); el.innerHTML=ok ? '✅ Representação correta! Você relacionou numerador, denominador e partes da figura.' : `🔎 Ainda não. Você montou ${st.numerador}/${st.denominador}; observe o desafio e tente novamente.`;
+}
+
+function labNovoDesafio(){
+  const d=2+Math.floor(Math.random()*7); const n=1+Math.floor(Math.random()*d);
+  atvState.labState.alvoN=n; atvState.labState.alvoD=d;
+  const result=document.getElementById('labResult'); if(result){result.classList.remove('show');result.textContent='';}
+  labAtualizar();
+}
+
 /* ====================================================
    ★ FIX LINK: geração e leitura de URL correta
    ==================================================== */
@@ -3641,6 +3713,8 @@ function gerarLinkAtv(codigo){
       titulo: atvState.tituloAE,
       tipoIdx: atvState.tipoIdx,
       modalidade: tiposAtv[atvState.tipoIdx]?.nome || '',
+      lab: !!atvState.lab,
+      labState: atvState.lab ? atvState.labState : null,
       qs: atvState.questoes.map(q => ({
         e: q.enunciado,
         o: q.opcoes,
@@ -3688,6 +3762,27 @@ function lerParamAtv(){
     const decoded = decodeURIComponent(escape(atob(decodeURIComponent(raw))));
     payload = JSON.parse(decoded);
   } catch(e) { payload = null; }
+
+  if (payload && payload.v === 1 && payload.lab) {
+    const {serie, tema, titulo, tipoIdx, cod, labState} = payload;
+    const serieKey = seriesData[serie] ? serie : 'ef6';
+    selectSerie(serieKey);
+    changePage('home');
+    setTimeout(() => {
+      atvState = {...atvState, tema, tituloAE:titulo, serie:serieKey, tipoIdx:tipoIdx||2,
+        questoes:[], respostas:[], respondidas:0, pontos:0, cache:{}, codigo:cod||'', shared:true, lab:true,
+        labState:labState||{numerador:1,denominador:2,alvoN:3,alvoD:4}};
+      document.querySelector('.atv-modal').classList.add('atv-shared');
+      document.getElementById('atvTipos').style.display='none';
+      document.getElementById('atvNovaBtn').style.display='none';
+      document.getElementById('atvTitle').textContent=tituloAtividade(titulo);
+      document.getElementById('atvSub').textContent='Laboratório individual — explore somente esta atividade';
+      document.getElementById('atvOverlay').classList.add('active');
+      document.body.style.overflow='hidden';
+      renderLaboratorioFracoes();
+    }, 500);
+    return;
+  }
 
   if (payload && payload.v === 1 && payload.qs) {
     // ★ Novo formato: restaura atividade completa sem chamar a API

@@ -831,6 +831,9 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .atv-identificacao input{width:100%;min-width:0;padding:.48rem .58rem;border-radius:.55rem;border:1px solid var(--border-2);background:var(--surface-2);color:var(--text);font:600 .72rem 'Space Grotesk',sans-serif;outline:none;}
 .atv-identificacao input:focus{border-color:var(--secondary);box-shadow:0 0 0 2px rgba(155,111,247,.12);}
 .atv-identificacao input::placeholder{color:var(--text-tertiary);}
+.atv-activity-heading{display:flex;flex-direction:column;gap:.2rem;padding:.8rem 1rem .15rem;font-size:.9rem;color:var(--text);}
+.atv-activity-heading strong{background:linear-gradient(135deg,#9B6FF7,#4F8EF7);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.atv-activity-heading span{font-size:.68rem;color:var(--text-secondary);}
 .atv-shared .atv-tipos{display:none;}
 .atv-shared .atv-identificacao{background:linear-gradient(135deg,rgba(155,111,247,.08),rgba(79,142,247,.05));}
 @media(max-width:600px){.atv-identificacao-grid{grid-template-columns:1fr 1fr;}.atv-identificacao input:first-child{grid-column:1/-1;}}
@@ -1123,15 +1126,6 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
         <div style="font-size:0.68rem;color:var(--text-secondary);margin-top:0.1rem;" id="atvSub">Escolha um tipo abaixo</div>
       </div>
       <button class="atv-close" onclick="closeAtvModal()">✕</button>
-    </div>
-    <div class="atv-identificacao" id="atvIdentificacao">
-      <div class="atv-identificacao-title">Identificação do aluno</div>
-      <div class="atv-identificacao-grid">
-        <input id="atvNome" type="text" autocomplete="name" placeholder="Nome do aluno">
-        <input id="atvChamada" type="text" inputmode="numeric" placeholder="Nº chamada">
-        <input id="atvTurma" type="text" placeholder="Turma">
-        <input id="atvSerie" type="text" placeholder="Ano/Série">
-      </div>
     </div>
     <div class="atv-tipos" id="atvTipos">
       <button class="tipo-btn active" data-tipo="0" onclick="selecionarTipo(0,this)">
@@ -3348,6 +3342,18 @@ function tituloAtividade(titulo){
   return `ATIVIDADE DE ${String(titulo||'MATEMÁTICA').toUpperCase()}`;
 }
 
+function identificacaoAtividadeHtml(){
+  return `<div class="atv-identificacao" id="atvIdentificacao">
+    <div class="atv-identificacao-title">Identificação do aluno</div>
+    <div class="atv-identificacao-grid">
+      <input id="atvNome" type="text" autocomplete="name" placeholder="Nome do aluno">
+      <input id="atvChamada" type="text" inputmode="numeric" placeholder="Nº chamada">
+      <input id="atvTurma" type="text" placeholder="Turma">
+      <input id="atvSerie" type="text" placeholder="Ano/Série">
+    </div>
+  </div>`;
+}
+
 async function openAtvModal(tema, tituloAE, serie){
   atvState={...atvState,tema,tituloAE,serie:serie||currentSerie||'ef6',
     tipoIdx:0,questoes:[],respostas:[],respondidas:0,pontos:0,cache:{},shared:false};
@@ -3355,7 +3361,6 @@ async function openAtvModal(tema, tituloAE, serie){
   document.getElementById('atvTipos').style.display='flex';
   document.getElementById('atvNovaBtn').style.display='inline-block';
   document.getElementById('atvTitle').textContent=tituloAtividade(tituloAE);
-  document.getElementById('atvSerie').value=seriesData[atvState.serie]?.name||atvState.serie;
   document.getElementById('atvSub').textContent='Escolha um tipo de atividade abaixo';
   document.getElementById('atvScore').textContent='0 pts';
   document.getElementById('atvRespondidas').textContent='0/10';
@@ -3435,7 +3440,8 @@ async function carregarAtv(tipoIdx){
   const prompt=`Você é professor de matemática do estado de São Paulo.
 Contexto curricular: ${curriculoInfo}
   Gere EXATAMENTE 10 questões de múltipla escolha sobre: "${atvState.tituloAE}" — tema: ${atvState.tema}
-  Abordagem: ${tipo.abordagem}
+  Modalidade escolhida: ${tipo.nome}
+  Abordagem obrigatória: ${tipo.abordagem}
   Esta modalidade deve ser substancialmente diferente das outras modalidades: não reaproveite enunciados, narrativa, estrutura ou exemplos de outra modalidade. Respeite a faixa etária da série e mantenha o foco no tema.
 
 OBRIGATÓRIO:
@@ -3515,13 +3521,43 @@ Responda APENAS JSON válido sem markdown:
 
 function gerarFallback(titulo, tipoIdx){
   const tipo = tiposAtv[tipoIdx];
-  return Array.from({length:10}, (_, i) => ({
-    enunciado: `[${tipo.nome}] Questão ${i+1} sobre ${titulo}. Se f(x) = ${i+2}x + ${i+1}, qual o valor de f(${i+1})?`,
-    opcoes: [`A. ${(i+2)*(i+1)+(i+1)}`, `B. ${(i+2)*(i+1)}`, `C. ${i+3}`, `D. ${(i+2)*(i+2)}`],
-    correta: 0,
-    explicacao: `Substituindo x=${i+1}: f(${i+1})=${i+2}·${i+1}+${i+1}=${(i+2)*(i+1)+(i+1)}. Tema: ${titulo}.`,
-    _imgCaption: `Contexto matemático: ${titulo}`
-  }));
+  return Array.from({length:10}, (_, i) => {
+    const n = i + 2;
+    const dobro = n * 2;
+    let enunciado, opcoes, explicacao, caption;
+    if (tipoIdx === 0) {
+      const resultado = n + (i + 3);
+      enunciado = `Questão ${i+1}: no estudo de ${titulo}, calcule ${n} + ${i+3}.`;
+      opcoes = [`A. ${resultado}`, `B. ${resultado+1}`, `C. ${resultado-1}`, `D. ${resultado+2}`];
+      explicacao = `A soma de ${n} com ${i+3} é ${resultado}. Esta é uma questão direta de procedimento.`;
+      caption = `Cálculo direto: ${titulo}`;
+    } else if (tipoIdx === 1) {
+      const total = n * 3;
+      enunciado = `Questão ${i+1}: em uma situação do cotidiano relacionada a ${titulo}, uma família organiza ${n} grupos com 3 itens cada. Quantos itens há ao todo?`;
+      opcoes = [`A. ${total}`, `B. ${total+3}`, `C. ${n+3}`, `D. ${total-1}`];
+      explicacao = `São ${n} grupos de 3: ${n} × 3 = ${total}. O contexto representa uma multiplicação.`;
+      caption = `Situação do cotidiano: ${titulo}`;
+    } else if (tipoIdx === 2) {
+      const proximo = n + 4;
+      enunciado = `Questão ${i+1}: investigue a sequência ${n}, ${n+4}, ${n+8}, __. Qual número continua o padrão relacionado a ${titulo}?`;
+      opcoes = [`A. ${proximo}`, `B. ${proximo+2}`, `C. ${n+8}`, `D. ${n+1}`];
+      explicacao = `A sequência aumenta de 4 em 4. Portanto, depois de ${n+8} vem ${proximo}.`;
+      caption = `Investigação de padrão: ${titulo}`;
+    } else if (tipoIdx === 3) {
+      const pontos = n * 10;
+      enunciado = `Missão ${i+1}: você está na fase ${n} do desafio de ${titulo}. Ao completar ${n} etapas, ganha 10 pontos por etapa. Qual é a pontuação?`;
+      opcoes = [`A. ${pontos}`, `B. ${pontos+10}`, `C. ${n+10}`, `D. ${pontos-10}`];
+      explicacao = `Cada etapa vale 10 pontos: ${n} × 10 = ${pontos}. Missão concluída!`;
+      caption = `Missão gamificada: ${titulo}`;
+    } else {
+      const casas = n + 1;
+      enunciado = `Brincadeira ${i+1}: numa trilha de amarelinha sobre ${titulo}, você avança ${n} casas e depois mais 1. Em qual casa termina?`;
+      opcoes = [`A. ${casas}`, `B. ${casas+1}`, `C. ${n}`, `D. ${casas+2}`];
+      explicacao = `Avançando ${n} casas e depois mais uma, chegamos a ${n} + 1 = ${casas}.`;
+      caption = `Brincadeira e movimento: ${titulo}`;
+    }
+    return {enunciado, opcoes, correta:0, explicacao, _imgCaption:caption};
+  });
 }
 
 /* ====================================================
@@ -3684,12 +3720,13 @@ function renderAtv(qs, tipo){
     document.getElementById('atvShareBox').style.display = 'none';
   }
   document.getElementById('atvTitle').textContent = tituloAtividade(atvState.tituloAE);
-  document.getElementById('atvSerie').value = seriesData[atvState.serie]?.name || atvState.serie;
   document.getElementById('atvRespondidas').textContent = `0/${qs.length}`;
   document.getElementById('atvScore').textContent = '0 pts';
 
   const body = document.getElementById('atvBody');
   body.innerHTML = `
+    ${identificacaoAtividadeHtml()}
+    <div class="atv-activity-heading"><strong>${tituloAtividade(atvState.tituloAE)}</strong><span>${tipo.nome} · ${seriesData[atvState.serie]?.name||atvState.serie}</span></div>
     <div class="tipo-info-banner">
       <div class="tipo-info-icon">${tipo.emoji}</div>
       <div class="tipo-info-text"><h4>${tipo.nome}</h4><p>${tipo.descricao}</p></div>
